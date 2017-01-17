@@ -9,6 +9,7 @@
 #include "Animation/AnimInstance.h"
 #include "Sound/SoundNodeLocalPlayer.h"
 #include "AudioThread.h"
+#include "TableUtil.h"
 
 static int32 NetVisualizeRelevancyTestPoints = 0;
 FAutoConsoleVariableRef CVarNetVisualizeRelevancyTestPoints(
@@ -724,17 +725,19 @@ bool AShooterCharacter::CanReload() const
 
 void AShooterCharacter::SetTargeting(bool bNewTargeting)
 {
-	bIsTargeting = bNewTargeting;
-
+	UTableUtil::call("CppCallBack", "shootercharacter", "LuaSetTargeting", this, bNewTargeting);
+// 
+// 	bIsTargeting = bNewTargeting;
+// 
 	if (TargetingSound)
 	{
 		UGameplayStatics::SpawnSoundAttached(TargetingSound, GetRootComponent());
 	}
-
-	if (Role < ROLE_Authority)
-	{
-		ServerSetTargeting(bNewTargeting);
-	}
+// 
+// 	if (Role < ROLE_Authority)
+// 	{
+// 		ServerSetTargeting(bNewTargeting);
+// 	}
 }
 
 bool AShooterCharacter::ServerSetTargeting_Validate(bool bNewTargeting)
@@ -752,13 +755,14 @@ void AShooterCharacter::ServerSetTargeting_Implementation(bool bNewTargeting)
 
 void AShooterCharacter::SetRunning(bool bNewRunning, bool bToggle)
 {
-	bWantsToRun = bNewRunning;
-	bWantsToRunToggled = bNewRunning && bToggle;
-
-	if (Role < ROLE_Authority)
-	{
-		ServerSetRunning(bNewRunning, bToggle);
-	}
+	UTableUtil::call("CppCallBack", "shootercharacter", "LuaSetRunning", this, bNewRunning, bToggle);
+// 	bWantsToRun = bNewRunning;
+// 	bWantsToRunToggled = bNewRunning && bToggle;
+// 
+// 	if (Role < ROLE_Authority)
+// 	{
+// 		ServerSetRunning(bNewRunning, bToggle);
+// 	}
 }
 
 bool AShooterCharacter::ServerSetRunning_Validate(bool bNewRunning, bool bToggle)
@@ -875,10 +879,12 @@ void AShooterCharacter::MoveForward(float Val)
 	if (Controller && Val != 0.f)
 	{
 		// Limit pitch when walking or falling
-		const bool bLimitRotation = (GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling());
-		const FRotator Rotation = bLimitRotation ? GetActorRotation() : Controller->GetControlRotation();
-		const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::X);
-		AddMovementInput(Direction, Val);
+		UTableUtil::call("CppCallBack", "shootercharacter", "LuaMoveForward", this, Val);
+
+// 		const bool bLimitRotation = (GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling());
+// 		const FRotator Rotation = bLimitRotation ? GetActorRotation() : Controller->GetControlRotation();
+// 		const FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::X);
+// 		AddMovementInput(Direction, Val);
 	}
 }
 
@@ -886,9 +892,10 @@ void AShooterCharacter::MoveRight(float Val)
 {
 	if (Val != 0.f)
 	{
-		const FQuat Rotation = GetActorQuat();
-		const FVector Direction = FQuatRotationMatrix(Rotation).GetScaledAxis(EAxis::Y);
-		AddMovementInput(Direction, Val);
+		UTableUtil::call("CppCallBack", "shootercharacter", "LuaMoveRight", this, Val);
+// 		const FQuat Rotation = GetActorQuat();
+// 		const FVector Direction = FQuatRotationMatrix(Rotation).GetScaledAxis(EAxis::Y);
+// 		AddMovementInput(Direction, Val);
 	}
 }
 
@@ -897,6 +904,7 @@ void AShooterCharacter::MoveUp(float Val)
 	if (Val != 0.f)
 	{
 		// Not when walking or falling.
+
 		if (GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling())
 		{
 			return;
@@ -908,31 +916,35 @@ void AShooterCharacter::MoveUp(float Val)
 
 void AShooterCharacter::TurnAtRate(float Val)
 {
+	UTableUtil::call("CppCallBack", "shootercharacter", "LuaTurnAtRate", this, Val);
 	// calculate delta for this frame from the rate information
-	AddControllerYawInput(Val * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+	//AddControllerYawInput(Val * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 }
 
 void AShooterCharacter::LookUpAtRate(float Val)
 {
 	// calculate delta for this frame from the rate information
-	AddControllerPitchInput(Val * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+	UTableUtil::call("CppCallBack", "shootercharacter", "LuaLookUpAtRate", this, Val);
+	//AddControllerPitchInput(Val * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
 void AShooterCharacter::OnStartFire()
 {
-	AShooterPlayerController* MyPC = Cast<AShooterPlayerController>(Controller);
-	if (MyPC && MyPC->IsGameInputAllowed())
-	{
-		if (IsRunning())
-		{
-			SetRunning(false, false);
-		}
-		StartWeaponFire();
-	}
+// 	AShooterPlayerController* MyPC = Cast<AShooterPlayerController>(Controller);
+// 	if (MyPC && MyPC->IsGameInputAllowed())
+// 	{
+// 		if (IsRunning())
+// 		{
+// 			SetRunning(false, false);
+// 		}
+// 		StartWeaponFire();
+// 	}
+	UTableUtil::call("CppCallBack", "shootercharacter", "LuaOnStartFire", this);
 }
 
 void AShooterCharacter::OnStopFire()
 {
+	UTableUtil::call("CppCallBack", "shootercharacter", "LuaStopWeaponFire", this);
 	StopWeaponFire();
 }
 

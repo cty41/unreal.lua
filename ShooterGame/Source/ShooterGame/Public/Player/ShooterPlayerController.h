@@ -7,7 +7,7 @@
 
 class AShooterHUD;
 
-UCLASS(config=Game)
+UCLASS(config=Game, minimalapi)
 class AShooterPlayerController : public APlayerController
 {
 	GENERATED_UCLASS_BODY()
@@ -109,6 +109,7 @@ public:
 	bool HasGodMode() const;
 
 	/** check if gameplay related actions (movement, weapon usage, etc) are allowed right now */
+	UFUNCTION()
 	bool IsGameInputAllowed() const;
 
 	/** is game menu currently active? */
@@ -177,7 +178,6 @@ public:
 
 	virtual void PreClientTravel(const FString& PendingURL, ETravelType TravelType, bool bIsSeamlessTravel) override;
 
-protected:
 
 	/** infinite ammo cheat */
 	UPROPERTY(Transient, Replicated)
@@ -281,7 +281,6 @@ protected:
 	// For tracking whether or not to send the end event
 	bool bHasSentStartEvents;
 
-private:
 
 	/** Handle for efficient management of ClientStartOnlineGame timer */
 	FTimerHandle TimerHandle_ClientStartOnlineGame;

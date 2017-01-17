@@ -389,8 +389,8 @@ bool FLuaScriptCodeGenerator::IsPropertyTypeSupported(UProperty* Property) const
 	if (Property->IsA(UStructProperty::StaticClass()))
 	{
 		UStructProperty* StructProp = CastChecked<UStructProperty>(Property);
-		FString name = StructProp->Struct->GetFName().ToString();
-		if (!isStructSupported(name))
+		//FString name = StructProp->Struct->GetFName().ToString();
+		if (!isStructSupported(StructProp->Struct))
 		{
 			bSupported = false;
 		}
@@ -791,23 +791,26 @@ FString FLuaScriptCodeGenerator::ExportAdditionalClassGlue(const FString& ClassN
 	return GeneratedGlue;
 }
 
-bool FLuaScriptCodeGenerator::isStructSupported(FString& name) const
+bool FLuaScriptCodeGenerator::isStructSupported(UScriptStruct* thestruct) const
 {
-	if (name != "Vector" &&
-		name != "Rotator" &&
-		name != "Vector2D" &&
-		name != "Vector4" &&
-		name != "Quat" &&
-		name != "Color" &&
-		name != "Name" &&
-		name != "HitResult" &&
-		name != "Transform" &&
-		name != "BodyInstance" &&
-		name != "WalkableSlopeOverride" &&
-		name != "LinearColor")
-		return false;
-	else
+	FString name = thestruct->GetName();
+	if (name == "Vector" ||
+		name == "Rotator" ||
+		name == "Vector2D" ||
+		name == "Vector4" ||
+		name == "Quat" ||
+		name == "Color" ||
+		name == "Name" ||
+		name == "HitResult" ||
+		name == "Transform" ||
+		name == "BodyInstance" ||
+		name == "WalkableSlopeOverride" ||
+		name == "LinearColor")
 		return true;
+	FString luameta = thestruct->GetMetaData(TEXT("Lua"));
+	if(!luameta.IsEmpty())
+		return true;
+	return false;
 }
 
 void FLuaScriptCodeGenerator::ExportStruct()
@@ -815,7 +818,7 @@ void FLuaScriptCodeGenerator::ExportStruct()
 	for (TObjectIterator<UScriptStruct> It; It; ++It)
 	{
 		FString name = *It->GetName();
-		if (!isStructSupported(name))
+		if (!isStructSupported(*It))
 			continue;
 		FString namecpp = "F" + name;
 		StructNames.Add(namecpp);

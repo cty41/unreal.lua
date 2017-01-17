@@ -52,7 +52,7 @@ protected:
 	FString GetPropertySetFunc(UProperty* Property) const;
 	FString GetPropertyCastType(UProperty* Property);
 	FString GetPropertySetCastType(UProperty* Property);
-	bool isStructSupported(FString &name) const;
+	bool isStructSupported(UScriptStruct* thestruct) const;
 	FString Push(const FString& ClassNameCPP, UFunction* Function, UProperty* ReturnValue, FString name);
 	FString GetterCode(FString  ClassNameCPP, FString classname, FString FuncName, UProperty* Property, UClass* PropertySuper = nullptr);
 	FString SetterCode(FString  ClassNameCPP, FString classname, FString FuncName, UProperty* Property, UClass* PropertySuper = nullptr);

@@ -1,5 +1,5 @@
 local FileNameList = {
-  "luacharacter",
+  "shootercharacter",
 }
 return FileNameList
 

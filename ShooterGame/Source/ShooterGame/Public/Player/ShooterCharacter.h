@@ -5,11 +5,11 @@
 #include "ShooterTypes.h"
 #include "ShooterCharacter.generated.h"
 
-UCLASS(Abstract)
+UCLASS(Abstract, minimalapi)
 class AShooterCharacter : public ACharacter
 {
 	GENERATED_UCLASS_BODY()
-
+public:
 	virtual void BeginDestroy() override;
 
 	/** spawn inventory, setup initial variables */
@@ -90,36 +90,45 @@ class AShooterCharacter : public ACharacter
 	// Weapon usage
 
 	/** [local] starts weapon fire */
+	UFUNCTION()
 	void StartWeaponFire();
 
 	/** [local] stops weapon fire */
+	UFUNCTION()
 	void StopWeaponFire();
 
 	/** check if pawn can fire weapon */
+	UFUNCTION()
 	bool CanFire() const;
 
 	/** check if pawn can reload weapon */
+	UFUNCTION()
 	bool CanReload() const;
 
 	/** [server + local] change targeting state */
+	UFUNCTION()
 	void SetTargeting(bool bNewTargeting);
 
 	//////////////////////////////////////////////////////////////////////////
 	// Movement
 
 	/** [server + local] change running state */
+	UFUNCTION()
 	void SetRunning(bool bNewRunning, bool bToggle);
 
 	//////////////////////////////////////////////////////////////////////////
 	// Animations
 
 	/** play anim montage */
+	UFUNCTION()
 	virtual float PlayAnimMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None) override;
 
 	/** stop playing montage */
+	UFUNCTION()
 	virtual void StopAnimMontage(class UAnimMontage* AnimMontage) override;
 
 	/** stop playing all montages */
+	UFUNCTION()
 	void StopAllAnimMontages();
 
 	//////////////////////////////////////////////////////////////////////////
@@ -195,6 +204,7 @@ class AShooterCharacter : public ACharacter
 	// Reading data
 
 	/** get mesh component */
+	UFUNCTION()
 	USkeletalMeshComponent* GetPawnMesh() const;
 
 	/** get currently equipped weapon */
@@ -202,9 +212,11 @@ class AShooterCharacter : public ACharacter
 	class AShooterWeapon* GetWeapon() const;
 
 	/** get weapon attach point */
+	UFUNCTION()
 	FName GetWeaponAttachPoint() const;
 
 	/** get total number of inventory items */
+	UFUNCTION()
 	int32 GetInventoryCount() const;
 
 	/**
@@ -212,6 +224,7 @@ class AShooterCharacter : public ACharacter
 	*
 	* @param Index Inventory index
 	*/
+	UFUNCTION()
 	class AShooterWeapon* GetInventoryWeapon(int32 index) const;
 
 	/** get weapon taget modifier speed	*/
@@ -239,12 +252,16 @@ class AShooterCharacter : public ACharacter
 	virtual bool IsFirstPerson() const;
 
 	/** get max health */
+	UFUNCTION()
 	int32 GetMaxHealth() const;
 
 	/** check if pawn is still alive */
+	UFUNCTION()
 	bool IsAlive() const;
 
 	/** returns percentage of health when low health effects should start */
+
+	UFUNCTION()
 	float GetLowHealthPercentage() const;
 
 	/*
@@ -252,16 +269,16 @@ class AShooterCharacter : public ACharacter
 	*
 	* @param	WantFirstPerson		If true returns the first peron mesh, else returns the third
 	*/
+
+	UFUNCTION()
 	USkeletalMeshComponent* GetSpecifcPawnMesh(bool WantFirstPerson) const;
 
 	/** Update the team color of all player meshes. */
 	void UpdateTeamColorsAllMIDs();
-private:
 
 	/** pawn mesh: 1st person view */
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	USkeletalMeshComponent* Mesh1P;
-protected:
 
 	/** socket or bone name for attaching weapon mesh */
 	UPROPERTY(EditDefaultsOnly, Category = Inventory)
@@ -303,12 +320,15 @@ protected:
 	uint8 bWantsToRun : 1;
 
 	/** from gamepad running is toggled */
+	UPROPERTY()
 	uint8 bWantsToRunToggled : 1;
 
 	/** current firing state */
+	UPROPERTY()
 	uint8 bWantsToFire : 1;
 
 	/** when low health effects should start */
+	UPROPERTY()
 	float LowHealthPercentage;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
@@ -373,7 +393,6 @@ protected:
 	/** Responsible for cleaning up bodies on clients. */
 	virtual void TornOff();
 
-private:
 
 	/** Whether or not the character is moving (based on movement input). */
 	bool IsMoving();
@@ -381,7 +400,6 @@ private:
 	//////////////////////////////////////////////////////////////////////////
 	// Damage & death
 
-public:
 
 	/** Identifies if pawn is in its dying state */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Health)
@@ -418,7 +436,6 @@ public:
 
 	/** Called on the actor right before replication occurs */
 	virtual void PreReplication(IRepChangedPropertyTracker & ChangedPropertyTracker) override;
-protected:
 	/** notification when killed, for both the server and client. */
 	virtual void OnDeath(float KillingDamage, struct FDamageEvent const& DamageEvent, class APawn* InstigatingPawn, class AActor* DamageCauser);
 
@@ -466,7 +483,6 @@ protected:
 	/** Builds list of points to check for pausing replication for a connection*/
 	void BuildPauseReplicationCheckPoints(TArray<FVector>& RelevancyCheckPoints);
 
-protected:
 	/** Returns Mesh1P subobject **/
 	FORCEINLINE USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 };

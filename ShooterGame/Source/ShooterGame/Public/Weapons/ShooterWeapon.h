@@ -4,6 +4,7 @@
 
 #include "ShooterWeapon.generated.h"
 
+UENUM()
 namespace EWeaponState
 {
 	enum Type
@@ -15,7 +16,7 @@ namespace EWeaponState
 	};
 }
 
-USTRUCT()
+USTRUCT(meta=(Lua=2))
 struct FWeaponData
 {
 	GENERATED_USTRUCT_BODY()
@@ -61,7 +62,7 @@ struct FWeaponData
 	}
 };
 
-USTRUCT()
+USTRUCT(meta = (Lua = 2))
 struct FWeaponAnim
 {
 	GENERATED_USTRUCT_BODY()
@@ -75,11 +76,20 @@ struct FWeaponAnim
 	UAnimMontage* Pawn3P;
 };
 
-UCLASS(Abstract, Blueprintable)
+UENUM()
+enum class EAmmoType
+{
+	EBullet,
+	ERocket,
+	EMax,
+};
+
+UCLASS(Abstract, Blueprintable, minimalapi)
 class AShooterWeapon : public AActor
 {
 	GENERATED_UCLASS_BODY()
 
+public:	
 	/** perform initial setup */
 	virtual void PostInitializeComponents() override;
 
@@ -88,20 +98,17 @@ class AShooterWeapon : public AActor
 	//////////////////////////////////////////////////////////////////////////
 	// Ammo
 	
-	enum class EAmmoType
-	{
-		EBullet,
-		ERocket,
-		EMax,
-	};
 
 	/** [server] add ammo */
+	UFUNCTION()
 	void GiveAmmo(int AddAmount);
 
 	/** consume a bullet */
+	UFUNCTION()
 	void UseAmmo();
 
 	/** query ammo type */
+	UFUNCTION()
 	virtual EAmmoType GetAmmoType() const
 	{
 		return EAmmoType::EBullet;
@@ -136,18 +143,23 @@ class AShooterWeapon : public AActor
 	// Input
 
 	/** [local + server] start weapon fire */
+	UFUNCTION()
 	virtual void StartFire();
 
 	/** [local + server] stop weapon fire */
+	UFUNCTION()
 	virtual void StopFire();
 
 	/** [all] start weapon reload */
+	UFUNCTION()
 	virtual void StartReload(bool bFromReplication = false);
 
 	/** [local + server] interrupt weapon reload */
+	UFUNCTION()
 	virtual void StopReload();
 
 	/** [server] performs actual reload */
+	UFUNCTION()
 	virtual void ReloadWeapon();
 
 	/** trigger reload from server */
@@ -159,9 +171,11 @@ class AShooterWeapon : public AActor
 	// Control
 
 	/** check if weapon can fire */
+	UFUNCTION()
 	bool CanFire() const;
 
 	/** check if weapon can be reloaded */
+	UFUNCTION()
 	bool CanReload() const;
 
 
@@ -169,21 +183,27 @@ class AShooterWeapon : public AActor
 	// Reading data
 
 	/** get current weapon state */
+	UFUNCTION()
 	EWeaponState::Type GetCurrentState() const;
 
 	/** get current ammo amount (total) */
+	UFUNCTION()
 	int32 GetCurrentAmmo() const;
 
 	/** get current ammo amount (clip) */
+	UFUNCTION()
 	int32 GetCurrentAmmoInClip() const;
 
 	/** get clip size */
+	UFUNCTION()
 	int32 GetAmmoPerClip() const;
 
 	/** get max ammo amount */
+	UFUNCTION()
 	int32 GetMaxAmmo() const;
 
 	/** get weapon mesh (needs pawn owner to determine variant) */
+	UFUNCTION()
 	USkeletalMeshComponent* GetWeaponMesh() const;
 
 	/** get pawn owner */
@@ -243,21 +263,25 @@ class AShooterWeapon : public AActor
 	bool bHideCrosshairWhileNotAiming;
 
 	/** check if weapon has infinite ammo (include owner's cheats) */
+	UFUNCTION()
 	bool HasInfiniteAmmo() const;
 
 	/** check if weapon has infinite clip (include owner's cheats) */
+	UFUNCTION()
 	bool HasInfiniteClip() const;
 
 	/** set the weapon's owning pawn */
-	void SetOwningPawn(AShooterCharacter* AShooterCharacter);
+	UFUNCTION()
+	void SetOwningPawn(AShooterCharacter* ShooterCharacter);
 
 	/** gets last time when this weapon was switched to */
+	UFUNCTION()
 	float GetEquipStartedTime() const;
 
 	/** gets the duration of equipping weapon*/
+	UFUNCTION()
 	float GetEquipDuration() const;
 
-protected:
 
 	/** pawn owner */
 	UPROPERTY(Transient, ReplicatedUsing=OnRep_MyPawn)
@@ -267,7 +291,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category=Config)
 	FWeaponData WeaponConfig;
 
-private:
 	/** weapon mesh: 1st person view */
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
 	USkeletalMeshComponent* Mesh1P;
@@ -275,7 +298,6 @@ private:
 	/** weapon mesh: 3rd person view */
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
 	USkeletalMeshComponent* Mesh3P;
-protected:
 
 	/** firing audio (bLoopedFireSound set) */
 	UPROPERTY(Transient)
@@ -509,7 +531,6 @@ protected:
 	/** find hit */
 	FHitResult WeaponTrace(const FVector& TraceFrom, const FVector& TraceTo) const;
 
-protected:
 	/** Returns Mesh1P subobject **/
 	FORCEINLINE USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns Mesh3P subobject **/

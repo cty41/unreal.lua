@@ -9,11 +9,12 @@ function Init()
     require "inputmgr"
     require "timermgr"
     require "actormgr"
+    require "baseutil"
     local function ShowMem()
         collectgarbage("collect")
         A_("lua memory: ", collectgarbage("count"))
     end
-    -- InitLuahotupdate()
+    InitLuahotupdate()
     -- TimerMgr:Get():On(ShowMem):Time(5000):Fire()
 end
 
