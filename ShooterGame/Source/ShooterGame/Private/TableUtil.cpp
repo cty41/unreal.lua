@@ -2,6 +2,7 @@
 
 // #include "TestCamera.h"
 // #include "ScriptPluginPrivatePCH.h"
+#define LuaDebug 1
 #define _includefile "ShooterGame.h"
 #include  "ShooterGame.h" 
 #include "TableUtil.h"

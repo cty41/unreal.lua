@@ -63,6 +63,7 @@ public:
 	*
 	* @param Weapon	Weapon to add.
 	*/
+	UFUNCTION()
 	void AddWeapon(class AShooterWeapon* Weapon);
 
 	/**
@@ -84,6 +85,7 @@ public:
 	*
 	* @param Weapon	Weapon to equip
 	*/
+	UFUNCTION()
 	void EquipWeapon(class AShooterWeapon* Weapon);
 
 	//////////////////////////////////////////////////////////////////////////
@@ -463,6 +465,7 @@ public:
 	void OnRep_CurrentWeapon(class AShooterWeapon* LastWeapon);
 
 	/** [server] spawns default inventory */
+	UFUNCTION()
 	void SpawnDefaultInventory();
 
 	/** [server] remove all weapons from inventory and destroy them */

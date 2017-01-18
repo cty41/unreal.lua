@@ -71,34 +71,35 @@ void AShooterCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	if (Role == ROLE_Authority)
-	{
-		Health = GetMaxHealth();
-		SpawnDefaultInventory();
-	}
-
-	// set initial mesh visibility (3rd person view)
-	UpdatePawnMeshes();
-
-	// create material instance for setting team colors (3rd person view)
-	for (int32 iMat = 0; iMat < GetMesh()->GetNumMaterials(); iMat++)
-	{
-		MeshMIDs.Add(GetMesh()->CreateAndSetMaterialInstanceDynamic(iMat));
-	}
-
-	// play respawn effects
-	if (GetNetMode() != NM_DedicatedServer)
-	{
-		if (RespawnFX)
-		{
-			UGameplayStatics::SpawnEmitterAtLocation(this, RespawnFX, GetActorLocation(), GetActorRotation());
-		}
-
-		if (RespawnSound)
-		{
-			UGameplayStatics::PlaySoundAtLocation(this, RespawnSound, GetActorLocation());
-		}
-	}
+	UTableUtil::call("CppCallBack", "shootercharacter", "PostInitializeComponents", this);
+// 	if (Role == ROLE_Authority)
+// 	{
+// 		Health = GetMaxHealth();
+// 		SpawnDefaultInventory();
+// 	}
+// 
+// 	// set initial mesh visibility (3rd person view)
+// 	UpdatePawnMeshes();
+// 
+// 	// create material instance for setting team colors (3rd person view)
+// 	for (int32 iMat = 0; iMat < GetMesh()->GetNumMaterials(); iMat++)
+// 	{
+// 		MeshMIDs.Add(GetMesh()->CreateAndSetMaterialInstanceDynamic(iMat));
+// 	}
+// 
+// 	// play respawn effects
+// 	if (GetNetMode() != NM_DedicatedServer)
+// 	{
+// 		if (RespawnFX)
+// 		{
+// 			UGameplayStatics::SpawnEmitterAtLocation(this, RespawnFX, GetActorLocation(), GetActorRotation());
+// 		}
+// 
+// 		if (RespawnSound)
+// 		{
+// 			UGameplayStatics::PlaySoundAtLocation(this, RespawnSound, GetActorLocation());
+// 		}
+// 	}
 }
 
 void AShooterCharacter::Destroyed()
@@ -178,13 +179,15 @@ bool AShooterCharacter::IsEnemyFor(AController* TestPC) const
 
 void AShooterCharacter::UpdatePawnMeshes()
 {
-	bool const bFirstPerson = IsFirstPerson();
+	UTableUtil::call("CppCallBack", "shootercharacter", "UpdatePawnMeshes", this);
 
-	Mesh1P->MeshComponentUpdateFlag = !bFirstPerson ? EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered : EMeshComponentUpdateFlag::AlwaysTickPoseAndRefreshBones;
-	Mesh1P->SetOwnerNoSee(!bFirstPerson);
-
-	GetMesh()->MeshComponentUpdateFlag = bFirstPerson ? EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered : EMeshComponentUpdateFlag::AlwaysTickPoseAndRefreshBones;
-	GetMesh()->SetOwnerNoSee(bFirstPerson);
+// 	bool const bFirstPerson = IsFirstPerson();
+// 
+// 	Mesh1P->MeshComponentUpdateFlag = !bFirstPerson ? EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered : EMeshComponentUpdateFlag::AlwaysTickPoseAndRefreshBones;
+// 	Mesh1P->SetOwnerNoSee(!bFirstPerson);
+// 
+// 	GetMesh()->MeshComponentUpdateFlag = bFirstPerson ? EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered : EMeshComponentUpdateFlag::AlwaysTickPoseAndRefreshBones;
+// 	GetMesh()->SetOwnerNoSee(bFirstPerson);
 }
 
 void AShooterCharacter::UpdateTeamColors(UMaterialInstanceDynamic* UseMID)
@@ -551,28 +554,30 @@ bool AShooterCharacter::IsMoving()
 
 void AShooterCharacter::SpawnDefaultInventory()
 {
-	if (Role < ROLE_Authority)
-	{
-		return;
-	}
+	UTableUtil::call("CppCallBack", "shootercharacter", "SpawnDefaultInventory", this);
 
-	int32 NumWeaponClasses = DefaultInventoryClasses.Num();
-	for (int32 i = 0; i < NumWeaponClasses; i++)
-	{
-		if (DefaultInventoryClasses[i])
-		{
-			FActorSpawnParameters SpawnInfo;
-			SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-			AShooterWeapon* NewWeapon = GetWorld()->SpawnActor<AShooterWeapon>(DefaultInventoryClasses[i], SpawnInfo);
-			AddWeapon(NewWeapon);
-		}
-	}
-
-	// equip first weapon in inventory
-	if (Inventory.Num() > 0)
-	{
-		EquipWeapon(Inventory[0]);
-	}
+// 	if (Role < ROLE_Authority)
+// 	{
+// 		return;
+// 	}
+// 
+// 	int32 NumWeaponClasses = DefaultInventoryClasses.Num();
+// 	for (int32 i = 0; i < NumWeaponClasses; i++)
+// 	{
+// 		if (DefaultInventoryClasses[i])
+// 		{
+// 			FActorSpawnParameters SpawnInfo;
+// 			SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+// 			AShooterWeapon* NewWeapon = GetWorld()->SpawnActor<AShooterWeapon>(DefaultInventoryClasses[i], SpawnInfo);
+// 			AddWeapon(NewWeapon);
+// 		}
+// 	}
+// 
+// 	// equip first weapon in inventory
+// 	if (Inventory.Num() > 0)
+// 	{
+// 		EquipWeapon(Inventory[0]);
+// 	}
 }
 
 void AShooterCharacter::DestroyInventory()

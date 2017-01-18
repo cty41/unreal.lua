@@ -1,4 +1,0 @@
-[Tue Jan 10 19:38:56 2017] {}  
-[Tue Jan 10 19:38:57 2017] {}  
-[Tue Jan 10 19:39:17 2017] E:\ue4 projects\Demo1\Source\Demo1\luacode  
-[Tue Jan 10 19:39:17 2017] E:\ue4 projects\Demo1\Source\Demo1\luacode  

@@ -141,7 +141,7 @@ FString FScriptCodeGeneratorBase::GenerateFunctionDispatch(UFunction* Function, 
 		int32 ParamIndex = 0;
 		if (bIsStaticFunc)
 			ParamIndex = -1;
-		auto x = Function->GetName() == "PlaySoundAtLocation";
+// 		auto x = Function->GetName() == "PlaySoundAtLocation";
 		for (TFieldIterator<UProperty> ParamIt(Function); ParamIt; ++ParamIt)
 		{
 			UProperty* Param = *ParamIt;
@@ -162,6 +162,21 @@ FString FScriptCodeGeneratorBase::GenerateFunctionDispatch(UFunction* Function, 
 		}
 		if (index_first_default != 0 && Function->GetName() != "SpawnSoundAttached")
 			count_default_param = count_all_param - index_first_default + 1;
+
+		Params += TEXT("\t#ifdef LuaDebug\r\n");
+		Params += TEXT("\tint totalPamCount = lua_gettop(L);\r\n");
+		if (bIsStaticFunc)
+		{
+			Params += FString::Printf(TEXT("\tif (totalPamCount < %d);\r\n"), count_all_param - count_default_param);
+		}
+		else
+		{
+			Params += FString::Printf(TEXT("\tif (totalPamCount < %d);\r\n"), count_all_param - count_default_param + 1);
+		}
+		Params += FString::Printf(TEXT("\t{\r\n\t\tlua_pushstring(L, \"too less param in %s\");\r\n"), *Function->GetName());
+		Params += FString::Printf(TEXT("\t\tlua_error(L);\r\n\t\treturn 0;\r\n\t}\r\n"));
+		Params += TEXT("\t#endif\r\n");
+
 		if (count_default_param > 0)
 		{
 			Params += TEXT("\tint num_params = lua_gettop(L);\r\n");
