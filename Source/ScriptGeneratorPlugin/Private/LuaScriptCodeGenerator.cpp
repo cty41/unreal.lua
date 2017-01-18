@@ -638,6 +638,21 @@ FString FLuaScriptCodeGenerator::SetterCode(FString ClassNameCPP, FString classn
 				FunctionBody += TEXT("\tObj->AnimBlueprintGeneratedClass = (UAnimBlueprintGeneratedClass*)(UTableUtil::tousertype(\"UClass\", 2));\r\n");
 			else if (!Property->IsA(UArrayProperty::StaticClass()))
 				FunctionBody += FString::Printf(TEXT("\tObj->%s = %s;\r\n"), *Property->GetName(), *InitializeParam(Property, 0));
+			else if (Property->IsA(UArrayProperty::StaticClass()))
+			{
+				auto PropertyArr = Cast<UArrayProperty>(Property);
+				FunctionBody += FString::Printf(TEXT("\t%s& val = Obj->%s;\r\n"), *GetPropertyTypeCPP(Property, CPPF_ArgumentOrReturnValue), *Property->GetName());
+				FunctionBody += FString::Printf(TEXT("\tlua_pushnil(L);\r\n"));
+				FunctionBody += FString::Printf(TEXT("\twhile (lua_next(L, -2) != 0) {\r\n"));
+				FString inerTypeCpp = GetPropertyTypeCPP(PropertyArr->Inner, CPPF_ArgumentOrReturnValue);
+				FunctionBody += FString::Printf(TEXT("\t\tint32 i = lua_tointeger(L, -2)-1;\r\n"));
+				FunctionBody += FString::Printf(TEXT("\t\tif(val.Num() == i)\r\n"));
+				FString to = InitializeParam(PropertyArr->Inner, -3);
+				FunctionBody += FString::Printf(TEXT("\t\t\tval.Add(%s);\r\n"), *to);
+				FunctionBody += FString::Printf(TEXT("\t\telse\r\n"));
+				FunctionBody += FString::Printf(TEXT("\t\t\tval[i] = %s;\r\n"), *to);
+				FunctionBody += FString::Printf(TEXT("\t\tlua_pop(L, 1);\r\n\t}\r\n"));
+			}
 		}
 		else
 		{
@@ -658,6 +673,10 @@ FString FLuaScriptCodeGenerator::SetterCode(FString ClassNameCPP, FString classn
 					FunctionBody += FString::Printf(TEXT("\tp->%s(p->ContainerPtrToValuePtr<void>(Obj), (void*)value);\r\n"), *GetPropertySetFunc(Property));
 				else
 					FunctionBody += FString::Printf(TEXT("\tp->%s(Obj, value);\r\n"), *GetPropertySetFunc(Property));
+			}
+			else if ( Property->IsA(UArrayProperty::StaticClass()) )
+			{
+
 			}
 		}
 		FunctionBody += TEXT("\treturn 0;\r\n");
@@ -805,6 +824,8 @@ bool FLuaScriptCodeGenerator::isStructSupported(UScriptStruct* thestruct) const
 		name == "Transform" ||
 		name == "BodyInstance" ||
 		name == "WalkableSlopeOverride" ||
+		name == "ActorComponentTickFunction" ||
+		name == "TickFunction" ||
 		name == "LinearColor")
 		return true;
 	FString luameta = thestruct->GetMetaData(TEXT("Lua"));
@@ -829,7 +850,7 @@ void FLuaScriptCodeGenerator::ExportStruct()
 		TArray<FString> allPropertyName;
 		if (name != "Transform")
 		{
-			for (TFieldIterator<UProperty> PropertyIt(*It, EFieldIteratorFlags::ExcludeSuper); PropertyIt; ++PropertyIt, ++PropertyIndex)
+			for (TFieldIterator<UProperty> PropertyIt(*It/*, EFieldIteratorFlags::ExcludeSuper*/); PropertyIt; ++PropertyIt, ++PropertyIndex)
 			{
 				UProperty* Property = *PropertyIt;
 				if (CanExportProperty(namecpp, nullptr, Property))
