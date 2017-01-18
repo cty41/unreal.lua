@@ -171,7 +171,7 @@ FString FScriptCodeGeneratorBase::GenerateFunctionDispatch(UFunction* Function, 
 		}
 		else
 		{
-			Params += FString::Printf(TEXT("\tif (totalPamCount < %d);\r\n"), count_all_param - count_default_param + 1);
+			Params += FString::Printf(TEXT("\tif (totalPamCount < %d)\r\n"), count_all_param - count_default_param + 1);
 		}
 		Params += FString::Printf(TEXT("\t{\r\n\t\tlua_pushstring(L, \"too less param in %s\");\r\n"), *Function->GetName());
 		Params += FString::Printf(TEXT("\t\tlua_error(L);\r\n\t\treturn 0;\r\n\t}\r\n"));
