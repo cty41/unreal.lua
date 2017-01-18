@@ -167,7 +167,7 @@ FString FScriptCodeGeneratorBase::GenerateFunctionDispatch(UFunction* Function, 
 		Params += TEXT("\tint totalPamCount = lua_gettop(L);\r\n");
 		if (bIsStaticFunc)
 		{
-			Params += FString::Printf(TEXT("\tif (totalPamCount < %d);\r\n"), count_all_param - count_default_param);
+			Params += FString::Printf(TEXT("\tif (totalPamCount < %d)\r\n"), count_all_param - count_default_param);
 		}
 		else
 		{
