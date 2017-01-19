@@ -286,6 +286,21 @@ int UTableUtil::toint(int i)
 	return lua_tointeger(L, i);
 }
 
+void UTableUtil::setmeta(const char* classname, int index)
+{
+	luaL_getmetatable(L, classname);
+	if (lua_istable(L, -1))
+	{
+		lua_setmetatable(L, index-1);
+	}
+	else
+	{
+		lua_pop(L, 1);
+		UTableUtil::addmodule(classname);
+		luaL_getmetatable(L, classname);
+		lua_setmetatable(L, index-1);
+	}
+}
 
 void UTableUtil::pushclass(const char* classname, void* p, bool bgcrecord)
 {
@@ -305,20 +320,8 @@ void UTableUtil::pushclass(const char* classname, void* p, bool bgcrecord)
 		lua_pushvalue(L, -3);
 		lua_rawset(L, -3);
 		lua_pop(L, 1);
-
-		luaL_getmetatable(L, classname);
-		if (lua_istable(L, -1))
-		{
-			lua_setmetatable(L, -2);
-		}
-		else
-		{
-			lua_pop(L, 1);
-			UTableUtil::addmodule(classname);
-			luaL_getmetatable(L, classname);
-			lua_setmetatable(L, -2);
-		}
 	}
+	setmeta(classname, -1);
 }
 
 UTableUtil::UTableUtil()

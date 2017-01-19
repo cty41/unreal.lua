@@ -755,9 +755,6 @@ FString FLuaScriptCodeGenerator::ExportAdditionalClassGlue(const FString& ClassN
 		GeneratedGlue += TEXT("\t}\r\n\treturn 0;\r\n");
 		GeneratedGlue += TEXT("}\r\n\r\n");
 
-	}
-	if (!(Class->GetClassFlags() & CLASS_Abstract))
-	{
 		GeneratedGlue += GenerateWrapperFunctionDeclaration(ClassNameCPP, Class->GetName(), TEXT("CreateDefaultSubobject"));
 		GeneratedGlue += TEXT("\r\n{\r\n");
 		GeneratedGlue += TEXT("\tUObject* Outer = (UObject*)UTableUtil::tousertype(\"UObject\", 1);\r\n");
@@ -770,6 +767,14 @@ FString FLuaScriptCodeGenerator::ExportAdditionalClassGlue(const FString& ClassN
 		GeneratedGlue += TEXT("\treturn 1;\r\n");
 		GeneratedGlue += TEXT("}\r\n\r\n");
 	}
+	
+	GeneratedGlue += GenerateWrapperFunctionDeclaration(ClassNameCPP, Class->GetName(), TEXT("Cast"));
+	GeneratedGlue += TEXT("\r\n{\r\n");
+	GeneratedGlue += TEXT("\tUObject* from = (UObject*)UTableUtil::tousertype(\"UObject\", 1);\r\n");
+	GeneratedGlue += FString::Printf(TEXT("\t%s* to = Cast<%s>(from);\r\n"), *ClassNameCPP, *ClassNameCPP);
+	GeneratedGlue += FString::Printf(TEXT("\tUTableUtil::pushclass(\"%s\", (void*)to, true);\r\n"), *ClassNameCPP);
+	GeneratedGlue += TEXT("\treturn 1;\r\n");
+	GeneratedGlue += TEXT("}\r\n\r\n");
 	// Class: Equivalent of StaticClass()
 	GeneratedGlue += GenerateWrapperFunctionDeclaration(ClassNameCPP, Class->GetName(), TEXT("Class"));
 	GeneratedGlue += TEXT("\r\n{\r\n");
@@ -784,10 +789,10 @@ FString FLuaScriptCodeGenerator::ExportAdditionalClassGlue(const FString& ClassN
 	{
 		GeneratedGlue += FString::Printf(TEXT("\t{ \"New\", %s_New },\r\n"), *ClassName);
 		GeneratedGlue += FString::Printf(TEXT("\t{ \"Destroy\", %s_Destroy },\r\n"), *ClassName);
-	}
-	if (!(Class->GetClassFlags() & CLASS_Abstract))
 		GeneratedGlue += FString::Printf(TEXT("\t{ \"CreateDefaultSubobject\", %s_CreateDefaultSubobject },\r\n"), *ClassName);
+	}
 
+	GeneratedGlue += FString::Printf(TEXT("\t{ \"Cast\", %s_Cast },\r\n"), *ClassName);
 	GeneratedGlue += FString::Printf(TEXT("\t{ \"Class\", %s_Class },\r\n"), *ClassName);
 	auto FunctionExports = ClassExportedFunctions.Find(Class);
 	if (FunctionExports)

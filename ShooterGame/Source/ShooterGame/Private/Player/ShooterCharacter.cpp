@@ -935,6 +935,8 @@ void AShooterCharacter::LookUpAtRate(float Val)
 
 void AShooterCharacter::OnStartFire()
 {
+//	int a = UTableUtil::callr<int>("test1", 100);
+//	FVector b = *(UTableUtil::callr<FVector*>("test2"));
 // 	AShooterPlayerController* MyPC = Cast<AShooterPlayerController>(Controller);
 // 	if (MyPC && MyPC->IsGameInputAllowed())
 // 	{
@@ -944,7 +946,8 @@ void AShooterCharacter::OnStartFire()
 // 		}
 // 		StartWeaponFire();
 // 	}
-	UTableUtil::call("CppCallBack", "shootercharacter", "LuaOnStartFire", this);
+	TArray<int> lala = UTableUtil::callarr<int>("test1");
+	UTableUtil::call("CppCallBack", "shootercharacter", "LuaOnStartFire", this, lala);
 }
 
 void AShooterCharacter::OnStopFire()

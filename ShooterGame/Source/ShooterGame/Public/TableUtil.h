@@ -54,6 +54,8 @@ public:
 	static void closemodule();
 	static void addfunc(const char* classname, luafunc f);
 	static void initmeta();
+	static void setmeta(const char* classname, int index);
+
 	static void* tousertype(const char* classname, int i);
 	static int toint(int i);
 	static void loadlib(const luaL_Reg funclist[], const char* classname);
@@ -124,15 +126,25 @@ public:
 	template<> static int push(FString value);
 	template<> static int push(const char* value);
 
+	template<class T> 
+	static int push(TArray<T> value);
+
 
 	template<typename T>
 	static T pop(int index);
 
 	template<> static void pop<void>(int index) {};
 
+	template<typename T>
+	static TArray<T> poparr(int index);
+
 	template<> static int pop<int>(int index) { return (int)lua_tointeger(L, index); };
+	template<> static bool pop<bool>(int index) { return !!(lua_toboolean(L, index)); };
+	template<> static FName pop<FName>(int index) { return FName(luaL_checkstring(L, index)); };
+	template<> static FString pop<FString>(int index) { return ANSI_TO_TCHAR(luaL_checkstring(L, index)); };
 	template<> static float pop<float>(int index) { return (float)lua_tonumber(L, index); };
 	template<> static double pop<double>(int index) { return (double)lua_tonumber(L, index); };
+	// template<> static FString pop<double>(int index) { return (double)lua_tonumber(L, index); };
 
 
 
@@ -144,12 +156,39 @@ public:
 	}
 
 	template<class returnType, class... T>
-	static returnType call(FString funcname, T... args)
+	static returnType callr(FString funcname, T... args)
 	{
 		if (L == nullptr)
 			init();
 		executeFunc(funcname, 1, push(args...));
 		return pop<returnType>(-1);
+	}
+	
+	template<class returnType>
+	static returnType callr(FString funcname)
+	{
+		if (L == nullptr)
+			init();
+		executeFunc(funcname, 1, 0);
+		return pop<returnType>(-1);
+	}
+
+	template<class innertype, class... T>
+	static TArray<innertype> callarr(FString funcname, T... args)
+	{
+		if (L == nullptr)
+			init();
+		executeFunc(funcname, 1, push(args...));
+		return poparr<innertype>(-1);
+	}
+
+	template<class innertype>
+	static TArray<innertype> callarr(FString funcname)
+	{
+		if (L == nullptr)
+			init();
+		executeFunc(funcname, 1, 0);
+		return poparr<innertype>(-1);
 	}
 
 	template<class... T>
@@ -158,6 +197,13 @@ public:
 		if (L == nullptr)
 			init();
 		executeFunc(funcname, 0, push(args...));
+	}
+
+	static void call(FString funcname)
+	{
+		if (L == nullptr)
+			init();
+		executeFunc(funcname, 0, 0);
 	}
 	
 	static TMap<FString, TMap<FString, UProperty*>> propertyMap;
@@ -231,8 +277,36 @@ int UTableUtil::push(T value)
 	return 1;
 }
 
+
 template<typename T>
 T UTableUtil::pop(int index)
 {
+	return (T)tousertype("", index);
+}
 
+template<typename T>
+TArray<T> UTableUtil::poparr(int index)
+{
+	TArray<T> result;
+	lua_pushnil(L);
+	while (lua_next(L, -2) != 0)
+	{
+		result.Add(pop<T>(-1));
+		lua_pop(L, 1);
+	}
+	lua_pop(L, 1);
+	return result;
+}
+
+template<class T> 
+int UTableUtil::push(TArray<T> value)
+{
+	lua_newtable(L);
+	for (int i = 0; i < value.Num(); i++)
+	{
+		push(i);
+		push(value[i]);
+		lua_rawset(L, -3);
+	}
+	return 1;
 }

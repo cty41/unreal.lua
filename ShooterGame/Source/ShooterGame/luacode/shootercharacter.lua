@@ -1,14 +1,13 @@
 local ShooterCharacter = Inherit(AShooterCharacter)
 
-function ShooterCharacter:LuaOnStartFire()
-	if self.Controller then
-		AShooterPlayerController:cast(self.Controller)
-		if self.Controller:IsGameInputAllowed() then
-			if self:IsRunning() then
-				self:SetRunning(false, false)
-			end
-			self:StartWeaponFire()
-		end	
+function ShooterCharacter:LuaOnStartFire(a)
+	A_(a)
+	local Controller = AShooterPlayerController.Cast(self.Controller)
+	if Controller and Controller:IsGameInputAllowed() then
+		if self:IsRunning() then
+			self:SetRunning(false, false)
+		end
+		self:StartWeaponFire()
 	end
 end
 
@@ -99,14 +98,12 @@ function ShooterCharacter:UpdatePawnMeshes()
 end
 
 function ShooterCharacter:OnStartTargeting()
-	if self.Controller then
-		AShooterPlayerController:cast(self.Controller)
-		if self.Controller:IsGameInputAllowed() then
-			if self:IsRunning() then
-				self:SetRunning(false, false)
-			end
-			self:SetTargeting(true)
-		end	
+	local Controller = AShooterPlayerController.Cast(self.Controller)
+	if Controller and Controller:IsGameInputAllowed() then
+		if self:IsRunning() then
+			self:SetRunning(false, false)
+		end
+		self:SetTargeting(true)
 	end
 end
 

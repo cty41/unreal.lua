@@ -49,3 +49,11 @@ end
 function CppCallBack(classpath, functionName, inscpp, ...)
     ActorMgr:Get():CallLuaInsFunc(inscpp, classpath, functionName, ...)
 end
+
+function test1()
+    return {1,2,3,4,5,6}
+end
+
+function test2()
+    return FVector.New(1,2,3) 
+end
