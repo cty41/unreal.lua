@@ -17,5 +17,7 @@ public:
 	UFUNCTION()
 	static UWorld* GetWorld(AActor *obj);
 	
+	UFUNCTION()
+	static bool UseSound();
 	
 };

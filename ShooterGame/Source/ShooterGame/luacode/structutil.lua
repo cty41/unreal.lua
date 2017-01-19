@@ -10,6 +10,23 @@ function FVector.New(x, y, z)
 	return v
 end
 
+function FVector:IsZero()
+	return self.X==0 and self.Y == 0 and self.Z == 0
+end
+
+function FVector:Normal()
+	return UKismetMathLibrary.Normal(self)
+end
+
+function FVector:Normal2D()
+	local f = self:Normal()
+	return FVector.New(f.X, f.Y, 0)
+end
+
+function FVector:Dot(other)
+	return UKismetMathLibrary.Dot_VectorVector(self, other)
+end
+
 local FRotator_CppNew = FRotator.New
 function FRotator.New(Pitch, Yaw, Roll)
 	local v = FRotator_CppNew()

@@ -10,3 +10,7 @@ UWorld* ULuautils::GetWorld(AActor* obj)
 	return obj->GetWorld();
 }
 
+bool ULuautils::UseSound()
+{
+	return GEngine->UseSound();
+}

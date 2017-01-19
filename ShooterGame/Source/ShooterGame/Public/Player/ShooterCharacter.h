@@ -42,6 +42,7 @@ public:
 	*	@param	CameraLocation	Location of the Camera.
 	*	@param	CameraRotation	Rotation of the Camera.
 	*/
+
 	void OnCameraUpdate(const FVector& CameraLocation, const FRotator& CameraRotation);
 
 	/** get aim offsets */
@@ -53,6 +54,7 @@ public:
 	*
 	* @param	TestPC	Controller to check against.
 	*/
+	UFUNCTION()
 	bool IsEnemyFor(AController* TestPC) const;
 
 	//////////////////////////////////////////////////////////////////////////
@@ -71,6 +73,7 @@ public:
 	*
 	* @param Weapon	Weapon to remove.
 	*/
+	UFUNCTION()
 	void RemoveWeapon(class AShooterWeapon* Weapon);
 
 	/**
@@ -78,6 +81,7 @@ public:
 	*
 	* @param WeaponClass	Class of weapon to find.
 	*/
+	UFUNCTION()
 	class AShooterWeapon* FindWeapon(TSubclassOf<class AShooterWeapon> WeaponClass);
 
 	/**
@@ -276,6 +280,7 @@ public:
 	USkeletalMeshComponent* GetSpecifcPawnMesh(bool WantFirstPerson) const;
 
 	/** Update the team color of all player meshes. */
+	UFUNCTION()
 	void UpdateTeamColorsAllMIDs();
 
 	/** pawn mesh: 1st person view */
@@ -303,6 +308,7 @@ public:
 	struct FTakeHitInfo LastTakeHitInfo;
 
 	/** Time at which point the last take hit info for the actor times out and won't be replicated; Used to stop join-in-progress effects all over the screen */
+	UPROPERTY()
 	float LastTakeHitTimeTimeout;
 
 	/** modifier for max movement speed */
@@ -334,9 +340,11 @@ public:
 	float LowHealthPercentage;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
+	UPROPERTY()
 	float BaseTurnRate;
 
 	/** Base lookup rate, in deg/sec. Other scaling may affect final lookup rate. */
+	UPROPERTY()
 	float BaseLookUpRate;
 
 	/** material instances for setting team color in mesh (3rd person view) */
@@ -384,19 +392,24 @@ public:
 	UAudioComponent* LowHealthWarningPlayer;
 
 	/** handles sounds for running */
+	UFUNCTION()
 	void UpdateRunSounds();
 
 	/** handle mesh visibility and updates */
+	UFUNCTION()
 	void UpdatePawnMeshes();
 
 	/** handle mesh colors on specified material instance */
+	UFUNCTION()
 	void UpdateTeamColors(UMaterialInstanceDynamic* UseMID);
 
 	/** Responsible for cleaning up bodies on clients. */
+	UFUNCTION()
 	virtual void TornOff();
 
 
 	/** Whether or not the character is moving (based on movement input). */
+	UFUNCTION()
 	bool IsMoving();
 
 	//////////////////////////////////////////////////////////////////////////
@@ -415,12 +428,15 @@ public:
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
 
 	/** Pawn suicide */
+	UFUNCTION()
 	virtual void Suicide();
 
 	/** Kill this pawn */
+	UFUNCTION()
 	virtual void KilledBy(class APawn* EventInstigator);
 
 	/** Returns True if the pawn can die in the current state */
+	UFUNCTION()
 	virtual bool CanDie(float KillingDamage, FDamageEvent const& DamageEvent, AController* Killer, AActor* DamageCauser) const;
 
 	/**
@@ -431,6 +447,7 @@ public:
 	* @param DamageCauser - the Actor that directly caused the damage (i.e. the Projectile that exploded, the Weapon that fired, etc)
 	* @returns true if allowed
 	*/
+	UFUNCTION()
 	virtual bool Die(float KillingDamage, struct FDamageEvent const& DamageEvent, class AController* Killer, class AActor* DamageCauser);
 
 	// Die when we fall out of the world.
@@ -445,6 +462,7 @@ public:
 	virtual void PlayHit(float DamageTaken, struct FDamageEvent const& DamageEvent, class APawn* PawnInstigator, class AActor* DamageCauser);
 
 	/** switch to ragdoll */
+	UFUNCTION()
 	void SetRagdollPhysics();
 
 	/** sets up the replication for taking a hit */
@@ -458,6 +476,7 @@ public:
 	// Inventory
 
 	/** updates current weapon */
+	UFUNCTION()
 	void SetCurrentWeapon(class AShooterWeapon* NewWeapon, class AShooterWeapon* LastWeapon = NULL);
 
 	/** current weapon rep handler */
@@ -469,6 +488,7 @@ public:
 	void SpawnDefaultInventory();
 
 	/** [server] remove all weapons from inventory and destroy them */
+	UFUNCTION()
 	void DestroyInventory();
 
 	/** equip weapon */

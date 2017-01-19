@@ -84,12 +84,15 @@ public:
 	void OnHideScoreboard();
 
 	/** set infinite ammo cheat */
+	UFUNCTION()
 	void SetInfiniteAmmo(bool bEnable);
 
 	/** set infinite clip cheat */
+	UFUNCTION()
 	void SetInfiniteClip(bool bEnable);
 
 	/** set health regen cheat */
+	UFUNCTION()
 	void SetHealthRegen(bool bEnable);
 
 	/** set god mode cheat */
@@ -97,15 +100,19 @@ public:
 	void SetGodMode(bool bEnable);
 
 	/** get infinite ammo cheat */
+	UFUNCTION()
 	bool HasInfiniteAmmo() const;
 
 	/** get infinite clip cheat */
+	UFUNCTION()
 	bool HasInfiniteClip() const;
 
 	/** get health regen cheat */
+	UFUNCTION()
 	bool HasHealthRegen() const;
 
 	/** get gode mode cheat */
+	UFUNCTION()
 	bool HasGodMode() const;
 
 	/** check if gameplay related actions (movement, weapon usage, etc) are allowed right now */
@@ -113,9 +120,11 @@ public:
 	bool IsGameInputAllowed() const;
 
 	/** is game menu currently active? */
-	bool IsGameMenuVisible() const;	
+	UFUNCTION()
+	bool IsGameMenuVisible() const;
 
 	/** Ends and/or destroys game session */
+	UFUNCTION()
 	void CleanupSessionOnReturnToMenu();
 
 	/**
@@ -149,6 +158,7 @@ public:
 	/** 
 	 * Reads achievements to precache them before first use
 	 */
+	UFUNCTION()
 	void QueryAchievements();
 
 	/** 
@@ -157,18 +167,22 @@ public:
 	 * @param Id achievement id (string)
 	 * @param Percent number 1 to 100
 	 */
-	void UpdateAchievementProgress( const FString& Id, float Percent );
+	UFUNCTION()
+	void UpdateAchievementProgress(const FString& Id, float Percent);
 
 	/** Returns a pointer to the shooter game hud. May return NULL. */
+	UFUNCTION()
 	AShooterHUD* GetShooterHUD() const;
 
 	/** Returns the persistent user record associated with this player, or null if there is't one. */
+	UFUNCTION()
 	class UShooterPersistentUser* GetPersistentUser() const;
 
 	/** Informs that player fragged someone */
 	void OnKill();
 
 	/** Cleans up any resources necessary to return to main menu.  Does not modify GameInstance state. */
+	UFUNCTION()
 	virtual void HandleReturnToMainMenu();
 
 	/** Associate a new UPlayer with this PlayerController. */
@@ -196,12 +210,15 @@ public:
 	uint8 bGodMode : 1;
 
 	/** if set, gameplay related actions (movement, weapn usage, etc) are allowed */
+	UPROPERTY()
 	uint8 bAllowGameActions : 1;
 
 	/** true for the first frame after the game has ended */
+	UPROPERTY()
 	uint8 bGameEndedFrame : 1;
 
 	/** stores pawn location at last player death, used where player scores a kill after they died **/
+	UPROPERTY()
 	FVector LastDeathLocation;
 
 	/** shooter in-game menu */
@@ -211,6 +228,7 @@ public:
 	FOnlineAchievementsWritePtr WriteObject;
 
 	/** try to find spot for death cam */
+	UFUNCTION()
 	bool FindDeathCameraSpot(FVector& CameraLocation, FRotator& CameraRotation);
 
 	virtual void BeginDestroy() override;

@@ -11,7 +11,7 @@
 #include "AudioThread.h"
 #include "TableUtil.h"
 
-static int32 NetVisualizeRelevancyTestPoints = 0;
+static int32 NetVisualizeRelevancyTestPoints = 1;
 FAutoConsoleVariableRef CVarNetVisualizeRelevancyTestPoints(
 	TEXT("p.NetVisualizeRelevancyTestPoints"),
 	NetVisualizeRelevancyTestPoints,
@@ -696,14 +696,14 @@ void AShooterCharacter::SetCurrentWeapon(AShooterWeapon* NewWeapon, AShooterWeap
 
 void AShooterCharacter::StartWeaponFire()
 {
-	if (!bWantsToFire)
-	{
-		bWantsToFire = true;
-		if (CurrentWeapon)
-		{
-			CurrentWeapon->StartFire();
-		}
-	}
+// 	if (!bWantsToFire)
+// 	{
+// 		bWantsToFire = true;
+// 		if (CurrentWeapon)
+// 		{
+// 			CurrentWeapon->StartFire();
+// 		}
+// 	}
 }
 
 void AShooterCharacter::StopWeaponFire()
@@ -730,7 +730,7 @@ bool AShooterCharacter::CanReload() const
 
 void AShooterCharacter::SetTargeting(bool bNewTargeting)
 {
-	UTableUtil::call("CppCallBack", "shootercharacter", "LuaSetTargeting", this, bNewTargeting);
+	UTableUtil::call("CppCallBack", "shootercharacter", "SetTargeting", this, bNewTargeting);
 // 
 // 	bIsTargeting = bNewTargeting;
 // 
@@ -760,7 +760,7 @@ void AShooterCharacter::ServerSetTargeting_Implementation(bool bNewTargeting)
 
 void AShooterCharacter::SetRunning(bool bNewRunning, bool bToggle)
 {
-	UTableUtil::call("CppCallBack", "shootercharacter", "LuaSetRunning", this, bNewRunning, bToggle);
+	UTableUtil::call("CppCallBack", "shootercharacter", "SetRunning", this, bNewRunning, bToggle);
 // 	bWantsToRun = bNewRunning;
 // 	bWantsToRunToggled = bNewRunning && bToggle;
 // 
@@ -884,7 +884,7 @@ void AShooterCharacter::MoveForward(float Val)
 	if (Controller && Val != 0.f)
 	{
 		// Limit pitch when walking or falling
-		UTableUtil::call("CppCallBack", "shootercharacter", "LuaMoveForward", this, Val);
+		UTableUtil::call("CppCallBack", "shootercharacter", "MoveForward", this, Val);
 
 // 		const bool bLimitRotation = (GetCharacterMovement()->IsMovingOnGround() || GetCharacterMovement()->IsFalling());
 // 		const FRotator Rotation = bLimitRotation ? GetActorRotation() : Controller->GetControlRotation();
@@ -897,7 +897,7 @@ void AShooterCharacter::MoveRight(float Val)
 {
 	if (Val != 0.f)
 	{
-		UTableUtil::call("CppCallBack", "shootercharacter", "LuaMoveRight", this, Val);
+		UTableUtil::call("CppCallBack", "shootercharacter", "MoveRight", this, Val);
 // 		const FQuat Rotation = GetActorQuat();
 // 		const FVector Direction = FQuatRotationMatrix(Rotation).GetScaledAxis(EAxis::Y);
 // 		AddMovementInput(Direction, Val);
@@ -921,7 +921,7 @@ void AShooterCharacter::MoveUp(float Val)
 
 void AShooterCharacter::TurnAtRate(float Val)
 {
-	UTableUtil::call("CppCallBack", "shootercharacter", "LuaTurnAtRate", this, Val);
+	UTableUtil::call("CppCallBack", "shootercharacter", "TurnAtRate", this, Val);
 	// calculate delta for this frame from the rate information
 	//AddControllerYawInput(Val * BaseTurnRate * GetWorld()->GetDeltaSeconds());
 }
@@ -929,7 +929,7 @@ void AShooterCharacter::TurnAtRate(float Val)
 void AShooterCharacter::LookUpAtRate(float Val)
 {
 	// calculate delta for this frame from the rate information
-	UTableUtil::call("CppCallBack", "shootercharacter", "LuaLookUpAtRate", this, Val);
+	UTableUtil::call("CppCallBack", "shootercharacter", "LookUpAtRate", this, Val);
 	//AddControllerPitchInput(Val * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
 
@@ -946,14 +946,14 @@ void AShooterCharacter::OnStartFire()
 // 		}
 // 		StartWeaponFire();
 // 	}
-	TArray<int> lala = UTableUtil::callarr<int>("test1");
-	UTableUtil::call("CppCallBack", "shootercharacter", "LuaOnStartFire", this, lala);
+// 	TArray<int> lala = UTableUtil::callarr<int>("test1");
+	UTableUtil::call("CppCallBack", "shootercharacter", "OnStartFire", this);
 }
 
 void AShooterCharacter::OnStopFire()
 {
-	UTableUtil::call("CppCallBack", "shootercharacter", "LuaStopWeaponFire", this);
-	StopWeaponFire();
+	UTableUtil::call("CppCallBack", "shootercharacter", "OnStopFire", this);
+// 	StopWeaponFire();
 }
 
 void AShooterCharacter::OnStartTargeting()
@@ -978,16 +978,17 @@ void AShooterCharacter::OnStopTargeting()
 
 void AShooterCharacter::OnNextWeapon()
 {
-	AShooterPlayerController* MyPC = Cast<AShooterPlayerController>(Controller);
-	if (MyPC && MyPC->IsGameInputAllowed())
-	{
-		if (Inventory.Num() >= 2 && (CurrentWeapon == NULL || CurrentWeapon->GetCurrentState() != EWeaponState::Equipping))
-		{
-			const int32 CurrentWeaponIdx = Inventory.IndexOfByKey(CurrentWeapon);
-			AShooterWeapon* NextWeapon = Inventory[(CurrentWeaponIdx + 1) % Inventory.Num()];
-			EquipWeapon(NextWeapon);
-		}
-	}
+	UTableUtil::call("CppCallBack", "shootercharacter", "OnNextWeapon", this);
+// 	AShooterPlayerController* MyPC = Cast<AShooterPlayerController>(Controller);
+// 	if (MyPC && MyPC->IsGameInputAllowed())
+// 	{
+// 		if (Inventory.Num() >= 2 && (CurrentWeapon == NULL || CurrentWeapon->GetCurrentState() != EWeaponState::Equipping))
+// 		{
+// 			const int32 CurrentWeaponIdx = Inventory.IndexOfByKey(CurrentWeapon);
+// 			AShooterWeapon* NextWeapon = Inventory[(CurrentWeaponIdx + 1) % Inventory.Num()];
+// 			EquipWeapon(NextWeapon);
+// 		}
+// 	}
 }
 
 void AShooterCharacter::OnPrevWeapon()
@@ -1062,48 +1063,48 @@ bool AShooterCharacter::IsRunning() const
 void AShooterCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
-	if (bWantsToRunToggled && !IsRunning())
-	{
-		SetRunning(false, false);
-	}
-	AShooterPlayerController* MyPC = Cast<AShooterPlayerController>(Controller);
-	if (MyPC && MyPC->HasHealthRegen())
-	{
-		if (this->Health < this->GetMaxHealth())
-		{
-			this->Health += 5 * DeltaSeconds;
-			if (Health > this->GetMaxHealth())
-			{
-				Health = this->GetMaxHealth();
-			}
-		}
-	}
-
-	if (GEngine->UseSound())
-	{
-		if (LowHealthSound)
-		{
-			if ((this->Health > 0 && this->Health < this->GetMaxHealth() * LowHealthPercentage) && (!LowHealthWarningPlayer || !LowHealthWarningPlayer->IsPlaying()))
-			{
-				LowHealthWarningPlayer = UGameplayStatics::SpawnSoundAttached(LowHealthSound, GetRootComponent(),
-					NAME_None, FVector(ForceInit), EAttachLocation::KeepRelativeOffset, true);
-				LowHealthWarningPlayer->SetVolumeMultiplier(0.0f);
-			}
-			else if ((this->Health > this->GetMaxHealth() * LowHealthPercentage || this->Health < 0) && LowHealthWarningPlayer && LowHealthWarningPlayer->IsPlaying())
-			{
-				LowHealthWarningPlayer->Stop();
-			}
-			if (LowHealthWarningPlayer && LowHealthWarningPlayer->IsPlaying())
-			{
-				const float MinVolume = 0.3f;
-				const float VolumeMultiplier = (1.0f - (this->Health / (this->GetMaxHealth() * LowHealthPercentage)));
-				LowHealthWarningPlayer->SetVolumeMultiplier(MinVolume + (1.0f - MinVolume) * VolumeMultiplier);
-			}
-		}
-
-		UpdateRunSounds();
-	}
+	UTableUtil::call("CppCallBack", "shootercharacter", "Tick", this, DeltaSeconds);
+// 	if (bWantsToRunToggled && !IsRunning())
+// 	{
+// 		SetRunning(false, false);
+// 	}
+// 	AShooterPlayerController* MyPC = Cast<AShooterPlayerController>(Controller);
+// 	if (MyPC && MyPC->HasHealthRegen())
+// 	{
+// 		if (this->Health < this->GetMaxHealth())
+// 		{
+// 			this->Health += 5 * DeltaSeconds;
+// 			if (Health > this->GetMaxHealth())
+// 			{
+// 				Health = this->GetMaxHealth();
+// 			}
+// 		}
+// 	}
+// 
+// 	if (GEngine->UseSound())
+// 	{
+// 		if (LowHealthSound)
+// 		{
+// 			if ((this->Health > 0 && this->Health < this->GetMaxHealth() * LowHealthPercentage) && (!LowHealthWarningPlayer || !LowHealthWarningPlayer->IsPlaying()))
+// 			{
+// 				LowHealthWarningPlayer = UGameplayStatics::SpawnSoundAttached(LowHealthSound, GetRootComponent(),
+// 					NAME_None, FVector(ForceInit), EAttachLocation::KeepRelativeOffset, true);
+// 				LowHealthWarningPlayer->SetVolumeMultiplier(0.0f);
+// 			}
+// 			else if ((this->Health > this->GetMaxHealth() * LowHealthPercentage || this->Health < 0) && LowHealthWarningPlayer && LowHealthWarningPlayer->IsPlaying())
+// 			{
+// 				LowHealthWarningPlayer->Stop();
+// 			}
+// 			if (LowHealthWarningPlayer && LowHealthWarningPlayer->IsPlaying())
+// 			{
+// 				const float MinVolume = 0.3f;
+// 				const float VolumeMultiplier = (1.0f - (this->Health / (this->GetMaxHealth() * LowHealthPercentage)));
+// 				LowHealthWarningPlayer->SetVolumeMultiplier(MinVolume + (1.0f - MinVolume) * VolumeMultiplier);
+// 			}
+// 		}
+// 
+// 		UpdateRunSounds();
+// 	}
 
 	const APlayerController* PC = Cast<APlayerController>(GetController());
 	const bool bLocallyControlled = (PC ? PC->IsLocalController() : false);

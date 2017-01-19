@@ -118,24 +118,32 @@ public:
 	// Inventory
 
 	/** weapon is being equipped by owner pawn */
+
+	UFUNCTION()
 	virtual void OnEquip(const AShooterWeapon* LastWeapon);
 
 	/** weapon is now equipped by owner pawn */
+	UFUNCTION()
 	virtual void OnEquipFinished();
 
 	/** weapon is holstered by owner pawn */
+	UFUNCTION()
 	virtual void OnUnEquip();
 
 	/** [server] weapon was added to pawn's inventory */
+	UFUNCTION()
 	virtual void OnEnterInventory(AShooterCharacter* NewOwner);
 
 	/** [server] weapon was removed from pawn's inventory */
+	UFUNCTION()
 	virtual void OnLeaveInventory();
 
 	/** check if it's currently equipped */
+	UFUNCTION()
 	bool IsEquipped() const;
 
 	/** check if mesh is already attached */
+	UFUNCTION()
 	bool IsAttachedToPawn() const;
 
 
@@ -376,12 +384,15 @@ public:
 	uint32 bLoopedFireAnim : 1;
 
 	/** is fire animation playing? */
+	UPROPERTY()
 	uint32 bPlayingFireAnim : 1;
 
 	/** is weapon currently equipped? */
+	UPROPERTY()
 	uint32 bIsEquipped : 1;
 
 	/** is weapon fire active? */
+	UPROPERTY()
 	uint32 bWantsToFire : 1;
 
 	/** is reload animation playing? */
@@ -389,21 +400,27 @@ public:
 	uint32 bPendingReload : 1;
 
 	/** is equip animation playing? */
+	UPROPERTY()
 	uint32 bPendingEquip : 1;
 
 	/** weapon is refiring */
+	UPROPERTY()
 	uint32 bRefiring;
 
 	/** current weapon state */
+// 	UPROPERTY()
 	EWeaponState::Type CurrentState;
 
 	/** time of last successful weapon fire */
+	UPROPERTY()
 	float LastFireTime;
 
 	/** last time when this weapon was switched to */
+	UPROPERTY()
 	float EquipStartedTime;
 
 	/** how much time weapon needs to be equipped */
+	UPROPERTY()
 	float EquipDuration;
 
 	/** current total ammo */
@@ -469,25 +486,31 @@ public:
 	// Weapon usage
 
 	/** [local] weapon specific fire implementation */
-	virtual void FireWeapon() PURE_VIRTUAL(AShooterWeapon::FireWeapon,);
+	UFUNCTION()
+	virtual void FireWeapon() PURE_VIRTUAL(AShooterWeapon::FireWeapon, );
 
 	/** [server] fire & update ammo */
 	UFUNCTION(reliable, server, WithValidation)
 	void ServerHandleFiring();
 
 	/** [local + server] handle weapon fire */
+	UFUNCTION()
 	void HandleFiring();
 
 	/** [local + server] firing started */
+	UFUNCTION()
 	virtual void OnBurstStarted();
 
 	/** [local + server] firing finished */
+	UFUNCTION()
 	virtual void OnBurstFinished();
 
 	/** update weapon state */
+	UFUNCTION()
 	void SetWeaponState(EWeaponState::Type NewState);
 
 	/** determine current weapon state */
+	UFUNCTION()
 	void DetermineWeaponState();
 
 
@@ -495,9 +518,11 @@ public:
 	// Inventory
 
 	/** attaches weapon mesh to pawn's mesh */
+	UFUNCTION()
 	void AttachMeshToPawn();
 
 	/** detaches weapon mesh from pawn */
+	UFUNCTION()
 	void DetachMeshFromPawn();
 
 
@@ -505,30 +530,39 @@ public:
 	// Weapon usage helpers
 
 	/** play weapon sounds */
+	UFUNCTION()
 	UAudioComponent* PlayWeaponSound(USoundCue* Sound);
 
 	/** play weapon animations */
+	UFUNCTION()
 	float PlayWeaponAnimation(const FWeaponAnim& Animation);
 
 	/** stop playing weapon animations */
+	UFUNCTION()
 	void StopWeaponAnimation(const FWeaponAnim& Animation);
 
 	/** Get the aim of the weapon, allowing for adjustments to be made by the weapon */
+	UFUNCTION()
 	virtual FVector GetAdjustedAim() const;
 
 	/** Get the aim of the camera */
+	UFUNCTION()
 	FVector GetCameraAim() const;
 
 	/** get the originating location for camera damage */
+	UFUNCTION()
 	FVector GetCameraDamageStartLocation(const FVector& AimDir) const;
 
 	/** get the muzzle location of the weapon */
+	UFUNCTION()
 	FVector GetMuzzleLocation() const;
 
 	/** get direction of weapon's muzzle */
+	UFUNCTION()
 	FVector GetMuzzleDirection() const;
 
 	/** find hit */
+	UFUNCTION()
 	FHitResult WeaponTrace(const FVector& TraceFrom, const FVector& TraceTo) const;
 
 	/** Returns Mesh1P subobject **/

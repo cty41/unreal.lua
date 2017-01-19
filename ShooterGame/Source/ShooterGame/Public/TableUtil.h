@@ -4,7 +4,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "TableUtil.generated.h"
 DECLARE_LOG_CATEGORY_EXTERN(LuaLog, Log, All);
-
+#define LuaDebug 1
 using namespace std;
 using luafunc = int( struct lua_State* );
 
@@ -138,12 +138,36 @@ public:
 	template<typename T>
 	static TArray<T> poparr(int index);
 
-	template<> static int pop<int>(int index) { return (int)lua_tointeger(L, index); };
-	template<> static bool pop<bool>(int index) { return !!(lua_toboolean(L, index)); };
-	template<> static FName pop<FName>(int index) { return FName(luaL_checkstring(L, index)); };
-	template<> static FString pop<FString>(int index) { return ANSI_TO_TCHAR(luaL_checkstring(L, index)); };
-	template<> static float pop<float>(int index) { return (float)lua_tonumber(L, index); };
-	template<> static double pop<double>(int index) { return (double)lua_tonumber(L, index); };
+	template<> static int pop<int>(int index) {
+		auto result = (int)lua_tointeger(L, index); 
+		lua_pop(L, 1);
+		return result;
+	};
+	template<> static bool pop<bool>(int index) {
+		auto result = !!(lua_toboolean(L, index)); 
+		lua_pop(L, 1);
+		return result;
+	};
+	template<> static FName pop<FName>(int index) { 
+		auto result = FName(luaL_checkstring(L, index));
+		lua_pop(L, 1);
+		return result;
+	};
+	template<> static FString pop<FString>(int index) {
+		auto result = ANSI_TO_TCHAR(luaL_checkstring(L, index));
+		lua_pop(L, 1);
+		return result;
+	};
+	template<> static float pop<float>(int index) {
+		auto result = (float)lua_tonumber(L, index); 
+		lua_pop(L, 1);
+		return result;
+	};
+	template<> static double pop<double>(int index) {
+		auto result = (double)lua_tonumber(L, index);
+		lua_pop(L, 1);
+		return result;
+	};
 	// template<> static FString pop<double>(int index) { return (double)lua_tonumber(L, index); };
 
 
@@ -288,11 +312,17 @@ template<typename T>
 TArray<T> UTableUtil::poparr(int index)
 {
 	TArray<T> result;
+#ifdef LuaDebug
+	if (!lua_istable(L, -1))
+	{
+		log("not table poparr");
+		return result;
+	}
+#endif
 	lua_pushnil(L);
 	while (lua_next(L, -2) != 0)
 	{
 		result.Add(pop<T>(-1));
-		lua_pop(L, 1);
 	}
 	lua_pop(L, 1);
 	return result;
@@ -304,7 +334,7 @@ int UTableUtil::push(TArray<T> value)
 	lua_newtable(L);
 	for (int i = 0; i < value.Num(); i++)
 	{
-		push(i);
+		push(i+1);
 		push(value[i]);
 		lua_rawset(L, -3);
 	}
