@@ -98,4 +98,16 @@ function ShooterCharacter:UpdatePawnMeshes()
 	self.Mesh:SetOwnerNoSee(bIsFirstPerson)
 end
 
+function ShooterCharacter:OnStartTargeting()
+	if self.Controller then
+		AShooterPlayerController:cast(self.Controller)
+		if self.Controller:IsGameInputAllowed() then
+			if self:IsRunning() then
+				self:SetRunning(false, false)
+			end
+			self:SetTargeting(true)
+		end	
+	end
+end
+
 return ShooterCharacter

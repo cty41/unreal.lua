@@ -955,15 +955,17 @@ void AShooterCharacter::OnStopFire()
 
 void AShooterCharacter::OnStartTargeting()
 {
-	AShooterPlayerController* MyPC = Cast<AShooterPlayerController>(Controller);
-	if (MyPC && MyPC->IsGameInputAllowed())
-	{
-		if (IsRunning())
-		{
-			SetRunning(false, false);
-		}
-		SetTargeting(true);
-	}
+	UTableUtil::call("CppCallBack", "shootercharacter", "OnStartTargeting", this);
+// 
+// 	AShooterPlayerController* MyPC = Cast<AShooterPlayerController>(Controller);
+// 	if (MyPC && MyPC->IsGameInputAllowed())
+// 	{
+// 		if (IsRunning())
+// 		{
+// 			SetRunning(false, false);
+// 		}
+// 		SetTargeting(true);
+// 	}
 }
 
 void AShooterCharacter::OnStopTargeting()
