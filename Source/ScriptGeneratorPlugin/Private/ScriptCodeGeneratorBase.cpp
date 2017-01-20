@@ -294,7 +294,7 @@ FString FScriptCodeGeneratorBase::GetScriptHeaderForClass(UClass* Class)
 
 bool FScriptCodeGeneratorBase::CanExportClass(UClass* Class)
 {
-	bool bCanExport = (Class->ClassFlags & (CLASS_RequiredAPI | CLASS_MinimalAPI)) && // Don't export classes that don't export DLL symbols
+	bool bCanExport = ((Class->ClassFlags & (CLASS_RequiredAPI | CLASS_MinimalAPI)) || !Class->GetMetaData(TEXT("Lua")).IsEmpty()) && // Don't export classes that don't export DLL symbols
 		!ExportedClasses.Contains(Class->GetFName()); // Don't export classes that have already been exported
 	bCanExport = bCanExport && Class->GetFName() != "DemoNetDriver";
 	bCanExport = bCanExport && Class->GetFName() != "KismetArrayLibrary";

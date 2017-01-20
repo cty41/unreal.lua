@@ -5,7 +5,7 @@
 #include "ShooterTypes.h"
 #include "ShooterCharacter.generated.h"
 
-UCLASS(Abstract, minimalapi)
+UCLASS(Abstract, meta=(Lua=1))
 class AShooterCharacter : public ACharacter
 {
 	GENERATED_UCLASS_BODY()

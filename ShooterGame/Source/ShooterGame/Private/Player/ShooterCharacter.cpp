@@ -1177,18 +1177,29 @@ void AShooterCharacter::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > &
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	auto result = UTableUtil::callr<TArray<FReplifetimeCond>>("CppCallBack", "shootercharacter", "GetLifetimeReplicatedProps", this);
+	for (auto &v : result)
+	{
+		UProperty* p = UTableUtil::GetPropertyByName(AShooterCharacter::StaticClass(), v.PropertyName);
+		for (int32 i = 0; i < p->ArrayDim; i++)
+		{																					
+			OutLifetimeProps.AddUnique( FLifetimeProperty(p->RepIndex + i, v.Cond ) );
+		}
+	}
+	
+
 	// only to local owner: weapon change requests are locally instigated, other clients don't need it
-	DOREPLIFETIME_CONDITION(AShooterCharacter, Inventory, COND_OwnerOnly);
-
-	// everyone except local owner: flag change is locally instigated
-	DOREPLIFETIME_CONDITION(AShooterCharacter, bIsTargeting, COND_SkipOwner);
-	DOREPLIFETIME_CONDITION(AShooterCharacter, bWantsToRun, COND_SkipOwner);
-
-	DOREPLIFETIME_CONDITION(AShooterCharacter, LastTakeHitInfo, COND_Custom);
-
-	// everyone
-	DOREPLIFETIME(AShooterCharacter, CurrentWeapon);
-	DOREPLIFETIME(AShooterCharacter, Health);
+// 	DOREPLIFETIME_CONDITION(AShooterCharacter, Inventory, COND_OwnerOnly);
+// 
+// 	// everyone except local owner: flag change is locally instigated
+// 	DOREPLIFETIME_CONDITION(AShooterCharacter, bIsTargeting, COND_SkipOwner);
+// 	DOREPLIFETIME_CONDITION(AShooterCharacter, bWantsToRun, COND_SkipOwner);
+// 
+// 	DOREPLIFETIME_CONDITION(AShooterCharacter, LastTakeHitInfo, COND_Custom);
+// 
+// 	// everyone
+// 	DOREPLIFETIME(AShooterCharacter, CurrentWeapon);
+// 	DOREPLIFETIME(AShooterCharacter, Health);
 }
 
 bool AShooterCharacter::IsReplicationPausedForConnection(const FNetViewer& ConnectionOwnerNetViewer)

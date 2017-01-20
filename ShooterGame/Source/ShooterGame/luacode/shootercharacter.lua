@@ -181,8 +181,7 @@ function ShooterCharacter:Tick(DeltaSeconds)
 		if self.LowHealthSound then
 			if self.Health > 0 and self.Health < self:GetMaxHealth() * self.LowHealthPercentage and 
 				( not self.LowHealthWarningPlayer or not self.LowHealthWarningPlayer:IsPlaying()) then
-				self.LowHealthWarningPlayer = UGameplayStatics.SpawnSoundAttached(self.LowHealthSound, self.RootComponent,
-					"", FVector.New(), FRotator.New() ,EAttachLocation.KeepRelativeOffset, true, 1, 1, 0, nil, nil);
+				self.LowHealthWarningPlayer = UGameplayStatics.SpawnSoundAttached(self.LowHealthSound, self.RootComponent);
 				self.LowHealthWarningPlayer:SetVolumeMultiplier(0)
 			elseif (self.Health>self:GetMaxHealth()*self.LowHealthPercentage or self.Health <0) and self.LowHealthWarningPlayer and 
 				self.LowHealthWarningPlayer:IsPlaying() then
@@ -201,6 +200,17 @@ end
 
 function ShooterCharacter:OnDeath(KillingDamage, DamageEvent, PawnInstigator, DamageCauser)
 	-- body
+end
+
+function ShooterCharacter:GetLifetimeReplicatedProps()
+	local t = {}
+	table.insert(t, FReplifetimeCond.NewItem("Inventory", ELifetimeCondition.COND_OwnerOnly))
+	table.insert(t, FReplifetimeCond.NewItem("bIsTargeting", ELifetimeCondition.COND_SkipOwner))
+	table.insert(t, FReplifetimeCond.NewItem("bWantsToRun", ELifetimeCondition.COND_SkipOwner))
+	table.insert(t, FReplifetimeCond.NewItem("LastTakeHitInfo", ELifetimeCondition.COND_Custom))
+	table.insert(t, FReplifetimeCond.NewItem("CurrentWeapon"))
+	table.insert(t, FReplifetimeCond.NewItem("Health"))
+	return t
 end
 
 return ShooterCharacter

@@ -22,7 +22,7 @@ end
 
 function ActorMgr:CallLuaInsFunc(inscpp, classpath, functionName, ...)
 	local luains = self:BindActor(inscpp, classpath)
-	luains[functionName](luains, ...)
+	return luains[functionName](luains, ...)
 end
 
 function ActorMgr:DestroyActor(ins)

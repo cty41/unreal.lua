@@ -2,6 +2,7 @@
 #include "lua_tinker.h"
 #include <typeinfo>
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "Luautils.h"
 #include "TableUtil.generated.h"
 DECLARE_LOG_CATEGORY_EXTERN(LuaLog, Log, All);
 #define LuaDebug 1
@@ -120,9 +121,6 @@ public:
 	template<class T> 
 	static int push(TArray<T> value);
 
-	template<typename T>
-	static TArray<T> poparr(int index);
-
 	template<class T>
 	class popiml{
 		public:
@@ -200,7 +198,7 @@ public:
 		lua_pop(L, 1);
 		return result;
 	};
-	template<> static void pop<void>(int index) {};
+	template<> static void pop<void>(int index) { lua_pop(L, 1); };
 
 	template<class T1, class... T>
 	static int push(T1 value, T... args)
@@ -229,6 +227,7 @@ public:
 	static TMap<FString, TMap<FString, UProperty*>> propertyMap;
 	static void InitClassMap();
 	static UProperty* GetPropertyByName(FString classname, FString propertyname);
+	static UProperty* GetPropertyByName(UClass *Class, FString propertyname);
 };
 
 template<>

@@ -35,3 +35,10 @@ function FRotator.New(Pitch, Yaw, Roll)
 	if Roll then v.Roll = Roll end
 	return v
 end
+
+function FReplifetimeCond.NewItem(name, cond)
+	local v = FReplifetimeCond.New()
+	v.PropertyName = name
+	v.Cond = cond or ELifetimeCondition.COND_None
+	return v
+end

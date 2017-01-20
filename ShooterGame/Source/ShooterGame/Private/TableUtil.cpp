@@ -36,6 +36,12 @@ UProperty* UTableUtil::GetPropertyByName(FString classname, FString propertyname
 	return propertyMap[classname][propertyname];
 }
 
+UProperty* UTableUtil::GetPropertyByName(UClass *Class, FString propertyname)
+{
+	FString namecpp = FString::Printf(TEXT("%s%s"), Class->GetPrefixCPP(), *Class->GetName());
+	return GetPropertyByName(namecpp, propertyname);
+}
+
 static void* LuaAlloc(void *Ud, void *Ptr, size_t OldSize, size_t NewSize)
 {
 	if (NewSize != 0)

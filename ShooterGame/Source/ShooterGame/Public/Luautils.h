@@ -5,9 +5,17 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "Luautils.generated.h"
 
-/**
- * 
- */
+USTRUCT(meta=(Lua=1))
+struct FReplifetimeCond {
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY()
+	FString PropertyName;
+
+	UPROPERTY()
+	TEnumAsByte<ELifetimeCondition> Cond;
+};
+
 UCLASS(minimalapi)
 class ULuautils : public UBlueprintFunctionLibrary
 {
