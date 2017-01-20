@@ -1,0 +1,3 @@
+local ShooterWeapon_Instan = Inherit(AShooterWeapon_Instant)
+
+return ShooterWeapon_Instan

@@ -86,7 +86,6 @@ void UTableUtil::init()
 		lua_setfield(L, LUA_GLOBALSINDEX, "_luadir");
 		//register all function
 		LuaRegisterExportedClasses(L);
-//		LuaRegisterUtils();
 		executeFunc("Init", 0, 0);
 	}
 }

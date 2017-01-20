@@ -56,15 +56,18 @@ AShooterCharacter::AShooterCharacter(const FObjectInitializer& ObjectInitializer
 	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_PROJECTILE, ECR_Block);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Ignore);
 
-	TargetingSpeedModifier = 0.5f;
-	bIsTargeting = false;
-	RunningSpeedModifier = 1.5f;
-	bWantsToRun = false;
-	bWantsToFire = false;
-	LowHealthPercentage = 0.5f;
+	UTableUtil::call("CtorCpp", "shootercharacter", this);
 
-	BaseTurnRate = 45.f;
-	BaseLookUpRate = 45.f;
+
+// 	TargetingSpeedModifier = 0.5f;
+// 	bIsTargeting = false;
+// 	RunningSpeedModifier = 1.5f;
+// 	bWantsToRun = false;
+// 	bWantsToFire = false;
+// 	LowHealthPercentage = 0.5f;
+// 
+// 	BaseTurnRate = 45.f;
+// 	BaseLookUpRate = 45.f;
 }
 
 void AShooterCharacter::PostInitializeComponents()
@@ -331,6 +334,8 @@ bool AShooterCharacter::Die(float KillingDamage, FDamageEvent const& DamageEvent
 
 void AShooterCharacter::OnDeath(float KillingDamage, struct FDamageEvent const& DamageEvent, class APawn* PawnInstigator, class AActor* DamageCauser)
 {
+	//UTableUtil::call("CppCallBack", "shootercharacter", "OnDeath", this, KillingDamage, DamageEvent, PawnInstigator, DamageCauser);
+
 	if (bIsDying)
 	{
 		return;
@@ -935,8 +940,10 @@ void AShooterCharacter::LookUpAtRate(float Val)
 
 void AShooterCharacter::OnStartFire()
 {
-//	int a = UTableUtil::callr<int>("test1", 100);
-//	FVector b = *(UTableUtil::callr<FVector*>("test2"));
+	//int a = UTableUtil::callr<int>("test1", 100);
+	//UTableUtil::callr<void>("test1");
+	//auto lala = UTableUtil::callr<TArray<int>>("test3");
+	//FVector b = UTableUtil::callr<FVector>("test2");
 // 	AShooterPlayerController* MyPC = Cast<AShooterPlayerController>(Controller);
 // 	if (MyPC && MyPC->IsGameInputAllowed())
 // 	{
@@ -946,7 +953,7 @@ void AShooterCharacter::OnStartFire()
 // 		}
 // 		StartWeaponFire();
 // 	}
-// 	TArray<int> lala = UTableUtil::callarr<int>("test1");
+//  	TArray<int> lala = UTableUtil::callarr<int>("test1");
 	UTableUtil::call("CppCallBack", "shootercharacter", "OnStartFire", this);
 }
 

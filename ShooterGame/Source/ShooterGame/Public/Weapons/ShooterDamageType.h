@@ -5,7 +5,7 @@
 #include "ShooterDamageType.generated.h"
 
 // DamageType class that specifies an icon to display
-UCLASS(const, Blueprintable, BlueprintType)
+UCLASS(const, Blueprintable, BlueprintType, minimalapi)
 class UShooterDamageType : public UDamageType
 {
 	GENERATED_UCLASS_BODY()

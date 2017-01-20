@@ -7,7 +7,7 @@
 #include "ShooterProjectile.generated.h"
 
 // 
-UCLASS(Abstract, Blueprintable)
+UCLASS(Abstract, Blueprintable, minimalapi)
 class AShooterProjectile : public AActor
 {
 	GENERATED_UCLASS_BODY()

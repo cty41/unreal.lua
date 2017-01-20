@@ -1,5 +1,5 @@
-function GetDeltaSeconds()
-	return UGameplayStatics.GetWorldDeltaSeconds()
+function GetDeltaSeconds(ins)
+	return UGameplayStatics.GetWorldDeltaSeconds(ins)
 end
 
 function Get(t, target, key)

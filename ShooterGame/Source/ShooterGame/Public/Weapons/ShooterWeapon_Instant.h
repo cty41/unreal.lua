@@ -7,7 +7,7 @@
 
 class AShooterImpactEffect;
 
-USTRUCT()
+USTRUCT(meta=(Lua=2))
 struct FInstantHitInfo
 {
 	GENERATED_USTRUCT_BODY()
@@ -22,7 +22,7 @@ struct FInstantHitInfo
 	int32 RandomSeed;
 };
 
-USTRUCT()
+USTRUCT(meta=(Lua=2))
 struct FInstantWeaponData
 {
 	GENERATED_USTRUCT_BODY()
@@ -79,7 +79,7 @@ struct FInstantWeaponData
 };
 
 // A weapon where the damage impact occurs instantly upon firing
-UCLASS(Abstract)
+UCLASS(Abstract, minimalapi)
 class AShooterWeapon_Instant : public AShooterWeapon
 {
 	GENERATED_UCLASS_BODY()

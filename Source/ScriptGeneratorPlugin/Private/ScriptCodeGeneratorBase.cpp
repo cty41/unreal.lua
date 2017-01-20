@@ -131,6 +131,7 @@ FString FScriptCodeGeneratorBase::GenerateFunctionDispatch(UFunction* Function, 
 	FString Params;
 	FString paramList;
 	FString returnType;
+	FString FuncName = Function->GetName();
 	int count_all_param = 0;
 	int count_default_param = 0;
 	int index_first_default = 0;
@@ -160,7 +161,7 @@ FString FScriptCodeGeneratorBase::GenerateFunctionDispatch(UFunction* Function, 
 				}
 			}
 		}
-		if (index_first_default != 0 && Function->GetName() != "SpawnSoundAttached")
+		if (index_first_default != 0 )
 			count_default_param = count_all_param - index_first_default + 1;
 
 		Params += TEXT("\t#ifdef LuaDebug\r\n");
@@ -232,7 +233,8 @@ FString FScriptCodeGeneratorBase::GenerateFunctionDispatch(UFunction* Function, 
 							Params += FString::Printf(TEXT("\t%s = %s;\r\n"), *Param->GetName(), *initParam);
 						else
 							Params += FString::Printf(TEXT("\t%s = %s;\r\n"), *Param->GetName(), *initParam);
-						if (count_default_param + count_init_param >= count_all_param)
+						// SpawnSoundAttached ambiouscall blame UE4 not me
+						if (count_default_param + count_init_param >= count_all_param  && !(FuncName == "SpawnSoundAttached" && count_init_param == 4))
 							Params += CallCode(Function, bIsStaticFunc, !returnType.IsEmpty(), count_init_param, paramList, ClassNameCPP, count_init_param == count_all_param);
 					}
 					else

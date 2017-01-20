@@ -1,5 +1,16 @@
 local ShooterCharacter = Inherit(AShooterCharacter)
 
+function ShooterCharacter:CtorCpp()
+	self.TargetingSpeedModifier = 0.5
+	self.bIsTargeting = false
+	self.RunningSpeedModifier = 1.5
+	self.bWantsToRun = false
+	self.bWantsToFire = false
+	self.LowHealthPercentage = 0.5
+	self.BaseTurnRate = 45
+	self.BaseLookUpRate = 45
+end
+
 function ShooterCharacter:OnStartFire()
 	local Controller = AShooterPlayerController.Cast(self.Controller)
 	if Controller and Controller:IsGameInputAllowed() then
@@ -15,22 +26,19 @@ function ShooterCharacter:OnStopFire()
 end
 
 function ShooterCharacter:MoveForward(val)
-	-- local movement = self.CharacterMovement
-	-- local bLimitRotation = movement:IsMovingOnGround() or  movement:IsFalling()
     self:AddMovementInput(self:GetActorForwardVector(), val)
 end
-
 
 function ShooterCharacter:MoveRight(val)
     self:AddMovementInput(self:GetActorRightVector(), val)
 end
 
 function ShooterCharacter:TurnAtRate( val )
-	-- self:AddControllerYawInput(val*self.BaseTurnRate*GetDeltaSeconds())
+	self:AddControllerYawInput(val*self.BaseTurnRate*GetDeltaSeconds(self))
 end
 
 function ShooterCharacter:LookUpAtRate( val )
-	-- self:AddControllerPitchInput(val*self.BaseLookUpRate*GetDeltaSeconds())
+	self:AddControllerPitchInput(val*self.BaseLookUpRate*GetDeltaSeconds(self))
 end
 
 function ShooterCharacter:SetRunning(bNewRunning, bToggle)
@@ -138,7 +146,7 @@ function ShooterCharacter:StopWeaponFire()
 end
 
 function ShooterCharacter:CanFire()
-	
+	return self:IsAlive()
 end
 
 function ShooterCharacter:IsAlive()
@@ -189,6 +197,10 @@ function ShooterCharacter:Tick(DeltaSeconds)
 		end
 		self:UpdateRunSounds()
 	end
+end
+
+function ShooterCharacter:OnDeath(KillingDamage, DamageEvent, PawnInstigator, DamageCauser)
+	-- body
 end
 
 return ShooterCharacter

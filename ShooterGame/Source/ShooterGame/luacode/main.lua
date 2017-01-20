@@ -29,7 +29,10 @@ function InitLuahotupdate()
 end
 
 function Tick(delta)
-    TimerMgr:Get():Tick(delta)
+    local function f()
+        TimerMgr:Get():Tick(delta)
+    end
+    Xpcall(f)
 end
 
 function CtorCpp(classpath, inscpp, ...)
@@ -48,12 +51,4 @@ end
 
 function CppCallBack(classpath, functionName, inscpp, ...)
     ActorMgr:Get():CallLuaInsFunc(inscpp, classpath, functionName, ...)
-end
-
-function test1()
-    return {1,2,3,4,5,6}
-end
-
-function test2()
-    return FVector.New(1,2,3) 
 end

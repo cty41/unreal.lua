@@ -831,6 +831,9 @@ bool FLuaScriptCodeGenerator::isStructSupported(UScriptStruct* thestruct) const
 		name == "WalkableSlopeOverride" ||
 		name == "ActorComponentTickFunction" ||
 		name == "TickFunction" ||
+		name == "DamageEvent" ||
+		name == "CanvasIcon" ||
+		name == "TakeHitInfo" ||
 		name == "LinearColor")
 		return true;
 	FString luameta = thestruct->GetMetaData(TEXT("Lua"));

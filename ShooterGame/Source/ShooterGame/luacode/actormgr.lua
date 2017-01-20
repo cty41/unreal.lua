@@ -33,4 +33,15 @@ function ActorMgr:DestroyActor(ins)
 	end
 end
 
+function ActorMgr:GetIns(inscpp, classpath)
+	local inslua = self.m_ExistObject[inscpp]
+	if inslua then
+		return inslua
+	elseif classpath then
+		return self:BindActor(inscpp, classpath)
+	else
+		return inscpp
+	end
+end
+
 return ActorMgr
