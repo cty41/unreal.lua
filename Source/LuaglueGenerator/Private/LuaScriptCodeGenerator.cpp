@@ -5,6 +5,75 @@
 FLuaScriptCodeGenerator::FLuaScriptCodeGenerator(const FString& RootLocalPath, const FString& RootBuildPath, const FString& OutputDirectory, const FString& InIncludeBase)
 	: FScriptCodeGeneratorBase(RootLocalPath, RootBuildPath, OutputDirectory, InIncludeBase)
 {
+	SupportedStruct = TSet<FString>{
+		"Vector" ,
+		"Rotator" ,
+		"Vector2D" ,
+		"Vector4" ,
+		"Quat" ,
+		"Color" ,
+		"Name" ,
+		"HitResult" ,
+		"Transform" ,
+		"BodyInstance" ,
+		"WalkableSlopeOverride" ,
+		"ActorComponentTickFunction" ,
+		"TickFunction" ,
+		"DamageEvent" ,
+		"CanvasIcon" ,
+		"TakeHitInfo" ,
+		"NetViewer" ,
+		"LightmassWorldInfoSettings" ,
+		"HierarchicalSimplification" ,
+		"LinearColor",
+		"Guid",
+		"TwoVectors",
+		"Plane",
+		"PackedNormal",
+		"IntPoint",
+		"IntVector",
+		"Box",
+		"Box2D",
+		"BoxSphereBounds",
+		"OrientedBox",
+		"Matrix",
+		"InterpCurvePointFloat",
+		"InterpCurveFloat",
+		"InterpCurvePointVector2D",
+		"InterpCurveVector2D",
+		"InterpCurvePointVector",
+		"InterpCurveVector",
+		"InterpCurvePointQuat",
+		"InterpCurveQuat",
+		"InterpCurvePointTwoVectors",
+		"InterpCurveTwoVectors",
+		"InterpCurvePointLinearColor",
+		"InterpCurveLinearColor",
+		"RandomStream",
+		"DateTime",
+		"Timespan",
+		"StringAssetReference",
+		"StringClassReference",
+		"FallbackStruct  ",
+		"FloatRangeBound",
+		"FloatRange",
+		"Int32RangeBound",
+		"Int32Range",
+		"FloatInterval",
+		"Int32Interval"
+	};
+
+	NoexportPropertyStruct = TSet<FString>{
+		"PackedNormal",
+		"Transform",
+		"Box2D",
+		"Matrix",
+		"RandomStream",
+		"FloatRangeBound",
+		"FloatRange",
+		"Int32RangeBound",
+		"Int32Range",
+	};
 }
 
 FString FLuaScriptCodeGenerator::GenerateWrapperFunctionDeclaration(const FString& ClassNameCPP, FString classname, UFunction* Function)
@@ -808,26 +877,7 @@ FString FLuaScriptCodeGenerator::ExportAdditionalClassGlue(const FString& ClassN
 bool FLuaScriptCodeGenerator::isStructSupported(UScriptStruct* thestruct) const
 {
 	FString name = thestruct->GetName();
-	if (name == "Vector" ||
-		name == "Rotator" ||
-		name == "Vector2D" ||
-		name == "Vector4" ||
-		name == "Quat" ||
-		name == "Color" ||
-		name == "Name" ||
-		name == "HitResult" ||
-		name == "Transform" ||
-		name == "BodyInstance" ||
-		name == "WalkableSlopeOverride" ||
-		name == "ActorComponentTickFunction" ||
-		name == "TickFunction" ||
-		name == "DamageEvent" ||
-		name == "CanvasIcon" ||
-		name == "TakeHitInfo" ||
-		name == "NetViewer" ||
-		name == "LightmassWorldInfoSettings" ||
-		name == "HierarchicalSimplification" ||
-		name == "LinearColor")
+	if (SupportedStruct.Contains(name))
 		return true;
 	FString luameta = thestruct->GetMetaData(TEXT("Lua"));
 	if(!luameta.IsEmpty())
@@ -851,7 +901,7 @@ void FLuaScriptCodeGenerator::ExportStruct()
 		FString GeneratedGlue(TEXT("#pragma once\r\n\r\n"));
 		int32 PropertyIndex = 0;
 		TArray<FString> allPropertyName;
-		if (name != "Transform")
+		if (!NoexportPropertyStruct.Contains(name))
 		{
 			for (TFieldIterator<UProperty> PropertyIt(*It/*, EFieldIteratorFlags::ExcludeSuper*/); PropertyIt; ++PropertyIt, ++PropertyIndex)
 			{

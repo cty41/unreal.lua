@@ -28,6 +28,8 @@ protected:
 	TMap<UClass*, TArray<FName> > ClassExportedFunctions;
 	/** Proprties exported for a class */
 	TMap<UClass*, TArray<FPropertyAccessor> > ClassExportedProperties;
+	TSet<FString> SupportedStruct;
+	TSet<FString> NoexportPropertyStruct;
 
 	/** Creats a 'glue' file that merges all generated script files */
 	void GlueAllGeneratedFiles();
