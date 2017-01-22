@@ -60,7 +60,8 @@ FLuaScriptCodeGenerator::FLuaScriptCodeGenerator(const FString& RootLocalPath, c
 		"Int32RangeBound",
 		"Int32Range",
 		"FloatInterval",
-		"Int32Interval"
+		"Int32Interval",
+		"ActorTickFunction"
 	};
 
 	NoexportPropertyStruct = TSet<FString>{

@@ -34,15 +34,15 @@ function ShooterCharacter:MoveRight(val)
 end
 
 function ShooterCharacter:TurnAtRate( val )
-	self:AddControllerYawInput(val*self.BaseTurnRate*GetDeltaSeconds(self))
+	-- self:AddControllerYawInput(val*self.BaseTurnRate*GetDeltaSeconds(self))
 end
 
 function ShooterCharacter:LookUpAtRate( val )
-	self:AddControllerPitchInput(val*self.BaseLookUpRate*GetDeltaSeconds(self))
+	-- self:AddControllerPitchInput(val*self.BaseLookUpRate*GetDeltaSeconds(self))
 end
 
 function ShooterCharacter:SetRunning(bNewRunning, bToggle)
-	self.bWantsToRun = bNewRunning;
+	self.bWantsToRun = bNewRunning
 	self.bWantsToRunToggled = bNewRunning and bToggle
 	if self.Role < ENetRole.ROLE_Authority then
 		self:ServerSetRunning(bNewRunning, bToggle)

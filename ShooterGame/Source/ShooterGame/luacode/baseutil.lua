@@ -2,6 +2,10 @@ function GetDeltaSeconds(ins)
 	return UGameplayStatics.GetWorldDeltaSeconds(ins)
 end
 
+function GetTimeSeconds(ins)
+    return UGameplayStatics.GetTimeSeconds(ins)
+end
+
 function Get(t, target, key)
     if key then
         for k,v in pairs(t) do

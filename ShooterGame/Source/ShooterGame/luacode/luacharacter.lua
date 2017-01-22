@@ -28,11 +28,6 @@ function Character_lua:CtorCpp()
 	FP_Gun.CastShadow = false
 	FP_Gun.AttachParent = self.RootComponent
 
-	local AK = UStaticMeshComponent.CreateDefaultSubobject(self, "AK")
-	AK.AttachParent = self.RootComponent
-	self.AK = AK
-
-
 	local FP_MuzzleLocation = USceneComponent.CreateDefaultSubobject(self, "MuzzleLocation")
 	self.FP_MuzzleLocation = FP_MuzzleLocation
 	FP_MuzzleLocation.AttachParent = FP_Gun
@@ -51,9 +46,7 @@ function Character_lua:Ctor()
 end
 
 function Character_lua:BeginPlayLua(v)
-	-- self.FP_Gun:K2_AttachToComponent(self.Mesh1P, "GripPoint", EAttachmentRule.SnapToTarget, EAttachmentRule.SnapToTarget, EAttachmentRule.SnapToTarget, true)
-	self.AK:K2_AttachToComponent(self.Mesh1P, "GripPoint", EAttachmentRule.SnapToTarget, EAttachmentRule.SnapToTarget, EAttachmentRule.SnapToTarget, true)
-	self.AK.RelativeLocation = FVector.New(0, 30, 5)
+	self.FP_Gun:K2_AttachToComponent(self.Mesh1P, "GripPoint", EAttachmentRule.SnapToTarget, EAttachmentRule.SnapToTarget, EAttachmentRule.SnapToTarget, true)
 	if self.bUsingMotionControllers then
 		self.Mesh1P:SetHiddenInGame(true, true)
 	else

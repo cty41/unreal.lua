@@ -408,8 +408,8 @@ public:
 	uint32 bRefiring;
 
 	/** current weapon state */
-// 	UPROPERTY()
-	EWeaponState::Type CurrentState;
+	UPROPERTY()
+	TEnumAsByte<EWeaponState::Type> CurrentState;
 
 	/** time of last successful weapon fire */
 	UPROPERTY()

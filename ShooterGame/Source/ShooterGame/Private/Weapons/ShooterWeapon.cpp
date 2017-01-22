@@ -9,46 +9,48 @@
 
 AShooterWeapon::AShooterWeapon(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-	Mesh1P = ObjectInitializer.CreateDefaultSubobject<USkeletalMeshComponent>(this, TEXT("WeaponMesh1P"));
-	Mesh1P->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
-	Mesh1P->bReceivesDecals = false;
-	Mesh1P->CastShadow = false;
-	Mesh1P->SetCollisionObjectType(ECC_WorldDynamic);
-	Mesh1P->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	Mesh1P->SetCollisionResponseToAllChannels(ECR_Ignore);
-	RootComponent = Mesh1P;
-
-	Mesh3P = ObjectInitializer.CreateDefaultSubobject<USkeletalMeshComponent>(this, TEXT("WeaponMesh3P"));
-	Mesh3P->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
-	Mesh3P->bReceivesDecals = false;
-	Mesh3P->CastShadow = true;
-	Mesh3P->SetCollisionObjectType(ECC_WorldDynamic);
-	Mesh3P->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	Mesh3P->SetCollisionResponseToAllChannels(ECR_Ignore);
-	Mesh3P->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Block);
-	Mesh3P->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
-	Mesh3P->SetCollisionResponseToChannel(COLLISION_PROJECTILE, ECR_Block);
-	Mesh3P->SetupAttachment(Mesh1P);
-
-	bLoopedMuzzleFX = false;
-	bLoopedFireAnim = false;
-	bPlayingFireAnim = false;
-	bIsEquipped = false;
-	bWantsToFire = false;
-	bPendingReload = false;
-	bPendingEquip = false;
-	CurrentState = EWeaponState::Idle;
-
-	CurrentAmmo = 0;
-	CurrentAmmoInClip = 0;
-	BurstCounter = 0;
-	LastFireTime = 0.0f;
-
-	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.TickGroup = TG_PrePhysics;
 	SetRemoteRoleForBackwardsCompat(ROLE_SimulatedProxy);
-	bReplicates = true;
-	bNetUseOwnerRelevancy = true;
+	UTableUtil::call("CtorCpp", "shooterweapon", this);
+
+// 	Mesh1P = ObjectInitializer.CreateDefaultSubobject<USkeletalMeshComponent>(this, TEXT("WeaponMesh1P"));
+// 	Mesh1P->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
+// 	Mesh1P->bReceivesDecals = false;
+// 	Mesh1P->CastShadow = false;
+// 	Mesh1P->SetCollisionObjectType(ECC_WorldDynamic);
+// 	Mesh1P->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+// 	Mesh1P->SetCollisionResponseToAllChannels(ECR_Ignore);
+// 	RootComponent = Mesh1P;
+// 
+// 	Mesh3P = ObjectInitializer.CreateDefaultSubobject<USkeletalMeshComponent>(this, TEXT("WeaponMesh3P"));
+// 	Mesh3P->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
+// 	Mesh3P->bReceivesDecals = false;
+// 	Mesh3P->CastShadow = true;
+// 	Mesh3P->SetCollisionObjectType(ECC_WorldDynamic);
+// 	Mesh3P->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+// 	Mesh3P->SetCollisionResponseToAllChannels(ECR_Ignore);
+// 	Mesh3P->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Block);
+// 	Mesh3P->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+// 	Mesh3P->SetCollisionResponseToChannel(COLLISION_PROJECTILE, ECR_Block);
+// 	Mesh3P->SetupAttachment(Mesh1P);
+// 
+// 	bLoopedMuzzleFX = false;
+// 	bLoopedFireAnim = false;
+// 	bPlayingFireAnim = false;
+// 	bIsEquipped = false;
+// 	bWantsToFire = false;
+// 	bPendingReload = false;
+// 	bPendingEquip = false;
+// 	CurrentState = EWeaponState::Idle;
+// 
+// 	CurrentAmmo = 0;
+// 	CurrentAmmoInClip = 0;
+// 	BurstCounter = 0;
+// 	LastFireTime = 0.0f;
+// 
+// 	PrimaryActorTick.bCanEverTick = true;
+// 	PrimaryActorTick.TickGroup = TG_PrePhysics;
+// 	bReplicates = true;
+// 	bNetUseOwnerRelevancy = true;
 }
 
 void AShooterWeapon::PostInitializeComponents()
@@ -76,33 +78,36 @@ void AShooterWeapon::Destroyed()
 
 void AShooterWeapon::OnEquip(const AShooterWeapon* LastWeapon)
 {
-	AttachMeshToPawn();
-
-	bPendingEquip = true;
-	DetermineWeaponState();
-
-	// Only play animation if last weapon is valid
-	if (LastWeapon)
+	if(!UTableUtil::callr<bool>("CppCallBack", "shooterweapon", "OnEquip", this, LastWeapon))
 	{
-		float Duration = PlayWeaponAnimation(EquipAnim);
-		if (Duration <= 0.0f)
+		AttachMeshToPawn();
+
+		bPendingEquip = true;
+		DetermineWeaponState();
+
+		// Only play animation if last weapon is valid
+		if (LastWeapon)
 		{
-			// failsafe
-			Duration = 0.5f;
+			float Duration = PlayWeaponAnimation(EquipAnim);
+			if (Duration <= 0.0f)
+			{
+				// failsafe
+				Duration = 0.5f;
+			}
+			EquipStartedTime = GetWorld()->GetTimeSeconds();
+			EquipDuration = Duration;
+
+			GetWorldTimerManager().SetTimer(TimerHandle_OnEquipFinished, this, &AShooterWeapon::OnEquipFinished, Duration, false);
 		}
-		EquipStartedTime = GetWorld()->GetTimeSeconds();
-		EquipDuration = Duration;
+		else
+		{
+			OnEquipFinished();
+		}
 
-		GetWorldTimerManager().SetTimer(TimerHandle_OnEquipFinished, this, &AShooterWeapon::OnEquipFinished, Duration, false);
-	}
-	else
-	{
-		OnEquipFinished();
-	}
-
-	if (MyPawn && MyPawn->IsLocallyControlled())
-	{
-		PlayWeaponSound(EquipSound);
+		if (MyPawn && MyPawn->IsLocallyControlled())
+		{
+			PlayWeaponSound(EquipSound);
+		}
 	}
 }
 
@@ -126,34 +131,35 @@ void AShooterWeapon::OnEquipFinished()
 			StartReload();
 		}
 	}
-
-	
 }
 
 void AShooterWeapon::OnUnEquip()
 {
-	DetachMeshFromPawn();
-	bIsEquipped = false;
-	StopFire();
-
-	if (bPendingReload)
+	if (!UTableUtil::callr<bool>("CppCallBack", "shooterweapon", "OnUnEquip", this))
 	{
-		StopWeaponAnimation(ReloadAnim);
-		bPendingReload = false;
+		DetachMeshFromPawn();
+		bIsEquipped = false;
+		StopFire();
 
-		GetWorldTimerManager().ClearTimer(TimerHandle_StopReload);
-		GetWorldTimerManager().ClearTimer(TimerHandle_ReloadWeapon);
+		if (bPendingReload)
+		{
+			StopWeaponAnimation(ReloadAnim);
+			bPendingReload = false;
+
+			GetWorldTimerManager().ClearTimer(TimerHandle_StopReload);
+			GetWorldTimerManager().ClearTimer(TimerHandle_ReloadWeapon);
+		}
+
+		if (bPendingEquip)
+		{
+			StopWeaponAnimation(EquipAnim);
+			bPendingEquip = false;
+
+			GetWorldTimerManager().ClearTimer(TimerHandle_OnEquipFinished);
+		}
+
+		DetermineWeaponState();
 	}
-
-	if (bPendingEquip)
-	{
-		StopWeaponAnimation(EquipAnim);
-		bPendingEquip = false;
-
-		GetWorldTimerManager().ClearTimer(TimerHandle_OnEquipFinished);
-	}
-
-	DetermineWeaponState();
 }
 
 void AShooterWeapon::OnEnterInventory(AShooterCharacter* NewOwner)
@@ -245,31 +251,34 @@ void AShooterWeapon::StopFire()
 
 void AShooterWeapon::StartReload(bool bFromReplication)
 {
-	if (!bFromReplication && Role < ROLE_Authority)
+	if (!UTableUtil::callr<bool>("CppCallBack", "shooterweapon", "StartReload", this, bFromReplication))
 	{
-		ServerStartReload();
-	}
-
-	if (bFromReplication || CanReload())
-	{
-		bPendingReload = true;
-		DetermineWeaponState();
-
-		float AnimDuration = PlayWeaponAnimation(ReloadAnim);		
-		if (AnimDuration <= 0.0f)
+		if (!bFromReplication && Role < ROLE_Authority)
 		{
-			AnimDuration = WeaponConfig.NoAnimReloadDuration;
+			ServerStartReload();
 		}
 
-		GetWorldTimerManager().SetTimer(TimerHandle_StopReload, this, &AShooterWeapon::StopReload, AnimDuration, false);
-		if (Role == ROLE_Authority)
+		if (bFromReplication || CanReload())
 		{
-			GetWorldTimerManager().SetTimer(TimerHandle_ReloadWeapon, this, &AShooterWeapon::ReloadWeapon, FMath::Max(0.1f, AnimDuration - 0.1f), false);
-		}
-		
-		if (MyPawn && MyPawn->IsLocallyControlled())
-		{
-			PlayWeaponSound(ReloadSound);
+			bPendingReload = true;
+			DetermineWeaponState();
+
+			float AnimDuration = PlayWeaponAnimation(ReloadAnim);		
+			if (AnimDuration <= 0.0f)
+			{
+				AnimDuration = WeaponConfig.NoAnimReloadDuration;
+			}
+
+			GetWorldTimerManager().SetTimer(TimerHandle_StopReload, this, &AShooterWeapon::StopReload, AnimDuration, false);
+			if (Role == ROLE_Authority)
+			{
+				GetWorldTimerManager().SetTimer(TimerHandle_ReloadWeapon, this, &AShooterWeapon::ReloadWeapon, FMath::Max(0.1f, AnimDuration - 0.1f), false);
+			}
+			
+			if (MyPawn && MyPawn->IsLocallyControlled())
+			{
+				PlayWeaponSound(ReloadSound);
+			}
 		}
 	}
 }

@@ -27,5 +27,8 @@ public:
 	
 	UFUNCTION()
 	static bool UseSound();
-	
+
+	UFUNCTION()
+	static void SetupAttachment(USceneComponent* Child, USceneComponent* InParent, FName InSocketName = NAME_None);
+
 };
