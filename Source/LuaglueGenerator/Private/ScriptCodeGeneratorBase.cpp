@@ -305,7 +305,6 @@ bool FScriptCodeGeneratorBase::CanExportClass(UClass* Class)
 bool FScriptCodeGeneratorBase::CanExportFunction(const FString& ClassNameCPP, UClass* Class, UFunction* Function)
 {
 	// We don't support delegates and non-public functions
-	auto x = Function->GetName() == "Array_AddUnique";
 	if (Function->FunctionFlags & FUNC_Delegate)
 	{
 		return false;
@@ -316,15 +315,12 @@ bool FScriptCodeGeneratorBase::CanExportFunction(const FString& ClassNameCPP, UC
 	for (TFieldIterator<UProperty> ParamIt(Function); ParamIt; ++ParamIt)
 	{
 		UProperty* Param = *ParamIt;
-		if (//Param->IsA(UArrayProperty::StaticClass()) ||
-			  Param->ArrayDim > 1 ||
-			  Param->IsA(UDelegateProperty::StaticClass()) ||
-				Param->IsA(UMulticastDelegateProperty::StaticClass()) ||
-			  Param->IsA(UWeakObjectProperty::StaticClass()) ||
-			  Param->IsA(UInterfaceProperty::StaticClass()))
+		if (!FScriptCodeGeneratorBase::CanExportProperty(ClassNameCPP, Class, Param))
 		{
 			return false;
 		}
+		if (Param->ArrayDim>1)
+			return false;
 	}
 
 	return true;
@@ -332,29 +328,13 @@ bool FScriptCodeGeneratorBase::CanExportFunction(const FString& ClassNameCPP, UC
 
 bool FScriptCodeGeneratorBase::CanExportProperty(const FString& ClassNameCPP, UClass* Class, UProperty* Property)
 {
-	// Property must be DLL exported
-// 	if (!(Class->ClassFlags & CLASS_RequiredAPI))
-// 	{
-// 		return false;
-// 	}
-
-	// Only public, editable properties can be exported
-// 	if (!Property->HasAnyFlags(RF_Public) || 
-// 		  (Property->PropertyFlags & CPF_Protected) || 
-// 			!(Property->PropertyFlags & CPF_Edit))
-// 	{
-// 		return false;
-// 	}
-
-
-	// Reject if it's one of the unsupported types (yet)
-	if (//Property->IsA(UArrayProperty::StaticClass()) ||
- 		Property->ArrayDim > 1 ||
+	if (Property->ArrayDim > 1 && Property->GetName() == "Crosshair" && ClassNameCPP == "AShooterHUD")
+		return true;
+	if (
 		Property->IsA(UDelegateProperty::StaticClass()) ||
 		Property->IsA(UMulticastDelegateProperty::StaticClass()) ||
 		Property->IsA(UWeakObjectProperty::StaticClass()) ||
 		Property->IsA(UInterfaceProperty::StaticClass())
-		//Property->IsA(UStructProperty::StaticClass())
 		)
 	{
 		return false;

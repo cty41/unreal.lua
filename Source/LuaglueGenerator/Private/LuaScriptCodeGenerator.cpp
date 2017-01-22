@@ -185,10 +185,23 @@ FString FLuaScriptCodeGenerator::GenerateObjectDeclarationFromContext(const FStr
 	return FString::Printf(TEXT("%s* Obj = (%s*)UTableUtil::tousertype(\"%s\",1);"), *ClassNameCPP, *ClassNameCPP, *ClassNameCPP);
 }
 
-FString FLuaScriptCodeGenerator::Push(const FString& ClassNameCPP, UFunction* Function, UProperty* ReturnValue, FString name)
+FString FLuaScriptCodeGenerator::Push(const FString& ClassNameCPP, UFunction* Function, UProperty* ReturnValue, FString name, bool bConsiderArrayDim)
 {
 	FString Initializer;
-	if (ReturnValue->IsA(UIntProperty::StaticClass()) || ReturnValue->IsA(UInt8Property::StaticClass()))
+	if (ReturnValue->ArrayDim > 1 && bConsiderArrayDim)
+	{
+		FString CreateTableCode;
+		CreateTableCode = FString::Printf(TEXT("int32 len = sizeof(%s)/sizeof(%s);\r\n"), *name, *GetPropertyTypeCPP(ReturnValue, CPPF_ArgumentOrReturnValue));
+		CreateTableCode += "\tlua_newtable(L);\r\n";
+		CreateTableCode += "\tfor(int32 i = 0; i < len; ++i)\r\n\t{\r\n";
+		CreateTableCode += "\t\tlua_pushinteger(L, i+1);\r\n";
+		FString pushvalueName = FString::Printf(TEXT("%s[i]"), *name);
+		FString pushCode = Push(ClassNameCPP, Function, ReturnValue, pushvalueName, false);
+		CreateTableCode += FString::Printf(TEXT("\t\t%s\r\n"), *pushCode);
+		CreateTableCode += "\t\tlua_rawset(L, -3);\r\n\t}\r\n";
+		Initializer = CreateTableCode;
+	}
+	else if (ReturnValue->IsA(UIntProperty::StaticClass()) || ReturnValue->IsA(UInt8Property::StaticClass()))
 	{
 		Initializer = FString::Printf(TEXT("lua_pushinteger(L, %s);"), *name);
 	}
@@ -636,8 +649,13 @@ FString FLuaScriptCodeGenerator::GetterCode(FString ClassNameCPP, FString classn
 	{
 		FunctionBody += FString::Printf(TEXT("\t%s\r\n"), *GenerateObjectDeclarationFromContext(ClassNameCPP));
 		if (Property->PropertyFlags & CPF_NativeAccessSpecifierPublic)
-			FunctionBody += FString::Printf(TEXT("\t%s result = Obj->%s;\r\n"), *GetPropertyTypeCPP(Property, CPPF_ArgumentOrReturnValue), *Property->GetName());
-		else
+		{
+			if (Property->ArrayDim>1)
+				FunctionBody += FString::Printf(TEXT("\tauto result = Obj->%s;\r\n"), *Property->GetName());
+			else
+				FunctionBody += FString::Printf(TEXT("\t%s result = Obj->%s;\r\n"), *GetPropertyTypeCPP(Property, CPPF_ArgumentOrReturnValue), *Property->GetName());
+		}
+		else if( Property->ArrayDim <= 1)
 		{
 			FString statictype = GetPropertyType(Property);
 			if (!statictype.IsEmpty())
@@ -663,11 +681,11 @@ FString FLuaScriptCodeGenerator::GetterCode(FString ClassNameCPP, FString classn
 			else
 			{
 				FunctionBody += FString::Printf(TEXT("\tint result = 0;\r\n"));
-
 			}
 		}
-		//FunctionBody += TEXT("\tProperty->CopyCompleteValueGetActorLocation(&PropertyValue, Property->ContainerPtrToValuePtr<void>(Obj));\r\n");
-		if (Property->IsA(UStructProperty::StaticClass()) && !(Property->PropertyFlags & CPF_NativeAccessSpecifierPublic))
+		if( Property->ArrayDim>1 && !(Property->PropertyFlags & CPF_NativeAccessSpecifierPublic))
+			FunctionBody += FString::Printf(TEXT("\treturn 0;\r\n"));
+		else if (Property->IsA(UStructProperty::StaticClass()) && !(Property->PropertyFlags & CPF_NativeAccessSpecifierPublic))
 			FunctionBody += FString::Printf(TEXT("\t%s\r\n\treturn 1;\r\n"), *Push(ClassNameCPP, NULL, Property, FString("*result")));
 		else
 			FunctionBody += FString::Printf(TEXT("\t%s\r\n"), *GenerateReturnValueHandler(ClassNameCPP, NULL, Property));
@@ -689,54 +707,56 @@ FString FLuaScriptCodeGenerator::SetterCode(FString ClassNameCPP, FString classn
 	FString FunctionBody;
 	if (PropertySuper == NULL)
 	{
-		FunctionBody += FString::Printf(TEXT("\t%s\r\n"), *GenerateObjectDeclarationFromContext(ClassNameCPP));
-		if (Property->PropertyFlags & CPF_NativeAccessSpecifierPublic)
-		{
-			FString typecpp = GetPropertyTypeCPP(Property, CPPF_ArgumentOrReturnValue);
-			auto exceptionOne = Property->GetName() == "AnimBlueprintGeneratedClass";
-			if (exceptionOne)
-				FunctionBody += TEXT("\tObj->AnimBlueprintGeneratedClass = (UAnimBlueprintGeneratedClass*)(UTableUtil::tousertype(\"UClass\", 2));\r\n");
-			else if (!Property->IsA(UArrayProperty::StaticClass()))
-				FunctionBody += FString::Printf(TEXT("\tObj->%s = %s;\r\n"), *Property->GetName(), *InitializeParam(Property, 0));
-			else if (Property->IsA(UArrayProperty::StaticClass()))
+		if (Property->ArrayDim <= 1){
+			FunctionBody += FString::Printf(TEXT("\t%s\r\n"), *GenerateObjectDeclarationFromContext(ClassNameCPP));
+			if (Property->PropertyFlags & CPF_NativeAccessSpecifierPublic)
 			{
-				auto PropertyArr = Cast<UArrayProperty>(Property);
-				FunctionBody += FString::Printf(TEXT("\t%s& val = Obj->%s;\r\n"), *GetPropertyTypeCPP(Property, CPPF_ArgumentOrReturnValue), *Property->GetName());
-				FunctionBody += FString::Printf(TEXT("\tlua_pushnil(L);\r\n"));
-				FunctionBody += FString::Printf(TEXT("\twhile (lua_next(L, -2) != 0) {\r\n"));
-				FString inerTypeCpp = GetPropertyTypeCPP(PropertyArr->Inner, CPPF_ArgumentOrReturnValue);
-				FunctionBody += FString::Printf(TEXT("\t\tint32 i = lua_tointeger(L, -2)-1;\r\n"));
-				FunctionBody += FString::Printf(TEXT("\t\tif(val.Num() == i)\r\n"));
-				FString to = InitializeParam(PropertyArr->Inner, -3);
-				FunctionBody += FString::Printf(TEXT("\t\t\tval.Add(%s);\r\n"), *to);
-				FunctionBody += FString::Printf(TEXT("\t\telse\r\n"));
-				FunctionBody += FString::Printf(TEXT("\t\t\tval[i] = %s;\r\n"), *to);
-				FunctionBody += FString::Printf(TEXT("\t\tlua_pop(L, 1);\r\n\t}\r\n"));
-			}
-		}
-		else
-		{
-			bool bIsStruct = Property->IsA(UStructProperty::StaticClass());
-			FString statictype = GetPropertyType(Property);
-			if (!statictype.IsEmpty() && !Property->IsA(UArrayProperty::StaticClass()))
-			{
-				FunctionBody += FString::Printf(TEXT("\tUProperty* property = UTableUtil::GetPropertyByName(FString(\"%s\"), FString(\"%s\"));\r\n"), *ClassNameCPP, *Property->GetName());
-				FunctionBody += FString::Printf(TEXT("\t%s* p = Cast<%s>(property);\r\n"), *statictype, *statictype);
 				FString typecpp = GetPropertyTypeCPP(Property, CPPF_ArgumentOrReturnValue);
-				FString typecast = GetPropertySetCastType(Property);
-				if (typecast.IsEmpty())
-					typecast = typecpp;
-				FunctionBody += FString::Printf(TEXT("\t%s value = %s;\r\n"), *typecast, *InitializeParam(Property, 0, bIsStruct));
-				if (Property->IsA(UObjectPropertyBase::StaticClass()))
-					FunctionBody += FString::Printf(TEXT("\tp->%s(Obj, (UObject*)value);\r\n"), *GetPropertySetFunc(Property));
-				else if (Property->IsA(UStructProperty::StaticClass()))
-					FunctionBody += FString::Printf(TEXT("\tp->%s(p->ContainerPtrToValuePtr<void>(Obj), (void*)value);\r\n"), *GetPropertySetFunc(Property));
-				else
-					FunctionBody += FString::Printf(TEXT("\tp->%s(Obj, value);\r\n"), *GetPropertySetFunc(Property));
+				auto exceptionOne = Property->GetName() == "AnimBlueprintGeneratedClass";
+				if (exceptionOne)
+					FunctionBody += TEXT("\tObj->AnimBlueprintGeneratedClass = (UAnimBlueprintGeneratedClass*)(UTableUtil::tousertype(\"UClass\", 2));\r\n");
+				else if (!Property->IsA(UArrayProperty::StaticClass()))
+					FunctionBody += FString::Printf(TEXT("\tObj->%s = %s;\r\n"), *Property->GetName(), *InitializeParam(Property, 0));
+				else if (Property->IsA(UArrayProperty::StaticClass()))
+				{
+					auto PropertyArr = Cast<UArrayProperty>(Property);
+					FunctionBody += FString::Printf(TEXT("\t%s& val = Obj->%s;\r\n"), *GetPropertyTypeCPP(Property, CPPF_ArgumentOrReturnValue), *Property->GetName());
+					FunctionBody += FString::Printf(TEXT("\tlua_pushnil(L);\r\n"));
+					FunctionBody += FString::Printf(TEXT("\twhile (lua_next(L, -2) != 0) {\r\n"));
+					FString inerTypeCpp = GetPropertyTypeCPP(PropertyArr->Inner, CPPF_ArgumentOrReturnValue);
+					FunctionBody += FString::Printf(TEXT("\t\tint32 i = lua_tointeger(L, -2)-1;\r\n"));
+					FunctionBody += FString::Printf(TEXT("\t\tif(val.Num() == i)\r\n"));
+					FString to = InitializeParam(PropertyArr->Inner, -3);
+					FunctionBody += FString::Printf(TEXT("\t\t\tval.Add(%s);\r\n"), *to);
+					FunctionBody += FString::Printf(TEXT("\t\telse\r\n"));
+					FunctionBody += FString::Printf(TEXT("\t\t\tval[i] = %s;\r\n"), *to);
+					FunctionBody += FString::Printf(TEXT("\t\tlua_pop(L, 1);\r\n\t}\r\n"));
+				}
 			}
-			else if ( Property->IsA(UArrayProperty::StaticClass()) )
+			else
 			{
+				bool bIsStruct = Property->IsA(UStructProperty::StaticClass());
+				FString statictype = GetPropertyType(Property);
+				if (!statictype.IsEmpty() && !Property->IsA(UArrayProperty::StaticClass()))
+				{
+					FunctionBody += FString::Printf(TEXT("\tUProperty* property = UTableUtil::GetPropertyByName(FString(\"%s\"), FString(\"%s\"));\r\n"), *ClassNameCPP, *Property->GetName());
+					FunctionBody += FString::Printf(TEXT("\t%s* p = Cast<%s>(property);\r\n"), *statictype, *statictype);
+					FString typecpp = GetPropertyTypeCPP(Property, CPPF_ArgumentOrReturnValue);
+					FString typecast = GetPropertySetCastType(Property);
+					if (typecast.IsEmpty())
+						typecast = typecpp;
+					FunctionBody += FString::Printf(TEXT("\t%s value = %s;\r\n"), *typecast, *InitializeParam(Property, 0, bIsStruct));
+					if (Property->IsA(UObjectPropertyBase::StaticClass()))
+						FunctionBody += FString::Printf(TEXT("\tp->%s(Obj, (UObject*)value);\r\n"), *GetPropertySetFunc(Property));
+					else if (Property->IsA(UStructProperty::StaticClass()))
+						FunctionBody += FString::Printf(TEXT("\tp->%s(p->ContainerPtrToValuePtr<void>(Obj), (void*)value);\r\n"), *GetPropertySetFunc(Property));
+					else
+						FunctionBody += FString::Printf(TEXT("\tp->%s(Obj, value);\r\n"), *GetPropertySetFunc(Property));
+				}
+				else if ( Property->IsA(UArrayProperty::StaticClass()) )
+				{
 
+				}
 			}
 		}
 		FunctionBody += TEXT("\treturn 0;\r\n");

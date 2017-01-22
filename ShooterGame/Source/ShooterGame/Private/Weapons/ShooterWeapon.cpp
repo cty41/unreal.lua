@@ -11,7 +11,6 @@ AShooterWeapon::AShooterWeapon(const FObjectInitializer& ObjectInitializer) : Su
 {
 	SetRemoteRoleForBackwardsCompat(ROLE_SimulatedProxy);
 	UTableUtil::call("CtorCpp", "shooterweapon", this);
-
 // 	Mesh1P = ObjectInitializer.CreateDefaultSubobject<USkeletalMeshComponent>(this, TEXT("WeaponMesh1P"));
 // 	Mesh1P->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
 // 	Mesh1P->bReceivesDecals = false;
@@ -895,13 +894,23 @@ void AShooterWeapon::GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & O
 {
 	Super::GetLifetimeReplicatedProps( OutLifetimeProps );
 
-	DOREPLIFETIME( AShooterWeapon, MyPawn );
+	auto result = UTableUtil::callr<TArray<FReplifetimeCond>>("CppCallBack", "shooterweapon", "GetLifetimeReplicatedProps", this);
+	for (auto &v : result)
+	{
+		UProperty* p = UTableUtil::GetPropertyByName(AShooterWeapon::StaticClass(), v.PropertyName);
+		for (int32 i = 0; i < p->ArrayDim; i++)
+		{																					
+			OutLifetimeProps.AddUnique( FLifetimeProperty(p->RepIndex + i, v.Cond ) );
+		}
+	}
 
-	DOREPLIFETIME_CONDITION( AShooterWeapon, CurrentAmmo,		COND_OwnerOnly );
-	DOREPLIFETIME_CONDITION( AShooterWeapon, CurrentAmmoInClip, COND_OwnerOnly );
+	// DOREPLIFETIME( AShooterWeapon, MyPawn );
 
-	DOREPLIFETIME_CONDITION( AShooterWeapon, BurstCounter,		COND_SkipOwner );
-	DOREPLIFETIME_CONDITION( AShooterWeapon, bPendingReload,	COND_SkipOwner );
+	// DOREPLIFETIME_CONDITION( AShooterWeapon, CurrentAmmo,		COND_OwnerOnly );
+	// DOREPLIFETIME_CONDITION( AShooterWeapon, CurrentAmmoInClip, COND_OwnerOnly );
+
+	// DOREPLIFETIME_CONDITION( AShooterWeapon, BurstCounter,		COND_SkipOwner );
+	// DOREPLIFETIME_CONDITION( AShooterWeapon, bPendingReload,	COND_SkipOwner );
 }
 
 USkeletalMeshComponent* AShooterWeapon::GetWeaponMesh() const

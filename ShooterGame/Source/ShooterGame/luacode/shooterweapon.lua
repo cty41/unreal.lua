@@ -168,4 +168,13 @@ function ShooterWeapon:StartReload(bFromReplication)
 	return true
 end
 
+function ShooterWeapon:GetLifetimeReplicatedProps()
+	local t = {}
+	table.insert(t, FReplifetimeCond.NewItem("MyPawn"))
+	table.insert(t, FReplifetimeCond.NewItem("CurrentAmmo", ELifetimeCondition.COND_OwnerOnly))
+	table.insert(t, FReplifetimeCond.NewItem("CurrentAmmoInClip", ELifetimeCondition.COND_OwnerOnly))
+	table.insert(t, FReplifetimeCond.NewItem("BurstCounter", ELifetimeCondition.COND_SkipOwner))
+	table.insert(t, FReplifetimeCond.NewItem("bPendingReload", ELifetimeCondition.COND_SkipOwner))
+	return t
+end
 return ShooterWeapon

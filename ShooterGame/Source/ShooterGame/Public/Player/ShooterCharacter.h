@@ -49,6 +49,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Game|Weapon")
 	FRotator GetAimOffsets() const;
 
+	UPROPERTY()
+	int lala[10];
 	/**
 	* Check if pawn is enemy if given controller.
 	*

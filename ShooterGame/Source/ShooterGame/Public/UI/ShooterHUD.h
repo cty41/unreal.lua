@@ -4,13 +4,17 @@
 
 #include "ShooterTypes.h"
 #include "ShooterHUD.generated.h"
-
+USTRUCT(meta = (Lua = 2))
 struct FHitData
 {
+	GENERATED_USTRUCT_BODY()
+
 	/** Last hit time. */
+	UPROPERTY()
 	float HitTime;
 	
 	/** strength of hit icon */
+	UPROPERTY()
 	float HitPercentage;
 
 	/** Initialise defaults. */
@@ -21,27 +25,36 @@ struct FHitData
 	}
 };
 
+USTRUCT(meta = (Lua = 2))
 struct FDeathMessage
 {
+	GENERATED_USTRUCT_BODY()
 	/** Name of player scoring kill. */
+	UPROPERTY()
 	FString KillerDesc;
 
 	/** Name of killed player. */
+	UPROPERTY()
 	FString VictimDesc;
 
 	/** Killer is local player. */
+	UPROPERTY()
 	uint8 bKillerIsOwner : 1;
 	
 	/** Victim is local player. */
+	UPROPERTY()
 	uint8 bVictimIsOwner : 1;
 
 	/** Team number of the killer. */
+	UPROPERTY()
 	int32 KillerTeamNum;
 
 	/** Team number of the victim. */
-	int32 VictimTeamNum; 
+	UPROPERTY()
+	int32 VictimTeamNum;
 
 	/** timestamp for removing message */
+	UPROPERTY()
 	float HideTime;
 
 	/** What killed the player. */
@@ -58,7 +71,7 @@ struct FDeathMessage
 	}
 };
 
-UCLASS()
+UCLASS(meta = (Lua=1))
 class AShooterHUD : public AHUD
 {
 	GENERATED_UCLASS_BODY()
@@ -144,7 +157,6 @@ public:
 	/* Is the match over (IE Is the state Won or Lost). */
 	bool IsMatchOver() const;
 		
-protected:
 	/** Floor for automatic hud scaling. */
 	static const float MinHudScale;
 

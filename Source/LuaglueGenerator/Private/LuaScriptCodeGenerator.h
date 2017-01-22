@@ -55,7 +55,7 @@ protected:
 	FString GetPropertyCastType(UProperty* Property);
 	FString GetPropertySetCastType(UProperty* Property);
 	bool isStructSupported(UScriptStruct* thestruct) const;
-	FString Push(const FString& ClassNameCPP, UFunction* Function, UProperty* ReturnValue, FString name);
+	FString Push(const FString& ClassNameCPP, UFunction* Function, UProperty* ReturnValue, FString name, bool bConsiderArrayDim = true);
 	FString GetterCode(FString  ClassNameCPP, FString classname, FString FuncName, UProperty* Property, UClass* PropertySuper = nullptr);
 	FString SetterCode(FString  ClassNameCPP, FString classname, FString FuncName, UProperty* Property, UClass* PropertySuper = nullptr);
 	FString FuncCode(FString  ClassNameCPP, FString classname, UFunction* Function, UClass* FuncSuper = nullptr);
