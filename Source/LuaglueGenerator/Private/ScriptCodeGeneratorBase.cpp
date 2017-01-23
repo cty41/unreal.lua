@@ -309,7 +309,6 @@ bool FScriptCodeGeneratorBase::CanExportFunction(const FString& ClassNameCPP, UC
 	{
 		return false;
 	}
-	
 
 	// Reject if any of the parameter types is unsupported yet
 	for (TFieldIterator<UProperty> ParamIt(Function); ParamIt; ++ParamIt)
@@ -319,8 +318,6 @@ bool FScriptCodeGeneratorBase::CanExportFunction(const FString& ClassNameCPP, UC
 		{
 			return false;
 		}
-		if (Param->ArrayDim>1)
-			return false;
 	}
 
 	return true;
@@ -328,8 +325,6 @@ bool FScriptCodeGeneratorBase::CanExportFunction(const FString& ClassNameCPP, UC
 
 bool FScriptCodeGeneratorBase::CanExportProperty(const FString& ClassNameCPP, UClass* Class, UProperty* Property)
 {
-	if (Property->ArrayDim > 1 && Property->GetName() == "Crosshair" && ClassNameCPP == "AShooterHUD")
-		return true;
 	if (
 		Property->IsA(UDelegateProperty::StaticClass()) ||
 		Property->IsA(UMulticastDelegateProperty::StaticClass()) ||

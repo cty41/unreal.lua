@@ -57,9 +57,6 @@ AShooterCharacter::AShooterCharacter(const FObjectInitializer& ObjectInitializer
 	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Ignore);
 
 	UTableUtil::call("CtorCpp", "shootercharacter", this);
-	lala[0] = 100;
-	lala[1] = 238;
-	lala[5] = 1138;
 
 // 	TargetingSpeedModifier = 0.5f;
 // 	bIsTargeting = false;

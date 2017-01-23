@@ -177,4 +177,107 @@ function ShooterWeapon:GetLifetimeReplicatedProps()
 	table.insert(t, FReplifetimeCond.NewItem("bPendingReload", ELifetimeCondition.COND_SkipOwner))
 	return t
 end
+
+function ShooterWeapon:UseAmmo()
+	if RunCppCode then return false end
+	if not self:HasInfiniteAmmo() then
+		self.CurrentAmmoInClip = self.CurrentAmmoInClip - 1
+	end
+
+	if not self:HasInfiniteAmmo() and not self:HasInfiniteClip() then
+		self.CurrentAmmo = self.CurrentAmmo - 1
+	end
+
+	local MyPawn = self.MyPawn
+	local BotAI = MyPawn and AShooterAIController.Cast(MyPawn:GetController())
+	local PlayerController = MyPawn and AShooterPlayerController.Cast(MyPawn:GetController())
+
+	if BotAI then
+		BotAI:CheckAmmo(self)
+	elseif PlayerController then
+		local PlayerState = AShooterPlayerState.Cast(PlayerController.PlayerState)
+		local AmmoType = self:GetAmmoType()
+		if AmmoType == EAmmoType.ERocket then
+			PlayerState:AddRocketsFired(1)
+		elseif AmmoType == EAmmoType.EBullet then
+			PlayerState:AddBulletsFired(1)
+		else
+			PlayerState:AddBulletsFired(1)
+		end
+	end
+	return true
+end
+
+function ShooterWeapon:HandleFiring()
+	-- do return false end
+	if RunCppCode then return false end
+	local MyPawn = self.MyPawn
+	if (self.CurrentAmmoInClip > 0 or self:HasInfiniteClip() or self:HasInfiniteAmmo()) and self:CanFire() then
+		if not UKismetSystemLibrary.IsDedicatedServer(self) then
+			self:SimulateWeaponFire()
+		end
+
+		if MyPawn  and MyPawn:IsLocallyControlled() then
+			self:FireWeapon()
+			self:UseAmmo()
+			self.BurstCounter = self.BurstCounter + 1
+		end
+	elseif self:CanReload() then
+		self:StartReload()
+	elseif MyPawn  and MyPawn:IsLocallyControlled() then
+		if self:GetCurrentAmmo() == 0 and not self.bRefiring then
+			self:PlayWeaponSound(self.OutOfAmmoSound)
+			local MyPC = AShooterPlayerController.Cast(MyPawn:GetController())
+			local MyHUD = MyPC and AShooterHUD.Cast(MyPC:GetHUD())
+			if MyHUD then
+				MyHUD:NotifyOutOfAmmo()
+			end
+		end
+
+		if self.BurstCounter > 0 then
+			self:OnBurstFinished()
+		end
+	end
+
+	if MyPawn and MyPawn:IsLocallyControlled() then
+		if self.Role < ENetRole.ROLE_Authority then
+			self:ServerHandleFiring()
+		end
+
+		if self.CurrentAmmoInClip <= 0 and self:CanReload() then
+			self:StartReload()
+		end
+
+		local bRefiring = (self.CurrentState == EWeaponState.Firing and self.WeaponConfig.TimeBetweenShots > 0)
+		self.bRefiring = bRefiring
+		if bRefiring then 
+			self.timerhandle_handlefiring = TimerMgr:Get():On(self.HandleFiring, self):Time(self.WeaponConfig.TimeBetweenShots*1000):Num(1)
+		end
+	end
+	self.LastFireTime = GetTimeSeconds(self)
+	return true
+end
+
+function ShooterWeapon:OnBurstStarted()
+	if RunCppCode then return false end
+	local GameTime = GetTimeSeconds(self)
+	if self.LastFireTime > 0 and self.WeaponConfig.TimeBetweenShots > 0 and self.LastFireTime+self.WeaponConfig.TimeBetweenShots > GameTime then
+		self.timerhandle_handlefiring = TimerMgr:Get():On(self.HandleFiring, self):Time((self.LastFireTime + self.WeaponConfig.TimeBetweenShots - GameTime)*1000):Num(1)
+	else
+		self:HandleFiring()
+	end
+	return true
+end
+
+function ShooterWeapon:OnBurstFinished()
+	if RunCppCode then return false end
+	self.BurstCounter = 0
+	if not UKismetSystemLibrary.IsDedicatedServer(self) then
+		self:StopSimulatingWeaponFire()
+	end
+	if self.timerhandle_handlefiring then self.timerhandle_handlefiring:Destroy() end
+	self.bRefiring = false
+	return true
+end
+
 return ShooterWeapon

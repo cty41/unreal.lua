@@ -476,9 +476,11 @@ public:
 	void OnRep_Reload();
 
 	/** Called in network play to do the cosmetic fx for firing */
+	UFUNCTION()
 	virtual void SimulateWeaponFire();
 
 	/** Called in network play to stop cosmetic fx (e.g. for a looping shot). */
+	UFUNCTION()
 	virtual void StopSimulatingWeaponFire();
 
 

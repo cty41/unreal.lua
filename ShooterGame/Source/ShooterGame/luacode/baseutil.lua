@@ -1,8 +1,10 @@
 function GetDeltaSeconds(ins)
+    if ins == nil then error("") end
 	return UGameplayStatics.GetWorldDeltaSeconds(ins)
 end
 
 function GetTimeSeconds(ins)
+    if ins == nil then error("") end
     return UGameplayStatics.GetTimeSeconds(ins)
 end
 

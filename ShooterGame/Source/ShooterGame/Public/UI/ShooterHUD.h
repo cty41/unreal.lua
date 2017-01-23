@@ -90,12 +90,15 @@ public:
 	 * @param	DamageEvent		The actual damage event.
 	 * @param	PawnInstigator	The pawn that did the damage.
 	 */
+	UFUNCTION()
 	void NotifyWeaponHit(float DamageTaken, struct FDamageEvent const& DamageEvent, class APawn* PawnInstigator);
 
 	/** Sent from ShooterWeapon, shows NO AMMO text. */
+	UFUNCTION()
 	void NotifyOutOfAmmo();
 
 	/** Notifies we have hit the enemy. */
+	UFUNCTION()
 	void NotifyEnemyHit();
 
 	/** 
@@ -103,15 +106,20 @@ public:
 	 *
 	 * @param	NewState	The new match state.
 	 */
+
+	//UFUNCTION()
 	void SetMatchState(EShooterMatchState::Type NewState);
 
 	/** Get state of current match. */
+//	UFUNCTION()
 	EShooterMatchState::Type GetMatchState() const;
 
 	/** Turns off scoreboard if it is being displayed */
+	UFUNCTION()
 	void ConditionalCloseScoreboard(bool bFocus = false);
 
 	/** Toggles scoreboard */
+	UFUNCTION()
 	void ToggleScoreboard();
 
 	/** 
@@ -122,6 +130,7 @@ public:
 	 * @param	bFocus	Give keyboard focus to the scoreboard.
 	 * @return	true, if the scoreboard visibility changed
 	 */
+	UFUNCTION()
 	bool ShowScoreboard(bool bEnable, bool bFocus = false);
 
 	/** 
@@ -131,12 +140,14 @@ public:
 	 * @param	VictimPlayerState	Played that was killed state.
 	 * @param	KillerDamageType	The type of damaged that caused the death.
 	 */
+	UFUNCTION()
 	void ShowDeathMessage(class AShooterPlayerState* KillerPlayerState, class AShooterPlayerState* VictimPlayerState, const UDamageType* KillerDamageType);
 
 	/*
 	 * Toggle chat window visibility.
 	 *
 	 */
+	UFUNCTION()
 	void ToggleChat();
 
 	/** 
@@ -152,9 +163,11 @@ public:
 	 * @param	ChatString	The string to add.
 	 * @param	bWantFocus	Should we set the chat window to focus
 	 */
+	UFUNCTION()
 	void AddChatLine(const FText& ChatString, bool bWantFocus);
 
 	/* Is the match over (IE Is the state Won or Lost). */
+	UFUNCTION()
 	bool IsMatchOver() const;
 		
 	/** Floor for automatic hud scaling. */
@@ -330,24 +343,31 @@ public:
 	FString GetTimeString(float TimeSeconds);
 
 	/** Draws weapon HUD. */
+	UFUNCTION()
 	void DrawWeaponHUD();
 
 	/** Draws kills information. */
+	UFUNCTION()
 	void DrawKills();
 
 	/** Draw player's health bar. */
+	UFUNCTION()
 	void DrawHealth();
 
 	/** Draws match timer and player position. */
+	UFUNCTION()
 	void DrawMatchTimerAndPosition();
 
 	/** Draws weapon crosshair. */
+	UFUNCTION()
 	void DrawCrosshair();
 	
 	/** Draws hit indicator. */
+	UFUNCTION()
 	void DrawHitIndicator();
 
 	/** Draw death messages. */
+	UFUNCTION()
 	void DrawDeathMessages();
 
 	/** Delegate for telling other methods when players have started/stopped talking */
@@ -359,12 +379,15 @@ public:
 	 *
 	 * @return Returns the bottom of the message or 0 if not drawn.
 	 */
+	UFUNCTION()
 	float DrawRecentlyKilledPlayer();
 
 	/** Temporary helper for drawing text-in-a-box. */
+	UFUNCTION()
 	void DrawDebugInfoString(const FString& Text, float PosX, float PosY, bool bAlignLeft, bool bAlignTop, const FColor& TextColor);
 
 	/** helper for getting uv coords in normalized top,left, bottom, right format */
+	UFUNCTION()
 	void MakeUV(FCanvasIcon& Icon, FVector2D& UV0, FVector2D& UV1, uint16 U, uint16 V, uint16 UL, uint16 VL);
 
 	/*
@@ -372,6 +395,7 @@ public:
 	 *
 	 * @return		true if the widget was created.
 	 */
+	UFUNCTION()
 	bool TryCreateChatWidget();
 
 	/*
@@ -390,6 +414,7 @@ public:
 	*
 	* @returns The next Y position to draw any further strings
 	*/
+	UFUNCTION()
 	float ShowInfoItems(float YOffset, float TextScale);
 	
 };

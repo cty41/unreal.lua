@@ -405,7 +405,6 @@ FString FLuaScriptCodeGenerator::FuncCode(FString  ClassNameCPP, FString classna
 					returnCount++;
 				}
 			}
-			//auto x = Function->GetName() == "BeginDeferredActorSpawnFromClass";
 			for (TFieldIterator<UProperty> ParamIt(Function); ParamIt; ++ParamIt)
 			{
 				UProperty* Param = *ParamIt;
@@ -417,11 +416,9 @@ FString FLuaScriptCodeGenerator::FuncCode(FString  ClassNameCPP, FString classna
 				}
 			}
 			FunctionBody += FString::Printf(TEXT("\treturn %d;\r\n"), returnCount);
-			// 			FunctionBody += FString::Printf(TEXT("\t%s\r\n"), *GenerateReturnValueHandler(ClassNameCPP, Class, Function, ReturnValue));
 		}
 		else
 		{
-			// 			todo			
 			FunctionBody += FString::Printf(TEXT("\treturn 0;\r\n"));
 		}
 	}

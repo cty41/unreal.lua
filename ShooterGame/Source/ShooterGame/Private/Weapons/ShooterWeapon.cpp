@@ -382,104 +382,110 @@ void AShooterWeapon::GiveAmmo(int AddAmount)
 
 void AShooterWeapon::UseAmmo()
 {
-	if (!HasInfiniteAmmo())
+	if(!UTableUtil::callr<bool>("CppCallBack", "shooterweapon", "UseAmmo", this))
 	{
-		CurrentAmmoInClip--;
-	}
-
-	if (!HasInfiniteAmmo() && !HasInfiniteClip())
-	{
-		CurrentAmmo--;
-	}
-
-	AShooterAIController* BotAI = MyPawn ? Cast<AShooterAIController>(MyPawn->GetController()) : NULL;	
-	AShooterPlayerController* PlayerController = MyPawn ? Cast<AShooterPlayerController>(MyPawn->GetController()) : NULL;
-	if (BotAI)
-	{
-		BotAI->CheckAmmo(this);
-	}
-	else if(PlayerController)
-	{
-		AShooterPlayerState* PlayerState = Cast<AShooterPlayerState>(PlayerController->PlayerState);
-		switch (GetAmmoType())
+		if (!HasInfiniteAmmo())
 		{
-			case EAmmoType::ERocket:
-				PlayerState->AddRocketsFired(1);
-				break;
-			case EAmmoType::EBullet:
-			default:
-				PlayerState->AddBulletsFired(1);
-				break;			
+			CurrentAmmoInClip--;
+		}
+
+		if (!HasInfiniteAmmo() && !HasInfiniteClip())
+		{
+			CurrentAmmo--;
+		}
+
+		AShooterAIController* BotAI = MyPawn ? Cast<AShooterAIController>(MyPawn->GetController()) : NULL;	
+		AShooterPlayerController* PlayerController = MyPawn ? Cast<AShooterPlayerController>(MyPawn->GetController()) : NULL;
+		if (BotAI)
+		{
+			BotAI->CheckAmmo(this);
+		}
+		else if(PlayerController)
+		{
+			AShooterPlayerState* PlayerState = Cast<AShooterPlayerState>(PlayerController->PlayerState);
+			switch (GetAmmoType())
+			{
+				case EAmmoType::ERocket:
+					PlayerState->AddRocketsFired(1);
+					break;
+				case EAmmoType::EBullet:
+				default:
+					PlayerState->AddBulletsFired(1);
+					break;			
+			}
 		}
 	}
 }
 
 void AShooterWeapon::HandleFiring()
 {
-	if ((CurrentAmmoInClip > 0 || HasInfiniteClip() || HasInfiniteAmmo()) && CanFire())
+	if(!UTableUtil::callr<bool>("CppCallBack", "shooterweapon", "HandleFiring", this))
 	{
-		if (GetNetMode() != NM_DedicatedServer)
+		if ((CurrentAmmoInClip > 0 || HasInfiniteClip() || HasInfiniteAmmo()) && CanFire())
 		{
-			SimulateWeaponFire();
+			if (GetNetMode() != NM_DedicatedServer)
+			{
+				SimulateWeaponFire();
+			}
+
+			if (MyPawn && MyPawn->IsLocallyControlled())
+			{
+				FireWeapon();
+
+				UseAmmo();
+				
+				// update firing FX on remote clients if function was called on server
+				BurstCounter++;
+			}
+		}
+		else if (CanReload())
+		{
+			StartReload();
+		}
+		else if (MyPawn && MyPawn->IsLocallyControlled())
+		{
+			if (GetCurrentAmmo() == 0 && !bRefiring)
+			{
+				PlayWeaponSound(OutOfAmmoSound);
+				AShooterPlayerController* MyPC = Cast<AShooterPlayerController>(MyPawn->Controller);
+				AShooterHUD* MyHUD = MyPC ? Cast<AShooterHUD>(MyPC->GetHUD()) : NULL;
+				if (MyHUD)
+				{
+					MyHUD->NotifyOutOfAmmo();
+				}
+			}
+			
+			// stop weapon fire FX, but stay in Firing state
+			if (BurstCounter > 0)
+			{
+				OnBurstFinished();
+			}
 		}
 
 		if (MyPawn && MyPawn->IsLocallyControlled())
 		{
-			FireWeapon();
-
-			UseAmmo();
-			
-			// update firing FX on remote clients if function was called on server
-			BurstCounter++;
-		}
-	}
-	else if (CanReload())
-	{
-		StartReload();
-	}
-	else if (MyPawn && MyPawn->IsLocallyControlled())
-	{
-		if (GetCurrentAmmo() == 0 && !bRefiring)
-		{
-			PlayWeaponSound(OutOfAmmoSound);
-			AShooterPlayerController* MyPC = Cast<AShooterPlayerController>(MyPawn->Controller);
-			AShooterHUD* MyHUD = MyPC ? Cast<AShooterHUD>(MyPC->GetHUD()) : NULL;
-			if (MyHUD)
+			// local client will notify server
+			if (Role < ROLE_Authority)
 			{
-				MyHUD->NotifyOutOfAmmo();
+				ServerHandleFiring();
+			}
+
+			// reload after firing last round
+			if (CurrentAmmoInClip <= 0 && CanReload())
+			{
+				StartReload();
+			}
+
+			// setup refire timer
+			bRefiring = (CurrentState == EWeaponState::Firing && WeaponConfig.TimeBetweenShots > 0.0f);
+			if (bRefiring)
+			{
+				GetWorldTimerManager().SetTimer(TimerHandle_HandleFiring, this, &AShooterWeapon::HandleFiring, WeaponConfig.TimeBetweenShots, false);
 			}
 		}
-		
-		// stop weapon fire FX, but stay in Firing state
-		if (BurstCounter > 0)
-		{
-			OnBurstFinished();
-		}
+
+		LastFireTime = GetWorld()->GetTimeSeconds();
 	}
-
-	if (MyPawn && MyPawn->IsLocallyControlled())
-	{
-		// local client will notify server
-		if (Role < ROLE_Authority)
-		{
-			ServerHandleFiring();
-		}
-
-		// reload after firing last round
-		if (CurrentAmmoInClip <= 0 && CanReload())
-		{
-			StartReload();
-		}
-
-		// setup refire timer
-		bRefiring = (CurrentState == EWeaponState::Firing && WeaponConfig.TimeBetweenShots > 0.0f);
-		if (bRefiring)
-		{
-			GetWorldTimerManager().SetTimer(TimerHandle_HandleFiring, this, &AShooterWeapon::HandleFiring, WeaponConfig.TimeBetweenShots, false);
-		}
-	}
-
-	LastFireTime = GetWorld()->GetTimeSeconds();
 }
 
 bool AShooterWeapon::ServerHandleFiring_Validate()
@@ -572,32 +578,38 @@ void AShooterWeapon::DetermineWeaponState()
 
 void AShooterWeapon::OnBurstStarted()
 {
+	if (!UTableUtil::callr<bool>("CppCallBack", "shooterweapon", "OnBurstStarted", this))
+	{
 	// start firing, can be delayed to satisfy TimeBetweenShots
-	const float GameTime = GetWorld()->GetTimeSeconds();
-	if (LastFireTime > 0 && WeaponConfig.TimeBetweenShots > 0.0f &&
-		LastFireTime + WeaponConfig.TimeBetweenShots > GameTime)
-	{
-		GetWorldTimerManager().SetTimer(TimerHandle_HandleFiring, this, &AShooterWeapon::HandleFiring, LastFireTime + WeaponConfig.TimeBetweenShots - GameTime, false);
-	}
-	else
-	{
-		HandleFiring();
+		const float GameTime = GetWorld()->GetTimeSeconds();
+		if (LastFireTime > 0 && WeaponConfig.TimeBetweenShots > 0.0f &&
+			LastFireTime + WeaponConfig.TimeBetweenShots > GameTime)
+		{
+			GetWorldTimerManager().SetTimer(TimerHandle_HandleFiring, this, &AShooterWeapon::HandleFiring, LastFireTime + WeaponConfig.TimeBetweenShots - GameTime, false);
+		}
+		else
+		{
+			HandleFiring();
+		}
 	}
 }
 
 void AShooterWeapon::OnBurstFinished()
 {
 	// stop firing FX on remote clients
-	BurstCounter = 0;
-
-	// stop firing FX locally, unless it's a dedicated server
-	if (GetNetMode() != NM_DedicatedServer)
+	if (!UTableUtil::callr<bool>("CppCallBack", "shooterweapon", "OnBurstFinished", this))
 	{
-		StopSimulatingWeaponFire();
+		BurstCounter = 0;
+
+		// stop firing FX locally, unless it's a dedicated server
+		if (GetNetMode() != NM_DedicatedServer)
+		{
+			StopSimulatingWeaponFire();
+		}
+		
+		GetWorldTimerManager().ClearTimer(TimerHandle_HandleFiring);
+		bRefiring = false;
 	}
-	
-	GetWorldTimerManager().ClearTimer(TimerHandle_HandleFiring);
-	bRefiring = false;
 }
 
 

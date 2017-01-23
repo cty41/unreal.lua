@@ -12,7 +12,6 @@ function ShooterCharacter:CtorCpp()
 end
 
 function ShooterCharacter:OnStartFire()
-	Q_(self.lala)
 	local Controller = AShooterPlayerController.Cast(self.Controller)
 	if Controller and Controller:IsGameInputAllowed() then
 		if self:IsRunning() then
