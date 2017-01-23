@@ -267,6 +267,8 @@ FString FLuaScriptCodeGenerator::Push(const FString& ClassNameCPP, UFunction* Fu
 			CreateTableCode += FString::Printf(TEXT("\t\t%s* InnerProperty = Cast<%s>(p->Inner);\r\n"), *statictype, *statictype);
 			CreateTableCode += FString::Printf(TEXT("\t\t%s temp = (%s)InnerProperty->%s(%s.GetRawPtr(i));\r\n"), *typecast, *typecast, *GetPropertyGetFunc(PropertyArr->Inner), *name);
 			pushvalueName = FString::Printf(TEXT("temp"));
+			if (PropertyArr->Inner->IsA(UStructProperty::StaticClass()))
+				pushvalueName = FString::Printf(TEXT("*temp"));
 			pushCode = Push(ClassNameCPP, Function, PropertyArr->Inner, pushvalueName);
 		}
 		CreateTableCode += FString::Printf(TEXT("\t\t%s\r\n"), *pushCode);
@@ -507,7 +509,7 @@ bool FLuaScriptCodeGenerator::CanExportProperty(const FString& ClassNameCPP, UCl
 		if (Property->GetName() == "BookMarks")
 			return false;
 		if (auto p = Cast<UArrayProperty>(Property))
-			if (GetPropertyType(p->Inner) == "" || !IsPropertyTypeSupported(p->Inner) || GetPropertyType(p->Inner) == "UStructProperty")
+			if (GetPropertyType(p->Inner) == "" || !IsPropertyTypeSupported(p->Inner) /*|| GetPropertyType(p->Inner) == "UStructProperty"*/)
 				return false;
 		// Check if property type is supported
 		return IsPropertyTypeSupported(Property);
