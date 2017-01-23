@@ -22,6 +22,7 @@ protected:
 	TArray<FString> AllSourceClassHeaders;
 	/** All exported classes */
 	TArray<UClass*> LuaExportedClasses;
+	TArray<FString> LuaExportedTMPClasses;
 	TArray<FString> StructNames;
 	TArray<FString> EnumtNames;
 	/** Functions exported for a class */
@@ -30,6 +31,7 @@ protected:
 	TMap<UClass*, TArray<FPropertyAccessor> > ClassExportedProperties;
 	TSet<FString> SupportedStruct;
 	TSet<FString> NoexportPropertyStruct;
+	TSet<FString> WeakPtrClass;
 
 	/** Creats a 'glue' file that merges all generated script files */
 	void GlueAllGeneratedFiles();
@@ -59,8 +61,7 @@ protected:
 	FString GetterCode(FString  ClassNameCPP, FString classname, FString FuncName, UProperty* Property, UClass* PropertySuper = nullptr);
 	FString SetterCode(FString  ClassNameCPP, FString classname, FString FuncName, UProperty* Property, UClass* PropertySuper = nullptr);
 	FString FuncCode(FString  ClassNameCPP, FString classname, UFunction* Function, UClass* FuncSuper = nullptr);
-
-
+	void GenerateWeakClass();
 
 	FString InitializeParam(UProperty* Param, int32 ParamIndex, bool isnotpublicproperty = false);
 	void ExportStruct();

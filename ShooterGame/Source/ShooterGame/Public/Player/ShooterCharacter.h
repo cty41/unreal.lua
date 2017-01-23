@@ -51,6 +51,9 @@ public:
 
 	UPROPERTY()
 	int lala[10];
+
+	UPROPERTY()
+	TWeakObjectPtr<AActor> hehe;
 	/**
 	* Check if pawn is enemy if given controller.
 	*

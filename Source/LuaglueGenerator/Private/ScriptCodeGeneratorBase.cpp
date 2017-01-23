@@ -98,7 +98,6 @@ FString FScriptCodeGeneratorBase::GetPropertyTypeCPP(UProperty* Property, uint32
 		int FirstSpaceIndex = PropertyType.Find(TEXT(" "));
 		PropertyType = TEXT("TSubclassOf<") + PropertyType.Mid(FirstSpaceIndex + 1);
 	}
-
 	return PropertyType;
 }
 
@@ -328,7 +327,7 @@ bool FScriptCodeGeneratorBase::CanExportProperty(const FString& ClassNameCPP, UC
 	if (
 		Property->IsA(UDelegateProperty::StaticClass()) ||
 		Property->IsA(UMulticastDelegateProperty::StaticClass()) ||
-		Property->IsA(UWeakObjectProperty::StaticClass()) ||
+// 		Property->IsA(UWeakObjectProperty::StaticClass()) ||
 		Property->IsA(UInterfaceProperty::StaticClass())
 		)
 	{
