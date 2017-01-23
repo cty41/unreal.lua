@@ -191,7 +191,8 @@ FString FLuaScriptCodeGenerator::Push(const FString& ClassNameCPP, UFunction* Fu
 	if (ReturnValue->ArrayDim > 1 && bConsiderArrayDim)
 	{
 		FString CreateTableCode;
-		CreateTableCode = FString::Printf(TEXT("int32 len = sizeof(%s)/sizeof(%s);\r\n"), *name, *GetPropertyTypeCPP(ReturnValue, CPPF_ArgumentOrReturnValue));
+		// CreateTableCode = FString::Printf(TEXT("int32 len = sizeof(%s)/sizeof(%s);\r\n"), *name, *GetPropertyTypeCPP(ReturnValue, CPPF_ArgumentOrReturnValue));
+		CreateTableCode = FString::Printf(TEXT("int32 len = CPP_ARRAY_DIM(%s,%s);\r\n"), *ReturnValue->GetName(), *ClassNameCPP);
 		CreateTableCode += "\tlua_newtable(L);\r\n";
 		CreateTableCode += "\tfor(int32 i = 0; i < len; ++i)\r\n\t{\r\n";
 		CreateTableCode += "\t\tlua_pushinteger(L, i+1);\r\n";
@@ -707,8 +708,8 @@ FString FLuaScriptCodeGenerator::SetterCode(FString ClassNameCPP, FString classn
 	FString FunctionBody;
 	if (PropertySuper == NULL)
 	{
+		FunctionBody += FString::Printf(TEXT("\t%s\r\n"), *GenerateObjectDeclarationFromContext(ClassNameCPP));
 		if (Property->ArrayDim <= 1){
-			FunctionBody += FString::Printf(TEXT("\t%s\r\n"), *GenerateObjectDeclarationFromContext(ClassNameCPP));
 			if (Property->PropertyFlags & CPF_NativeAccessSpecifierPublic)
 			{
 				FString typecpp = GetPropertyTypeCPP(Property, CPPF_ArgumentOrReturnValue);
@@ -759,6 +760,19 @@ FString FLuaScriptCodeGenerator::SetterCode(FString ClassNameCPP, FString classn
 				}
 			}
 		}
+		else if (Property->PropertyFlags&CPF_NativeAccessSpecifierPublic)
+		{
+			FunctionBody += FString::Printf(TEXT("\tauto& val = Obj->%s;\r\n"), *Property->GetName());
+			FunctionBody += FString::Printf(TEXT("\tint32 len = CPP_ARRAY_DIM(%s,%s);\r\n"), *Property->GetName(), *ClassNameCPP);
+			FunctionBody += FString::Printf(TEXT("\tfor(int i = 0; i < len; ++i){\r\n"));
+			FunctionBody += FString::Printf(TEXT("\t\tlua_pushinteger(L, i+1);\r\n"));
+			FunctionBody += FString::Printf(TEXT("\t\tlua_rawget(L, -2);\r\n"));
+			FunctionBody += FString::Printf(TEXT("\t\tif (!lua_isnil(L, -1))\r\n"));
+			FunctionBody += FString::Printf(TEXT("\t\t\tval[i] = %s;\r\n"), *InitializeParam(Property, -3, false));
+			FunctionBody += FString::Printf(TEXT("\t\tlua_pop(L, 1);\r\n"), *InitializeParam(Property, -3, false));
+			FunctionBody += FString::Printf(TEXT("\t}\r\n"), *InitializeParam(Property, -3, false));
+		}
+
 		FunctionBody += TEXT("\treturn 0;\r\n");
 	}
 	else
