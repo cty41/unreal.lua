@@ -1,7 +1,12 @@
 // Copyright 1998-2016 Epic Games, Inc. All Rights Reserved.
 #include "LuaglueGeneratorPrivatePCH.h"
 #include "LuaScriptCodeGenerator.h"
-
+#define GetWeakObjType(varname, returnname) 		FString typeName = GetPropertyTypeCPP(varname, CPPF_ArgumentOrReturnValue); \
+		int FirstSpaceIndex = typeName.Find(TEXT("<"));\
+		typeName = typeName.Mid(FirstSpaceIndex + 1);\
+		typeName.RemoveAt(typeName.Len() - 1);\
+		FString returnname = FString::Printf(TEXT("TWeakObjectPtr_%s"), *typeName);
+		
 FLuaScriptCodeGenerator::FLuaScriptCodeGenerator(const FString& RootLocalPath, const FString& RootBuildPath, const FString& OutputDirectory, const FString& InIncludeBase)
 	: FScriptCodeGeneratorBase(RootLocalPath, RootBuildPath, OutputDirectory, InIncludeBase)
 {
@@ -138,10 +143,7 @@ FString FLuaScriptCodeGenerator::InitializeParam(UProperty* Param, int32 ParamIn
 		}
 		else if (Param->IsA(UWeakObjectProperty::StaticClass()))
 		{
-			FString typeName = GetPropertyTypeCPP(Param, CPPF_ArgumentOrReturnValue);
-			int FirstSpaceIndex = typeName.Find(TEXT("<"));
-			typeName = typeName.Mid(FirstSpaceIndex + 1);
-			typeName.RemoveAt(typeName.Len() - 1);
+			GetWeakObjType(Param, nomeaning)
 			Initializer = FString::Printf(TEXT("(%s*)(UTableUtil::tousertype(\"%s\","), *typeName, *typeName);
 		}
 		else if (Param->IsA(UObjectPropertyBase::StaticClass()) || Param->IsA(UStructProperty::StaticClass()))
@@ -244,12 +246,8 @@ FString FLuaScriptCodeGenerator::Push(const FString& ClassNameCPP, UFunction* Fu
 	}
 	else if (ReturnValue->IsA(UWeakObjectProperty::StaticClass()))
 	{
-		FString typeName = GetPropertyTypeCPP(ReturnValue, CPPF_ArgumentOrReturnValue);
-		int FirstSpaceIndex = typeName.Find(TEXT("<"));
-		typeName = typeName.Mid(FirstSpaceIndex + 1);
-		typeName.RemoveAt(typeName.Len() - 1);
-		FString newtemplatetype = FString::Printf(TEXT("TWeakObjectPtr_%s"), *typeName);
-		Initializer = FString::Printf(TEXT("UTableUtil::pushclass(\"%s\", (void*)(new %s(%s)));"), *newtemplatetype, *newtemplatetype, *name);
+		GetWeakObjType(ReturnValue, objtype)
+		Initializer = FString::Printf(TEXT("UTableUtil::pushclass(\"%s\", (void*)(new %s(%s)));"), *objtype, *objtype, *name);
 		WeakPtrClass.Add(typeName);
 	}
 	else if (ReturnValue->IsA(UObjectPropertyBase::StaticClass()))
@@ -642,10 +640,11 @@ FString FLuaScriptCodeGenerator::GetPropertyCastType(UProperty* Property)
 		FString typenamecpp = GetPropertyTypeCPP(Property, CPPF_ArgumentOrReturnValue);
 		return FString::Printf(TEXT("%s*"), *typenamecpp);
 	}
-// 	else if (Property->IsA(UStructProperty::StaticClass()))
-// 	{
-// 
-// 	}
+	else if (Property->IsA(UWeakObjectProperty::StaticClass()))
+	{
+		GetWeakObjType(Property, objtype)
+		return typeName + "*";
+	}
 	else
 	{
 		return FString("");
@@ -722,10 +721,7 @@ FString FLuaScriptCodeGenerator::GetterCode(FString ClassNameCPP, FString classn
 			FunctionBody += FString::Printf(TEXT("\t%s\r\n\treturn 1;\r\n"), *Push(ClassNameCPP, NULL, Property, FString("*result")));
  		else if (Property->IsA(UWeakObjectProperty::StaticClass()))
  		{
- 			if (!(Property->PropertyFlags & CPF_NativeAccessSpecifierPublic))
-	 			FunctionBody += FString::Printf(TEXT("\treturn 0;\r\n"));
-	 		else
-				FunctionBody += FString::Printf(TEXT("\t%s\r\n"), *GenerateReturnValueHandler(ClassNameCPP, NULL, Property));
+			FunctionBody += FString::Printf(TEXT("\t%s\r\n"), *GenerateReturnValueHandler(ClassNameCPP, NULL, Property));
 	 	}
 		else
 			FunctionBody += FString::Printf(TEXT("\t%s\r\n"), *GenerateReturnValueHandler(ClassNameCPP, NULL, Property));
