@@ -85,9 +85,8 @@ class AShooterWeapon_Instant : public AShooterWeapon
 	GENERATED_UCLASS_BODY()
 
 	/** get current spread */
+	UFUNCTION()
 	float GetCurrentSpread() const;
-
-protected:
 
 	virtual EAmmoType GetAmmoType() const override
 	{
@@ -129,21 +128,27 @@ protected:
 	void ServerNotifyMiss(FVector_NetQuantizeNormal ShootDir, int32 RandomSeed, float ReticleSpread);
 
 	/** process the instant hit and notify the server if necessary */
+	UFUNCTION()
 	void ProcessInstantHit(const FHitResult& Impact, const FVector& Origin, const FVector& ShootDir, int32 RandomSeed, float ReticleSpread);
 
 	/** continue processing the instant hit, as if it has been confirmed by the server */
+	UFUNCTION()
 	void ProcessInstantHit_Confirmed(const FHitResult& Impact, const FVector& Origin, const FVector& ShootDir, int32 RandomSeed, float ReticleSpread);
 
 	/** check if weapon should deal damage to actor */
+	UFUNCTION()
 	bool ShouldDealDamage(AActor* TestActor) const;
 
 	/** handle damage */
+	UFUNCTION()
 	void DealDamage(const FHitResult& Impact, const FVector& ShootDir);
 
 	/** [local] weapon specific fire implementation */
+	UFUNCTION()
 	virtual void FireWeapon() override;
 
 	/** [local + server] update spread on firing */
+	UFUNCTION()
 	virtual void OnBurstFinished() override;
 
 
@@ -154,11 +159,14 @@ protected:
 	void OnRep_HitNotify();
 
 	/** called in network play to do the cosmetic fx  */
+	UFUNCTION()
 	void SimulateInstantHit(const FVector& Origin, int32 RandomSeed, float ReticleSpread);
 
 	/** spawn effects for impact */
+	UFUNCTION()
 	void SpawnImpactEffects(const FHitResult& Impact);
 
 	/** spawn trail effect */
+	UFUNCTION()
 	void SpawnTrailEffect(const FVector& EndPoint);
 };

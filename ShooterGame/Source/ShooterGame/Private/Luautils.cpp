@@ -20,3 +20,9 @@ void ULuautils::SetupAttachment(USceneComponent* Child, USceneComponent* InParen
 {
 	Child->SetupAttachment(InParent, InSocketName);
 }
+
+void ULuautils::GetPlayerViewPoint(APlayerController* controler, FVector& out_Location, FRotator& out_Rotation )
+{
+	if (controler)
+		controler->GetPlayerViewPoint(out_Location, out_Rotation);
+}

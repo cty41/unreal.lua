@@ -13,6 +13,9 @@ end
 function FVector:IsZero()
 	return self.X==0 and self.Y == 0 and self.Z == 0
 end
+function FVector.ZeroVector()
+	return FVector.New(0, 0, 0)
+end
 
 function FVector:Normal()
 	return UKismetMathLibrary.Normal(self)
@@ -34,6 +37,10 @@ function FRotator.New(Pitch, Yaw, Roll)
 	if Yaw then v.Yaw = Yaw end
 	if Roll then v.Roll = Roll end
 	return v
+end
+
+function FRotator:Vector()
+	return UKismetMathLibrary.Conv_RotatorToVector(self)
 end
 
 function FReplifetimeCond.NewItem(name, cond)

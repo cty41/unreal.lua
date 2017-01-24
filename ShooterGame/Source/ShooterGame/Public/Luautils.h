@@ -31,4 +31,7 @@ public:
 	UFUNCTION()
 	static void SetupAttachment(USceneComponent* Child, USceneComponent* InParent, FName InSocketName = NAME_None);
 
+	UFUNCTION()
+	static void GetPlayerViewPoint(APlayerController* controler, FVector& out_Location, FRotator& out_Rotation);
+
 };

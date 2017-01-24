@@ -280,4 +280,38 @@ function ShooterWeapon:OnBurstFinished()
 	return true
 end
 
+function ShooterWeapon:GetCameraAim()
+	local PlayerController = self.Instigator and AShooterPlayerController.Cast(self.Instigator.Controller)
+	local FinalAim = FVector.ZeroVector()
+
+	if PlayerController then
+		local CamLoc, CamRot = ULuautils.GetPlayerViewPoint(PlayerController, FVector.New(), FRotator.New())
+		FinalAim = CamRot:Vector()
+	elseif self.Instigator then
+		FinalAim = self.Instigator:GetBaseAimRotation():Vector()
+	end
+
+	return FinalAim
+end
+
+function ShooterWeapon:GetAdjustedAim()
+	local PlayerController = self.Instigator and AShooterPlayerController.Cast(self.Instigator.Controller)
+
+	local FinalAim = FVector.ZeroVector()
+	if PlayerController then
+		local CamLoc, CamRot = ULuautils.GetPlayerViewPoint(PlayerController, FVector.New(), FRotator.New())
+		FinalAim = CamRot:Vector()
+	elseif self.Instigator then
+		local MyPawn = self.MyPawn
+		local AIController = MyPawn and AShooterAIController.Cast(MyPawn.Controller)
+		if AIController then
+			FinalAim = AIController:GetControlRotation():Vector()
+		else
+			FinalAim = self.Instigator:GetBaseAimRotation():Vector()
+		end
+	end
+
+	return FinalAim
+end
+
 return ShooterWeapon

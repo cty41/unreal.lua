@@ -656,51 +656,56 @@ void AShooterWeapon::StopWeaponAnimation(const FWeaponAnim& Animation)
 
 FVector AShooterWeapon::GetCameraAim() const
 {
-	AShooterPlayerController* const PlayerController = Instigator ? Cast<AShooterPlayerController>(Instigator->Controller) : NULL;
-	FVector FinalAim = FVector::ZeroVector;
+	return UTableUtil::callr<FVector>("CppCallBack", "shooterweapon", "GetCameraAim", this);
+	// {
+	// 	AShooterPlayerController* const PlayerController = Instigator ? Cast<AShooterPlayerController>(Instigator->Controller) : NULL;
+	// 	FVector FinalAim = FVector::ZeroVector;
 
-	if (PlayerController)
-	{
-		FVector CamLoc;
-		FRotator CamRot;
-		PlayerController->GetPlayerViewPoint(CamLoc, CamRot);
-		FinalAim = CamRot.Vector();
-	}
-	else if (Instigator)
-	{
-		FinalAim = Instigator->GetBaseAimRotation().Vector();		
-	}
+	// 	if (PlayerController)
+	// 	{
+	// 		FVector CamLoc;
+	// 		FRotator CamRot;
+	// 		PlayerController->GetPlayerViewPoint(CamLoc, CamRot);
+	// 		FinalAim = CamRot.Vector();
+	// 	}
+	// 	else if (Instigator)
+	// 	{
+	// 		FinalAim = Instigator->GetBaseAimRotation().Vector();		
+	// 	}
 
-	return FinalAim;
+	// 	return FinalAim;
+	// }
 }
 
 FVector AShooterWeapon::GetAdjustedAim() const
 {
-	AShooterPlayerController* const PlayerController = Instigator ? Cast<AShooterPlayerController>(Instigator->Controller) : NULL;
-	FVector FinalAim = FVector::ZeroVector;
-	// If we have a player controller use it for the aim
-	if (PlayerController)
-	{
-		FVector CamLoc;
-		FRotator CamRot;
-		PlayerController->GetPlayerViewPoint(CamLoc, CamRot);
-		FinalAim = CamRot.Vector();
-	}
-	else if (Instigator)
-	{
-		// Now see if we have an AI controller - we will want to get the aim from there if we do
-		AShooterAIController* AIController = MyPawn ? Cast<AShooterAIController>(MyPawn->Controller) : NULL;
-		if(AIController != NULL )
-		{
-			FinalAim = AIController->GetControlRotation().Vector();
-		}
-		else
-		{			
-			FinalAim = Instigator->GetBaseAimRotation().Vector();
-		}
-	}
+	return UTableUtil::callr<FVector>("CppCallBack", "shooterweapon", "GetAdjustedAim", this);
+	
+	// AShooterPlayerController* const PlayerController = Instigator ? Cast<AShooterPlayerController>(Instigator->Controller) : NULL;
+	// FVector FinalAim = FVector::ZeroVector;
+	// // If we have a player controller use it for the aim
+	// if (PlayerController)
+	// {
+	// 	FVector CamLoc;
+	// 	FRotator CamRot;
+	// 	PlayerController->GetPlayerViewPoint(CamLoc, CamRot);
+	// 	FinalAim = CamRot.Vector();
+	// }
+	// else if (Instigator)
+	// {
+	// 	// Now see if we have an AI controller - we will want to get the aim from there if we do
+	// 	AShooterAIController* AIController = MyPawn ? Cast<AShooterAIController>(MyPawn->Controller) : NULL;
+	// 	if(AIController != NULL )
+	// 	{
+	// 		FinalAim = AIController->GetControlRotation().Vector();
+	// 	}
+	// 	else
+	// 	{			
+	// 		FinalAim = Instigator->GetBaseAimRotation().Vector();
+	// 	}
+	// }
 
-	return FinalAim;
+	// return FinalAim;
 }
 
 FVector AShooterWeapon::GetCameraDamageStartLocation(const FVector& AimDir) const

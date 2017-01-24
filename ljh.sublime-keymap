@@ -36,6 +36,8 @@
 	{ "keys": ["alt+enter"], "command": "run_macro_file", "args": {"file": "res://Packages/Default/Add Line.sublime-macro"} },
 	{ "keys": ["alt+shift+enter"], "command": "run_macro_file", "args": {"file": "res://Packages/Default/Add Line Before.sublime-macro"} },
 	
+	{ "keys": ["ctrl+alt+,"], "command": "scroll_lines", "args": {"amount": 15.0 } },
+	{ "keys": ["ctrl+alt+."], "command": "scroll_lines", "args": {"amount": -15.0 } },
 	// { "keys": ["ctrl+shift+d"], "command": "duplicate_line" },
 	
 ]
