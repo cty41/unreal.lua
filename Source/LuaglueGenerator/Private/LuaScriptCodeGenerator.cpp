@@ -5,6 +5,7 @@
 FLuaScriptCodeGenerator::FLuaScriptCodeGenerator(const FString& RootLocalPath, const FString& RootBuildPath, const FString& OutputDirectory, const FString& InIncludeBase)
 	: FScriptCodeGeneratorBase(RootLocalPath, RootBuildPath, OutputDirectory, InIncludeBase)
 {
+	WeakPtrClass.Add("UObject");
 	SupportedStruct = TSet<FString>{
 		"Vector" ,
 		"Rotator" ,
@@ -1013,9 +1014,11 @@ void FLuaScriptCodeGenerator::ExportStruct()
 
 void FLuaScriptCodeGenerator::ExportEnum()
 {
-
 	const FString ClassGlueFilename = GeneratedCodePath / TEXT("allEnum.script.h");
 	FString GeneratedGlue;
+	GeneratedGlue += TEXT("struct EnumItem\r\n{\r\n");
+	GeneratedGlue += TEXT("\tconst char* key;\r\n");
+	GeneratedGlue += TEXT("\tconst int32 value;\r\n};\r\n");
 	for (TObjectIterator<UEnum> It; It; ++It)
 	{
 		UEnum* e = *It;

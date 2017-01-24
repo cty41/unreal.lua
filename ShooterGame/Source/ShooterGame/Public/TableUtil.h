@@ -4,16 +4,13 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "Luautils.h"
 #include "TableUtil.generated.h"
+class TWeakObjectPtr_UObject;
+struct EnumItem;
 DECLARE_LOG_CATEGORY_EXTERN(LuaLog, Log, All);
 #define LuaDebug 1
 using namespace std;
 using luafunc = int( struct lua_State* );
 
-struct EnumItem
-{
-	const char* key;
-	const int32 value;
-};
 
 class FLuaGcObj : FGCObject
 {
@@ -120,6 +117,9 @@ public:
 
 	template<class T> 
 	static int push(TArray<T> value);
+
+	template<class T>
+	static int push(TWeakObjectPtr<T> value);
 
 	template<class T>
 	class popiml{
@@ -300,5 +300,14 @@ int UTableUtil::push(TArray<T> value)
 		push(value[i]);
 		lua_rawset(L, -3);
 	}
+	return 1;
+}
+
+template<class T>
+int UTableUtil::push(TWeakObjectPtr<T> value)
+{
+	UObject *p = (UObject *)(value.Get());
+	TWeakObjectPtr_UObject* weakObj = new TWeakObjectPtr_UObject(p);
+	pushclass("TWeakObjectPtr_UObject", (void*)weakObj);
 	return 1;
 }

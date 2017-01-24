@@ -7,7 +7,6 @@
 #include "TableUtil.h"
 #include "GeneratedScriptLibraries.inl"
 
-
 DEFINE_LOG_CATEGORY(LuaLog);
 
 lua_State* UTableUtil::L = nullptr;
