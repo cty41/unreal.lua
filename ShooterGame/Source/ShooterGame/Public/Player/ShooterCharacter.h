@@ -513,6 +513,9 @@ public:
 
 	/** Returns Mesh1P subobject **/
 	FORCEINLINE USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
+private:
+	UPROPERTY()
+	TWeakObjectPtr<AActor> xixi;
 };
 
 

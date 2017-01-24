@@ -136,6 +136,14 @@ FString FLuaScriptCodeGenerator::InitializeParam(UProperty* Param, int32 ParamIn
 		{
 
 		}
+		else if (Param->IsA(UWeakObjectProperty::StaticClass()))
+		{
+			FString typeName = GetPropertyTypeCPP(Param, CPPF_ArgumentOrReturnValue);
+			int FirstSpaceIndex = typeName.Find(TEXT("<"));
+			typeName = typeName.Mid(FirstSpaceIndex + 1);
+			typeName.RemoveAt(typeName.Len() - 1);
+			Initializer = FString::Printf(TEXT("(%s*)(UTableUtil::tousertype(\"%s\","), *typeName, *typeName);
+		}
 		else if (Param->IsA(UObjectPropertyBase::StaticClass()) || Param->IsA(UStructProperty::StaticClass()))
 		{
 			FString typeName = GetPropertyTypeCPP(Param, CPPF_ArgumentOrReturnValue);
@@ -559,8 +567,8 @@ FString FLuaScriptCodeGenerator::GetPropertyType(UProperty* Property) const
 	}
 	else if (Property->IsA(UWeakObjectProperty::StaticClass()))
 	{
-		return FString("");
-// 		return FString("UWeakObjectProperty");
+		// return FString("");
+		return FString("UWeakObjectProperty");
 	}
 	else if (Property->IsA(UObjectPropertyBase::StaticClass()))
 	{
@@ -589,6 +597,10 @@ FString FLuaScriptCodeGenerator::GetPropertyGetFunc(UProperty* Property) const
 	if (Property->IsA(UClassProperty::StaticClass()))
 	{
 		return FString("ContainerPtrToValuePtr<void>");
+	}
+	if (Property->IsA(UWeakObjectProperty::StaticClass()))
+	{
+		return FString("GetObjectPropertyValue_InContainer");
 	}
 	else if (Property->IsA(UObjectPropertyBase::StaticClass()))
 	{
@@ -672,7 +684,7 @@ FString FLuaScriptCodeGenerator::GetterCode(FString ClassNameCPP, FString classn
 			else
 				FunctionBody += FString::Printf(TEXT("\t%s result = Obj->%s;\r\n"), *GetPropertyTypeCPP(Property, CPPF_ArgumentOrReturnValue), *Property->GetName());
 		}
-		else if( Property->ArrayDim <= 1 && !Property->IsA(UWeakObjectProperty::StaticClass()))
+		else if( Property->ArrayDim <= 1 )
 		{
 			FString statictype = GetPropertyType(Property);
 			if (!statictype.IsEmpty())
@@ -690,7 +702,7 @@ FString FLuaScriptCodeGenerator::GetterCode(FString ClassNameCPP, FString classn
 					else
 						FunctionBody += FString::Printf(TEXT("\t%s result = (%s)p->%s(Obj);\r\n"), *typecpp, *typecast, *GetPropertyGetFunc(Property));
 				}
-				else if (typecpp.Contains("TWeakObjectPtr"))
+				else if (!typecpp.Contains("TArray") && typecpp.Contains("TWeakObjectPtr"))
 				{
 					FunctionBody += FString::Printf(TEXT("\t%s result = (%s)p->%s(Obj);\r\n"), *typecpp, *typecast, *GetPropertyGetFunc(Property));
 				}
@@ -708,8 +720,13 @@ FString FLuaScriptCodeGenerator::GetterCode(FString ClassNameCPP, FString classn
 			FunctionBody += FString::Printf(TEXT("\treturn 0;\r\n"));
 		else if (Property->IsA(UStructProperty::StaticClass()) && !(Property->PropertyFlags & CPF_NativeAccessSpecifierPublic))
 			FunctionBody += FString::Printf(TEXT("\t%s\r\n\treturn 1;\r\n"), *Push(ClassNameCPP, NULL, Property, FString("*result")));
- 		else if (Property->IsA(UWeakObjectProperty::StaticClass()) && !(Property->PropertyFlags & CPF_NativeAccessSpecifierPublic))
- 			FunctionBody += FString::Printf(TEXT("\treturn 0;\r\n"));
+ 		else if (Property->IsA(UWeakObjectProperty::StaticClass()))
+ 		{
+ 			if (!(Property->PropertyFlags & CPF_NativeAccessSpecifierPublic))
+	 			FunctionBody += FString::Printf(TEXT("\treturn 0;\r\n"));
+	 		else
+				FunctionBody += FString::Printf(TEXT("\t%s\r\n"), *GenerateReturnValueHandler(ClassNameCPP, NULL, Property));
+	 	}
 		else
 			FunctionBody += FString::Printf(TEXT("\t%s\r\n"), *GenerateReturnValueHandler(ClassNameCPP, NULL, Property));
 	}
@@ -783,6 +800,11 @@ FString FLuaScriptCodeGenerator::SetterCode(FString ClassNameCPP, FString classn
 
 					}
 				}
+			}
+			else
+			{
+				if (Property->PropertyFlags&CPF_NativeAccessSpecifierPublic)
+					FunctionBody += FString::Printf(TEXT("\tObj->%s = %s);\r\n"), *Property->GetName(), *InitializeParam(Property, 0));
 			}
 		}
 		else if (Property->PropertyFlags&CPF_NativeAccessSpecifierPublic && !Property->IsA(UWeakObjectProperty::StaticClass()))
