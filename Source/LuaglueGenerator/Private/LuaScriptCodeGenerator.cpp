@@ -145,6 +145,7 @@ FString FLuaScriptCodeGenerator::InitializeParam(UProperty* Param, int32 ParamIn
 		{
 			GetWeakObjType(Param, nomeaning)
 			Initializer = FString::Printf(TEXT("(%s*)(UTableUtil::tousertype(\"%s\","), *typeName, *typeName);
+			return FString::Printf(TEXT("%s %d))"), *Initializer, ParamIndex);
 		}
 		else if (Param->IsA(UObjectPropertyBase::StaticClass()) || Param->IsA(UStructProperty::StaticClass()))
 		{
@@ -661,6 +662,10 @@ FString FLuaScriptCodeGenerator::GetPropertySetCastType(UProperty* Property)
 		FString typecpp = GetPropertyTypeCPP(Property, CPPF_ArgumentOrReturnValue);
 		return FString::Printf(TEXT("%s*"), *typecpp);
 	}
+	else if (Property->IsA(UWeakObjectProperty::StaticClass()))
+	{
+		return GetPropertyCastType(Property);
+	}
 	else
 	{
 		return FString("");
@@ -745,8 +750,8 @@ FString FLuaScriptCodeGenerator::SetterCode(FString ClassNameCPP, FString classn
 	{
 		FunctionBody += FString::Printf(TEXT("\t%s\r\n"), *GenerateObjectDeclarationFromContext(ClassNameCPP));
 		if (Property->ArrayDim <= 1) {
-			if (!Property->IsA(UWeakObjectProperty::StaticClass()))
-			{
+			// if (!Property->IsA(UWeakObjectProperty::StaticClass()))
+			// {
 				if (Property->PropertyFlags & CPF_NativeAccessSpecifierPublic)
 				{
 					FString typecpp = GetPropertyTypeCPP(Property, CPPF_ArgumentOrReturnValue);
@@ -796,12 +801,12 @@ FString FLuaScriptCodeGenerator::SetterCode(FString ClassNameCPP, FString classn
 
 					}
 				}
-			}
-			else
-			{
-				if (Property->PropertyFlags&CPF_NativeAccessSpecifierPublic)
-					FunctionBody += FString::Printf(TEXT("\tObj->%s = %s);\r\n"), *Property->GetName(), *InitializeParam(Property, 0));
-			}
+			// }
+			// else
+			// {
+			// 	if (Property->PropertyFlags&CPF_NativeAccessSpecifierPublic)
+			// 		FunctionBody += FString::Printf(TEXT("\tObj->%s = %s);\r\n"), *Property->GetName(), *InitializeParam(Property, 0));
+			// }
 		}
 		else if (Property->PropertyFlags&CPF_NativeAccessSpecifierPublic && !Property->IsA(UWeakObjectProperty::StaticClass()))
 		{
