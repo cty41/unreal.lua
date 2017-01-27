@@ -1,5 +1,11 @@
 function FVector:__add(other)
 	return UKismetMathLibrary.Add_VectorVector(self, other)
+end
+function FVector:__sub(other)
+ 	return UKismetMathLibrary.Subtract_VectorVector(self, other)
+end
+function FVector:__mul(other)
+ 	return UKismetMathLibrary.Multiply_VectorFloat(self, other)
 end 
 local FVector_CppNew = FVector.New
 function FVector.New(x, y, z)
@@ -30,6 +36,19 @@ function FVector:Dot(other)
 	return UKismetMathLibrary.Dot_VectorVector(self, other)
 end
 
+function FVector:Rotation()
+	return UKismetMathLibrary.Conv_VectorToRotator(self)
+end
+
+FVector_NetQuantizeNormal.__mul = FVector.__mul
+FVector_NetQuantizeNormal.__add = FVector.__add
+FVector_NetQuantizeNormal.__sub = FVector.__sub
+FVector_NetQuantizeNormal.Normal = FVector.Normal
+FVector_NetQuantizeNormal.Normal2D = FVector.Normal2D
+FVector_NetQuantizeNormal.Dot = FVector.Dot
+FVector_NetQuantizeNormal.Rotation = FVector.Rotation
+FVector_NetQuantizeNormal.IsZero = FVector.IsZero
+
 local FRotator_CppNew = FRotator.New
 function FRotator.New(Pitch, Yaw, Roll)
 	local v = FRotator_CppNew()
@@ -48,4 +67,11 @@ function FReplifetimeCond.NewItem(name, cond)
 	v.PropertyName = name
 	v.Cond = cond or ELifetimeCondition.COND_None
 	return v
+end
+
+function FTransform.Make(Location, Rotation, Scale)
+	Location = Location or FVector.New() 
+	Rotation = Rotation or FRotator.New()
+	Scale = Scale or FVector.New(1,1,1)
+	return UKismetMathLibrary.MakeTransform(Location, Rotation, Scale)
 end

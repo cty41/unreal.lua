@@ -114,6 +114,7 @@ class AShooterWeapon_Instant : public AShooterWeapon
 	FInstantHitInfo HitNotify;
 
 	/** current spread from continuous firing */
+	UPROPERTY()
 	float CurrentFiringSpread;
 
 	//////////////////////////////////////////////////////////////////////////

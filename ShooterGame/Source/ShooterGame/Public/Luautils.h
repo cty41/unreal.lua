@@ -34,4 +34,7 @@ public:
 	UFUNCTION()
 	static void GetPlayerViewPoint(APlayerController* controler, FVector& out_Location, FRotator& out_Rotation);
 
+	UFUNCTION()
+	static FRotator GetViewRotation(APawn* pawn);
+
 };

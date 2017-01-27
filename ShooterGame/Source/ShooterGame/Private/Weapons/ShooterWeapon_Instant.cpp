@@ -4,6 +4,7 @@
 #include "Weapons/ShooterWeapon_Instant.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Effects/ShooterImpactEffect.h"
+#include "TableUtil.h"
 
 AShooterWeapon_Instant::AShooterWeapon_Instant(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -15,20 +16,23 @@ AShooterWeapon_Instant::AShooterWeapon_Instant(const FObjectInitializer& ObjectI
 
 void AShooterWeapon_Instant::FireWeapon()
 {
-	const int32 RandomSeed = FMath::Rand();
-	FRandomStream WeaponRandomStream(RandomSeed);
-	const float CurrentSpread = GetCurrentSpread();
-	const float ConeHalfAngle = FMath::DegreesToRadians(CurrentSpread * 0.5f);
+	if (!UTableUtil::callr<bool>("CppCallBack", "shooterweapon_instan", "FireWeapon", this))
+	{
+		const int32 RandomSeed = FMath::Rand();
+		FRandomStream WeaponRandomStream(RandomSeed);
+		const float CurrentSpread = GetCurrentSpread();
+		const float ConeHalfAngle = FMath::DegreesToRadians(CurrentSpread * 0.5f);
 
-	const FVector AimDir = GetAdjustedAim();
-	const FVector StartTrace = GetCameraDamageStartLocation(AimDir);
-	const FVector ShootDir = WeaponRandomStream.VRandCone(AimDir, ConeHalfAngle, ConeHalfAngle);
-	const FVector EndTrace = StartTrace + ShootDir * InstantConfig.WeaponRange;
+		const FVector AimDir = GetAdjustedAim();
+		const FVector StartTrace = GetCameraDamageStartLocation(AimDir);
+		const FVector ShootDir = WeaponRandomStream.VRandCone(AimDir, ConeHalfAngle, ConeHalfAngle);
+		const FVector EndTrace = StartTrace + ShootDir * InstantConfig.WeaponRange;
 
-	const FHitResult Impact = WeaponTrace(StartTrace, EndTrace);
-	ProcessInstantHit(Impact, StartTrace, ShootDir, RandomSeed, CurrentSpread);
+		const FHitResult Impact = WeaponTrace(StartTrace, EndTrace);
+		ProcessInstantHit(Impact, StartTrace, ShootDir, RandomSeed, CurrentSpread);
 
-	CurrentFiringSpread = FMath::Min(InstantConfig.FiringSpreadMax, CurrentFiringSpread + InstantConfig.FiringSpreadIncrement);
+		CurrentFiringSpread = FMath::Min(InstantConfig.FiringSpreadMax, CurrentFiringSpread + InstantConfig.FiringSpreadIncrement);
+	}
 }
 
 bool AShooterWeapon_Instant::ServerNotifyHit_Validate(const FHitResult& Impact, FVector_NetQuantizeNormal ShootDir, int32 RandomSeed, float ReticleSpread)
@@ -38,71 +42,74 @@ bool AShooterWeapon_Instant::ServerNotifyHit_Validate(const FHitResult& Impact, 
 
 void AShooterWeapon_Instant::ServerNotifyHit_Implementation(const FHitResult& Impact, FVector_NetQuantizeNormal ShootDir, int32 RandomSeed, float ReticleSpread)
 {
-	const float WeaponAngleDot = FMath::Abs(FMath::Sin(ReticleSpread * PI / 180.f));
-
-	// if we have an instigator, calculate dot between the view and the shot
-	if (Instigator && (Impact.GetActor() || Impact.bBlockingHit))
+	if (!UTableUtil::callr<bool>("CppCallBack", "shooterweapon_instan", "ServerNotifyHit_Implementation", this,Impact, ShootDir, RandomSeed, ReticleSpread))
 	{
-		const FVector Origin = GetMuzzleLocation();
-		const FVector ViewDir = (Impact.Location - Origin).GetSafeNormal();
+		const float WeaponAngleDot = FMath::Abs(FMath::Sin(ReticleSpread * PI / 180.f));
 
-		// is the angle between the hit and the view within allowed limits (limit + weapon max angle)
-		const float ViewDotHitDir = FVector::DotProduct(Instigator->GetViewRotation().Vector(), ViewDir);
-		if (ViewDotHitDir > InstantConfig.AllowedViewDotHitDir - WeaponAngleDot)
+		// if we have an instigator, calculate dot between the view and the shot
+		if (Instigator && (Impact.GetActor() || Impact.bBlockingHit))
 		{
-			if (CurrentState != EWeaponState::Idle)
+			const FVector Origin = GetMuzzleLocation();
+			const FVector ViewDir = (Impact.Location - Origin).GetSafeNormal();
+
+			// is the angle between the hit and the view within allowed limits (limit + weapon max angle)
+			const float ViewDotHitDir = FVector::DotProduct(Instigator->GetViewRotation().Vector(), ViewDir);
+			if (ViewDotHitDir > InstantConfig.AllowedViewDotHitDir - WeaponAngleDot)
 			{
-				if (Impact.GetActor() == NULL)
+				if (CurrentState != EWeaponState::Idle)
 				{
-					if (Impact.bBlockingHit)
+					if (Impact.GetActor() == NULL)
 					{
-						ProcessInstantHit_Confirmed(Impact, Origin, ShootDir, RandomSeed, ReticleSpread);
+						if (Impact.bBlockingHit)
+						{
+							ProcessInstantHit_Confirmed(Impact, Origin, ShootDir, RandomSeed, ReticleSpread);
+						}
 					}
-				}
-				// assume it told the truth about static things because the don't move and the hit 
-				// usually doesn't have significant gameplay implications
-				else if (Impact.GetActor()->IsRootComponentStatic() || Impact.GetActor()->IsRootComponentStationary())
-				{
-					ProcessInstantHit_Confirmed(Impact, Origin, ShootDir, RandomSeed, ReticleSpread);
-				}
-				else
-				{
-					// Get the component bounding box
-					const FBox HitBox = Impact.GetActor()->GetComponentsBoundingBox();
-
-					// calculate the box extent, and increase by a leeway
-					FVector BoxExtent = 0.5 * (HitBox.Max - HitBox.Min);
-					BoxExtent *= InstantConfig.ClientSideHitLeeway;
-
-					// avoid precision errors with really thin objects
-					BoxExtent.X = FMath::Max(20.0f, BoxExtent.X);
-					BoxExtent.Y = FMath::Max(20.0f, BoxExtent.Y);
-					BoxExtent.Z = FMath::Max(20.0f, BoxExtent.Z);
-
-					// Get the box center
-					const FVector BoxCenter = (HitBox.Min + HitBox.Max) * 0.5;
-
-					// if we are within client tolerance
-					if (FMath::Abs(Impact.Location.Z - BoxCenter.Z) < BoxExtent.Z &&
-						FMath::Abs(Impact.Location.X - BoxCenter.X) < BoxExtent.X &&
-						FMath::Abs(Impact.Location.Y - BoxCenter.Y) < BoxExtent.Y)
+					// assume it told the truth about static things because the don't move and the hit 
+					// usually doesn't have significant gameplay implications
+					else if (Impact.GetActor()->IsRootComponentStatic() || Impact.GetActor()->IsRootComponentStationary())
 					{
 						ProcessInstantHit_Confirmed(Impact, Origin, ShootDir, RandomSeed, ReticleSpread);
 					}
 					else
 					{
-						UE_LOG(LogShooterWeapon, Log, TEXT("%s Rejected client side hit of %s (outside bounding box tolerance)"), *GetNameSafe(this), *GetNameSafe(Impact.GetActor()));
+						// Get the component bounding box
+						const FBox HitBox = Impact.GetActor()->GetComponentsBoundingBox();
+
+						// calculate the box extent, and increase by a leeway
+						FVector BoxExtent = 0.5 * (HitBox.Max - HitBox.Min);
+						BoxExtent *= InstantConfig.ClientSideHitLeeway;
+
+						// avoid precision errors with really thin objects
+						BoxExtent.X = FMath::Max(20.0f, BoxExtent.X);
+						BoxExtent.Y = FMath::Max(20.0f, BoxExtent.Y);
+						BoxExtent.Z = FMath::Max(20.0f, BoxExtent.Z);
+
+						// Get the box center
+						const FVector BoxCenter = (HitBox.Min + HitBox.Max) * 0.5;
+
+						// if we are within client tolerance
+						if (FMath::Abs(Impact.Location.Z - BoxCenter.Z) < BoxExtent.Z &&
+							FMath::Abs(Impact.Location.X - BoxCenter.X) < BoxExtent.X &&
+							FMath::Abs(Impact.Location.Y - BoxCenter.Y) < BoxExtent.Y)
+						{
+							ProcessInstantHit_Confirmed(Impact, Origin, ShootDir, RandomSeed, ReticleSpread);
+						}
+						else
+						{
+							UE_LOG(LogShooterWeapon, Log, TEXT("%s Rejected client side hit of %s (outside bounding box tolerance)"), *GetNameSafe(this), *GetNameSafe(Impact.GetActor()));
+						}
 					}
 				}
 			}
-		}
-		else if (ViewDotHitDir <= InstantConfig.AllowedViewDotHitDir)
-		{
-			UE_LOG(LogShooterWeapon, Log, TEXT("%s Rejected client side hit of %s (facing too far from the hit direction)"), *GetNameSafe(this), *GetNameSafe(Impact.GetActor()));
-		}
-		else
-		{
-			UE_LOG(LogShooterWeapon, Log, TEXT("%s Rejected client side hit of %s"), *GetNameSafe(this), *GetNameSafe(Impact.GetActor()));
+			else if (ViewDotHitDir <= InstantConfig.AllowedViewDotHitDir)
+			{
+				UE_LOG(LogShooterWeapon, Log, TEXT("%s Rejected client side hit of %s (facing too far from the hit direction)"), *GetNameSafe(this), *GetNameSafe(Impact.GetActor()));
+			}
+			else
+			{
+				UE_LOG(LogShooterWeapon, Log, TEXT("%s Rejected client side hit of %s"), *GetNameSafe(this), *GetNameSafe(Impact.GetActor()));
+			}
 		}
 	}
 }

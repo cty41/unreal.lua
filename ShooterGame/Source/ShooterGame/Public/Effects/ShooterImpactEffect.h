@@ -9,7 +9,7 @@
 // Spawnable effect for weapon hit impact - NOT replicated to clients
 // Each impact type should be defined as separate blueprint
 //
-UCLASS(Abstract, Blueprintable)
+UCLASS(Abstract, Blueprintable, meta = (Lua=1))
 class AShooterImpactEffect : public AActor
 {
 	GENERATED_UCLASS_BODY()

@@ -12,9 +12,6 @@ function ShooterCharacter:CtorCpp()
 end
 
 function ShooterCharacter:OnStartFire()
-	-- A_("xixi", self._cppinstance_)
-	-- A_(self.arrayxixi[1]:Get(), self.arrayxixi[2]:Get(), self._cppinstance_)
-	-- A_("jiji", self.jiji, self._cppinstance_)
 	local Controller = AShooterPlayerController.Cast(self.Controller)
 	if Controller and Controller:IsGameInputAllowed() then
 		if self:IsRunning() then

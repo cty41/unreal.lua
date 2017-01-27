@@ -67,7 +67,56 @@ FLuaScriptCodeGenerator::FLuaScriptCodeGenerator(const FString& RootLocalPath, c
 		"Int32Range",
 		"FloatInterval",
 		"Int32Interval",
-		"ActorTickFunction"
+		"ActorTickFunction",
+		"FastArraySerializerItem",
+		"FastArraySerializer",
+		"Vector_NetQuantize",
+		"Vector_NetQuantize10",
+		"Vector_NetQuantize100",
+		"Vector_NetQuantizeNormal",
+		"LightingChannels",
+		"ResponseChannel",
+		"CollisionResponseContainer",
+		"RigidBodyState",
+		"RigidBodyErrorCorrection",
+		"RigidBodyContactInfo",
+		"CollisionImpactData",
+		"FractureEffect",
+		"BasedPosition",
+		"SubtitleCue",
+		"LocalizedSubtitle",
+		"LightmassLightSettings",
+		"LightmassPointLightSettings",
+		"LightmassDirectionalLightSettings",
+		"LightmassPrimitiveSettings",
+		"LightmassDebugOptions",
+		"SwarmDebugOptions",
+		"PrimitiveMaterialRef",
+		"OverlapResult",
+		"MTDResult",
+		"AnimSlotInfo",
+		"AnimSlotDesc",
+		"AnimUpdateRateParameters",
+		"POV",
+		"MeshBuildSettings",
+		"DamageEvent",
+		"PointDamageEvent",
+		"RadialDamageParams",
+		"RadialDamageEvent",
+		"TimerHandle",
+		"RepMovement",
+		"RepAttachment",
+		"WalkableSlopeOverride",
+		"ConstrainComponentPropName",
+		"ComponentReference",
+		"FilePath",
+		"DirectoryPath",
+		"Redirector",
+		"DebugFloatHistory",
+		"DepthFieldGlowInfo",
+		"FontRenderInfo",
+		"CanvasUVTri",
+		"UserActivity",
 	};
 
 	NoexportPropertyStruct = TSet<FString>{
@@ -80,6 +129,7 @@ FLuaScriptCodeGenerator::FLuaScriptCodeGenerator(const FString& RootLocalPath, c
 		"FloatRange",
 		"Int32RangeBound",
 		"Int32Range",
+		"CollisionResponseContainer",
 	};
 }
 
@@ -385,10 +435,7 @@ bool FLuaScriptCodeGenerator::CanExportFunction(const FString& ClassNameCPP, UCl
 		for (TFieldIterator<UProperty> ParamIt(Function); bExport && ParamIt; ++ParamIt)
 		{
 			UProperty* Param = *ParamIt;
-// 			if (!CanExportProperty(ClassNameCPP, Class, Param))
 			if (!IsPropertyTypeSupported(Param))
-				return false;
-			if (Param->IsA(UWeakObjectProperty::StaticClass()))
 				return false;
 		}
 	}
@@ -450,9 +497,6 @@ FString FLuaScriptCodeGenerator::FuncCode(FString  ClassNameCPP, FString classna
 
 FString FLuaScriptCodeGenerator::ExportFunction(const FString& ClassNameCPP, UClass* Class, UFunction* Function)
 {
-	//auto x = Function->GetName() == "PlaySoundAtLocation";
-	//auto y = Function->GetMetaData("CPP_Default_dfPitchMultiplier");
-	
 	UClass* FuncSuper = NULL;
 
 	if (Function->GetOwnerClass() != Class)
@@ -527,7 +571,6 @@ bool FLuaScriptCodeGenerator::CanExportProperty(const FString& ClassNameCPP, UCl
 		if (auto p = Cast<UArrayProperty>(Property))
 			if (GetPropertyType(p->Inner) == "" || !IsPropertyTypeSupported(p->Inner))
 				return false;
-		// Check if property type is supported
 		return IsPropertyTypeSupported(Property);
 	}
 	else
@@ -684,42 +727,53 @@ FString FLuaScriptCodeGenerator::GetterCode(FString ClassNameCPP, FString classn
 		if (Property->PropertyFlags & CPF_NativeAccessSpecifierPublic)
 		{
 			if (Property->ArrayDim>1)
-				FunctionBody += FString::Printf(TEXT("\tauto result = Obj->%s;\r\n"), *Property->GetName());
-			else
-				FunctionBody += FString::Printf(TEXT("\t%s result = Obj->%s;\r\n"), *GetPropertyTypeCPP(Property, CPPF_ArgumentOrReturnValue), *Property->GetName());
-		}
-		else if( Property->ArrayDim <= 1 )
-		{
-			FString statictype = GetPropertyType(Property);
-			if (!statictype.IsEmpty())
 			{
-				FunctionBody += FString::Printf(TEXT("\tUProperty* property = UTableUtil::GetPropertyByName(FString(\"%s\"), FString(\"%s\"));\r\n"), *ClassNameCPP, *Property->GetName());
-				FunctionBody += FString::Printf(TEXT("\t%s* p = Cast<%s>(property);\r\n"), *statictype, *statictype);
-				FString typecpp = GetPropertyTypeCPP(Property, CPPF_ArgumentOrReturnValue);
-				FString typecast = GetPropertyCastType(Property);
-				if (typecast.IsEmpty())
-					typecast = typecpp;
-				if (!typecpp.Contains("TArray") && !typecpp.Contains("TWeakObjectPtr"))
+				FunctionBody += FString::Printf(TEXT("\tauto result = Obj->%s;\r\n"), *Property->GetName());
+			}
+			else
+			{
+				FunctionBody += FString::Printf(TEXT("\t%s result = Obj->%s;\r\n"), *GetPropertyTypeCPP(Property, CPPF_ArgumentOrReturnValue), *Property->GetName());
+			}
+		}
+		else
+		{ 
+			if( Property->ArrayDim <= 1 )
+			{
+				FString statictype = GetPropertyType(Property);
+				if (!statictype.IsEmpty())
 				{
-					if (Property->IsA(UStructProperty::StaticClass()))
-						FunctionBody += FString::Printf(TEXT("\t%s result = (%s)p->%s(Obj);\r\n"), *typecast, *typecast, *GetPropertyGetFunc(Property));
-					else
+					FunctionBody += FString::Printf(TEXT("\tUProperty* property = UTableUtil::GetPropertyByName(FString(\"%s\"), FString(\"%s\"));\r\n"), *ClassNameCPP, *Property->GetName());
+					FunctionBody += FString::Printf(TEXT("\t%s* p = Cast<%s>(property);\r\n"), *statictype, *statictype);
+					FString typecpp = GetPropertyTypeCPP(Property, CPPF_ArgumentOrReturnValue);
+					FString typecast = GetPropertyCastType(Property);
+					if (typecast.IsEmpty())
+						typecast = typecpp;
+					if (!typecpp.Contains("TArray") && !typecpp.Contains("TWeakObjectPtr"))
+					{
+						if (Property->IsA(UStructProperty::StaticClass()))
+							FunctionBody += FString::Printf(TEXT("\t%s result = (%s)p->%s(Obj);\r\n"), *typecast, *typecast, *GetPropertyGetFunc(Property));
+						else
+							FunctionBody += FString::Printf(TEXT("\t%s result = (%s)p->%s(Obj);\r\n"), *typecpp, *typecast, *GetPropertyGetFunc(Property));
+					}
+					else if (!typecpp.Contains("TArray") && typecpp.Contains("TWeakObjectPtr"))
+					{
 						FunctionBody += FString::Printf(TEXT("\t%s result = (%s)p->%s(Obj);\r\n"), *typecpp, *typecast, *GetPropertyGetFunc(Property));
-				}
-				else if (!typecpp.Contains("TArray") && typecpp.Contains("TWeakObjectPtr"))
-				{
-					FunctionBody += FString::Printf(TEXT("\t%s result = (%s)p->%s(Obj);\r\n"), *typecpp, *typecast, *GetPropertyGetFunc(Property));
+					}
+					else
+					{
+						FunctionBody += FString::Printf(TEXT("\tFScriptArrayHelper_InContainer result(p, Obj);\r\n"));
+					}
 				}
 				else
 				{
-					FunctionBody += FString::Printf(TEXT("\tFScriptArrayHelper_InContainer result(p, Obj);\r\n"));
+					FunctionBody += FString::Printf(TEXT("\tint result = 0;\r\n"));
 				}
 			}
 			else
 			{
-				FunctionBody += FString::Printf(TEXT("\tint result = 0;\r\n"));
 			}
 		}
+
 		if( Property->ArrayDim>1 && !(Property->PropertyFlags & CPF_NativeAccessSpecifierPublic))
 			FunctionBody += FString::Printf(TEXT("\treturn 0;\r\n"));
 		else if (Property->IsA(UStructProperty::StaticClass()) && !(Property->PropertyFlags & CPF_NativeAccessSpecifierPublic))
@@ -734,7 +788,6 @@ FString FLuaScriptCodeGenerator::GetterCode(FString ClassNameCPP, FString classn
 	else
 	{
 		FunctionBody += FString::Printf(TEXT("\treturn %s_%s(L);\r\n"), *PropertySuper->GetName(), *FuncName);
-
 	}
 	GeneratedGlue += FunctionBody;
 	GeneratedGlue += TEXT("}\r\n\r\n");
@@ -1130,7 +1183,9 @@ void FLuaScriptCodeGenerator::ExportClass(UClass* Class, const FString& SourceHe
 void FLuaScriptCodeGenerator::GenerateWeakClass()
 {
 	const FString ClassGlueFilename = GeneratedCodePath / TEXT("allweakclass.script.h");
+	const FString TraitGlueFilename = GeneratedCodePath / TEXT("traitweakclass.h");
 	FString GeneratedGlue;
+	FString TraitGlue = TEXT("#pragma once\r\ntemplate<class T>\r\nclass traitweakclass{};\n");
 	for (auto &name:WeakPtrClass)
 	{
 		FString className = "TWeakObjectPtr_" + name;
@@ -1153,9 +1208,17 @@ void FLuaScriptCodeGenerator::GenerateWeakClass()
 		GeneratedGlue += FString::Printf(TEXT("\t{ NULL, NULL}\r\n};\r\n\r\n\r\n"));
 		LuaExportedTMPClasses.Add(className);
 
+		TraitGlue += FString::Printf(TEXT("class %s;\r\n"), *className);
+		TraitGlue += FString::Printf(TEXT("template<>\r\nclass traitweakclass<%s>{\r\n"), *name);
+		TraitGlue += FString::Printf(TEXT("public:\r\n\tusing traitType = %s;\r\n"), *className);
+		TraitGlue += FString::Printf(TEXT("};\r\n\r\n"));
+		// TraitGlue += FString::Printf(TEXT("\tstatic const char* name;\r\n};\r\n"), *className);
+		// TraitGlue += FString::Printf(TEXT("const char* traitweakclass<%s>::name = \"%s\";\r\n\r\n"), *name, *className);
+
 	}
 	AllScriptHeaders.Insert(ClassGlueFilename, 0);
 	SaveHeaderIfChanged(ClassGlueFilename, GeneratedGlue);
+	SaveHeaderIfChanged(TraitGlueFilename, TraitGlue);
 }
 
 void FLuaScriptCodeGenerator::FinishExport()

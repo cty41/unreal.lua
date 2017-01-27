@@ -26,3 +26,8 @@ void ULuautils::GetPlayerViewPoint(APlayerController* controler, FVector& out_Lo
 	if (controler)
 		controler->GetPlayerViewPoint(out_Location, out_Rotation);
 }
+
+FRotator ULuautils::GetViewRotation(APawn* pawn)
+{
+	return pawn->GetViewRotation();
+}

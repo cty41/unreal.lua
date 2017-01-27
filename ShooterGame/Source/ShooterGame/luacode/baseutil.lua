@@ -23,3 +23,10 @@ function Get(t, target, key)
         end
     end
 end
+
+function CppType(t)
+    if type(t) == "table" then
+        t = t._cppinstance_ 
+    end
+    return getmetatable(t).classname
+end

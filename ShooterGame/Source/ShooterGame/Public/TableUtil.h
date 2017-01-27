@@ -3,8 +3,9 @@
 #include <typeinfo>
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "Luautils.h"
+#include "traitweakclass.h"
 #include "TableUtil.generated.h"
-class TWeakObjectPtr_UObject;
+
 struct EnumItem;
 DECLARE_LOG_CATEGORY_EXTERN(LuaLog, Log, All);
 #define LuaDebug 1
@@ -306,8 +307,11 @@ int UTableUtil::push(TArray<T> value)
 template<class T>
 int UTableUtil::push(TWeakObjectPtr<T> value)
 {
-	UObject *p = (UObject *)(value.Get());
-	TWeakObjectPtr_UObject* weakObj = new TWeakObjectPtr_UObject(p);
-	pushclass("TWeakObjectPtr_UObject", (void*)weakObj);
+	T *p = (T *)(value.Get());
+	traitweakclass<T>::traitType* weakObj = new traitweakclass<T>::traitType(p);
+	UClass* Class = T::StaticClass();
+	FString namecpp = FString::Printf(TEXT("%s%s"), Class->GetPrefixCPP(), *Class->GetName());
+	namecpp = "TWeakObjectPtr_" + namecpp;
+	pushclass(TCHAR_TO_ANSI(*namecpp), (void*)weakObj);
 	return 1;
 }

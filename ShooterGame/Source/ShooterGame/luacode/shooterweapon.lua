@@ -209,7 +209,6 @@ function ShooterWeapon:UseAmmo()
 end
 
 function ShooterWeapon:HandleFiring()
-	-- do return false end
 	if RunCppCode then return false end
 	local MyPawn = self.MyPawn
 	if (self.CurrentAmmoInClip > 0 or self:HasInfiniteClip() or self:HasInfiniteAmmo()) and self:CanFire() then

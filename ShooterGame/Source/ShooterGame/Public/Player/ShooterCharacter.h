@@ -53,6 +53,9 @@ public:
 	int lala[10];
 
 	UPROPERTY()
+	TArray<int> baba;
+
+	UPROPERTY()
 	TWeakObjectPtr<AActor> hehe;
 	UPROPERTY()
 	TArray<TWeakObjectPtr<AActor>> arrayhehe;
@@ -432,6 +435,7 @@ public:
 	float Health;
 
 	/** Take damage, handle death */
+	UFUNCTION()
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
 
 	/** Pawn suicide */
@@ -515,9 +519,16 @@ public:
 
 	/** Returns Mesh1P subobject **/
 	FORCEINLINE USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
-// private:
-// 	UPROPERTY()
-// 	TWeakObjectPtr<AActor> xixi;
+private:
+	UPROPERTY()
+	TArray<AActor*> xixi;
+
+	UPROPERTY()
+	AActor* didi;
+	UPROPERTY()
+	int32 bibi;
+	UPROPERTY()
+	FVector jiji;
 
 // 	UPROPERTY()
 // 	TArray<TWeakObjectPtr<AActor>> arrayxixi;
