@@ -1,18 +1,20 @@
 local ShooterWeapon_Instan = Inherit(AShooterWeapon_Instant)
-local RunCppCode = false
+local function RunCppCode()
+	return false
+end
 function ShooterWeapon_Instan:FireWeapon()
-	if RunCppCode then return false end
+	if RunCppCode() then return false end
 	local RandomSeed = math.random(1, 2^31-1)
 	local WeaponRandomStream = FRandomStream.New()
-	UKismetMathLibrary.SetRandomStreamSeed(WeaponRandomStream, RandomSeed)
+	WeaponRandomStream = UKismetMathLibrary.SetRandomStreamSeed(WeaponRandomStream, RandomSeed)
 
 	local CurrentSpread = self:GetCurrentSpread()
 	local ConeHalfAngle = UKismetMathLibrary.DegreesToRadians(CurrentSpread*0.5)
 
 	local AimDir = self:GetAdjustedAim()
 	local StartTrace = self:GetCameraDamageStartLocation(AimDir)
-	local ShootDir = UKismetMathLibrary.RandomUnitVectorInCone(AimDir, ConeHalfAngle)
-	local EndTrace = StartTrace + UKismetMathLibrary.Multiply_VectorFloat(ShootDir, self.InstantConfig.WeaponRange)
+	local ShootDir = ULuautils.VRandCone(WeaponRandomStream, AimDir, ConeHalfAngle, ConeHalfAngle)
+	local EndTrace = StartTrace + ShootDir * self.InstantConfig.WeaponRange
 
 	local Impact = self:WeaponTrace(StartTrace, EndTrace)
 	self:ProcessInstantHit(Impact, StartTrace, ShootDir, RandomSeed, CurrentSpread)
@@ -39,7 +41,7 @@ function ShooterWeapon_Instan:ProcessInstantHit(Impact, Origin, ShootDir, Random
 end
 
 function ShooterWeapon_Instan:ServerNotifyHit_Implementation(Impact, ShootDir, RandomSeed, ReticleSpread)
-	if RunCppCode then return false end
+	if RunCppCode() then return false end
 	local WeaponAngleDot = math.abs(math.sin(ReticleSpread*math.pi / 180))
 	local Instigator = self.Instigator
 	local Impact_Actor = Impact.Actor:Get()
@@ -82,12 +84,12 @@ function ShooterWeapon_Instan:ProcessInstantHit_Confirmed(Impact, Origin, ShootD
 	if self:ShouldDealDamage(Impact.Actor:Get()) then
 		self:DealDamage(Impact, ShootDir)
 	end
-
 	if self.Role == ENetRole.ROLE_Authority then
-		local HitNotify = self.HitNotify
+		local HitNotify = self.HitNotify 
 		HitNotify.Origin = Origin
 		HitNotify.RandomSeed = RandomSeed
 		HitNotify.ReticleSpread = ReticleSpread
+		self.HitNotify = HitNotify
 	end
 
 	if not UKismetSystemLibrary.IsDedicatedServer(self) then

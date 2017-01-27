@@ -31,3 +31,8 @@ FRotator ULuautils::GetViewRotation(APawn* pawn)
 {
 	return pawn->GetViewRotation();
 }
+
+FVector ULuautils::VRandCone(FRandomStream stream, FVector const& Dir, float HorizontalConeHalfAngleRad, float VerticalConeHalfAngleRad)
+{
+	return stream.VRandCone(Dir, HorizontalConeHalfAngleRad, VerticalConeHalfAngleRad);
+}

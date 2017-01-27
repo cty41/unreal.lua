@@ -37,4 +37,7 @@ public:
 	UFUNCTION()
 	static FRotator GetViewRotation(APawn* pawn);
 
+	UFUNCTION()
+	static FVector VRandCone(FRandomStream stream, FVector const& Dir, float HorizontalConeHalfAngleRad, float VerticalConeHalfAngleRad);
+
 };
