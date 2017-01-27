@@ -152,7 +152,7 @@ FString FLuaScriptCodeGenerator::GenerateWrapperFunctionDeclaration(const FStrin
 	return funcname;
 }
 
-FString FLuaScriptCodeGenerator::InitializeParam(UProperty* Param, int32 ParamIndex, bool isnotpublicproperty)
+FString FLuaScriptCodeGenerator::InitializeParam(UProperty* Param, int32 ParamIndex, bool isnotpublicproperty, FString arrayName)
 {
 	FString Initializer;
 
@@ -189,7 +189,19 @@ FString FLuaScriptCodeGenerator::InitializeParam(UProperty* Param, int32 ParamIn
 		}
 		else if (Param->IsA(UArrayProperty::StaticClass()))
 		{
+			auto PropertyArr = Cast<UArrayProperty>(Param);
+			Initializer += FString::Printf(TEXT("\t%s.SetNum(lua_objlen(L, %d));\r\n"), *arrayName, ParamIndex);
 
+			Initializer += FString::Printf(TEXT("\tlua_pushnil(L);\r\n"));
+			Initializer += FString::Printf(TEXT("\twhile (lua_next(L, %d) != 0) {\r\n"), ParamIndex);
+			Initializer += FString::Printf(TEXT("\t\tint32 i = lua_tointeger(L, -2)-1;\r\n"));
+			FString to = InitializeParam(PropertyArr->Inner, -3);
+			if (PropertyArr->Inner->IsA(UStructProperty::StaticClass()))
+				Initializer += FString::Printf(TEXT("\t\t%s[i] = *%s;\r\n"), *arrayName, *to);
+			else
+				Initializer += FString::Printf(TEXT("\t\t%s[i] = %s;\r\n"), *arrayName, *to);
+			Initializer += FString::Printf(TEXT("\t\tlua_pop(L, 1);\r\n\t}\r\n"));
+			return Initializer;
 		}
 		else if (Param->IsA(UWeakObjectProperty::StaticClass()))
 		{
@@ -212,7 +224,7 @@ FString FLuaScriptCodeGenerator::InitializeParam(UProperty* Param, int32 ParamIn
 			}
 			else
 			{
-				Initializer = FString::Printf(TEXT("*(%s*)(UTableUtil::tousertype(\"%s\","), *typeName, *typeName);
+				Initializer = FString::Printf(TEXT("(%s*)(UTableUtil::tousertype(\"%s\","), *typeName, *typeName);
 			}
 			return FString::Printf(TEXT("%s %d))"), *Initializer, ParamIndex);
 		}
@@ -290,15 +302,16 @@ FString FLuaScriptCodeGenerator::Push(const FString& ClassNameCPP, UFunction* Fu
 	}
 	else if (ReturnValue->IsA(UStructProperty::StaticClass()))
 	{
-		UStructProperty* StructProp = CastChecked<UStructProperty>(ReturnValue);
 		FString typeName = GetPropertyTypeCPP(ReturnValue, CPPF_ArgumentOrReturnValue);
-
-		Initializer = FString::Printf(TEXT("UTableUtil::pushclass(\"%s\", (void*)(new %s(%s)));"), *typeName, *typeName, *name);
+		if (Function) 
+			Initializer = FString::Printf(TEXT("UTableUtil::pushclass(\"%s\", (void*)(new %s(%s)), true);"), *typeName, *typeName, *name);
+		else
+			Initializer = FString::Printf(TEXT("UTableUtil::pushclass(\"%s\", (void*)(%s));"), *typeName, *name);
 	}
 	else if (ReturnValue->IsA(UWeakObjectProperty::StaticClass()))
 	{
 		GetWeakObjType(ReturnValue, objtype)
-		Initializer = FString::Printf(TEXT("UTableUtil::pushclass(\"%s\", (void*)(new %s(%s)));"), *objtype, *objtype, *name);
+		Initializer = FString::Printf(TEXT("UTableUtil::pushclass(\"%s\", (void*)(new %s(%s)), true);"), *objtype, *objtype, *name);
 		WeakPtrClass.Add(typeName);
 	}
 	else if (ReturnValue->IsA(UObjectPropertyBase::StaticClass()))
@@ -308,11 +321,11 @@ FString FLuaScriptCodeGenerator::Push(const FString& ClassNameCPP, UFunction* Fu
 		{
 			FString luatypeName = typeName;
 			luatypeName.RemoveAt(luatypeName.Len() - 1);
-			Initializer = FString::Printf(TEXT("UTableUtil::pushclass(\"%s\", (void*)%s, true);"), *luatypeName, *name);
+			Initializer = FString::Printf(TEXT("UTableUtil::pushclass(\"%s\", (void*)%s);"), *luatypeName, *name);
 		}
 		else
 		{
-			Initializer = FString::Printf(TEXT("UTableUtil::pushclass(\"%s\", (void*)(new %s(%s)));"), *typeName, *typeName, *name);
+			Initializer = FString::Printf(TEXT("UTableUtil::pushclass(\"%s\", (void*)(new %s(%s)), holyshit);"), *typeName, *typeName, *name);
 		}
 	}
 	else if (ReturnValue->IsA(UArrayProperty::StaticClass()))
@@ -320,12 +333,11 @@ FString FLuaScriptCodeGenerator::Push(const FString& ClassNameCPP, UFunction* Fu
 		auto PropertyArr = Cast<UArrayProperty>(ReturnValue);
 		FString innerType = GetPropertyTypeCPP(PropertyArr->Inner, CPPF_ArgumentOrReturnValue);
 		FString CreateTableCode;
-		CreateTableCode = FString::Printf(TEXT("int32 len = %s.Num();\r\n"), *name);
 		CreateTableCode += "\tlua_newtable(L);\r\n";
-		CreateTableCode += "\tfor(int32 i = 0; i < len; ++i)\r\n\t{\r\n";
+		CreateTableCode += FString::Printf(TEXT("\tfor(int32 i = 0; i < %s.Num(); ++i)\r\n\t{\r\n"), *name);;
 		CreateTableCode += "\t\tlua_pushinteger(L, i+1);\r\n";
 		FString pushvalueName = FString::Printf(TEXT("%s[i]"), *name);
-		FString pushCode = Push(ClassNameCPP, Function, PropertyArr->Inner, pushvalueName);
+		FString pushCode = Push(ClassNameCPP, (UFunction*)1, PropertyArr->Inner, pushvalueName);
 		if (Function == nullptr && !(ReturnValue->PropertyFlags & CPF_NativeAccessSpecifierPublic))
 		{
 			FString typecast = GetPropertyCastType(PropertyArr->Inner);
@@ -335,8 +347,6 @@ FString FLuaScriptCodeGenerator::Push(const FString& ClassNameCPP, UFunction* Fu
 			CreateTableCode += FString::Printf(TEXT("\t\t%s* InnerProperty = Cast<%s>(p->Inner);\r\n"), *statictype, *statictype);
 			CreateTableCode += FString::Printf(TEXT("\t\t%s temp = (%s)InnerProperty->%s(%s.GetRawPtr(i));\r\n"), *typecast, *typecast, *GetPropertyGetFunc(PropertyArr->Inner), *name);
 			pushvalueName = FString::Printf(TEXT("temp"));
-			if (PropertyArr->Inner->IsA(UStructProperty::StaticClass()))
-				pushvalueName = FString::Printf(TEXT("*temp"));
 			pushCode = Push(ClassNameCPP, Function, PropertyArr->Inner, pushvalueName);
 		}
 		CreateTableCode += FString::Printf(TEXT("\t\t%s\r\n"), *pushCode);
@@ -442,6 +452,188 @@ bool FLuaScriptCodeGenerator::CanExportFunction(const FString& ClassNameCPP, UCl
 	return bExport;
 }
 
+FString CallCode(UFunction* Function, bool bIsStaticFunc, bool hasresult, int num, FString paramlist, FString ClassNameCPP, bool isfinal = false)
+{
+	if (!paramlist.IsEmpty())
+		paramlist.RemoveAt(paramlist.Len() - 1);
+	if (!bIsStaticFunc)
+		num = num + 1;
+	FString code;
+	if (!isfinal)
+		code += FString::Printf(TEXT("\tif (num_params == %d )\r\n\t{\r\n"), num);
+	if (bIsStaticFunc)
+		if (hasresult)
+			code += FString::Printf(TEXT("\t\tresult = %s::%s(%s);\r\n"), *ClassNameCPP, *Function->GetName(), *paramlist);
+		else
+			code += FString::Printf(TEXT("\t\t%s::%s(%s);\r\n"), *ClassNameCPP, *Function->GetName(), *paramlist);
+	else
+		if (hasresult)
+			code += FString::Printf(TEXT("\t\tresult = Obj->%s(%s);\r\n"), *Function->GetName(), *paramlist);
+		else
+			code += FString::Printf(TEXT("\t\tObj->%s(%s);\r\n"), *Function->GetName(), *paramlist);
+	if (!isfinal)
+		code += "\t\tgoto end;\r\n\t}\r\n";
+	return code;
+}
+
+FString FLuaScriptCodeGenerator::GenerateFunctionDispatch(UFunction* Function, const FString &ClassNameCPP, bool bIsStaticFunc)
+{
+	FString Params;
+	FString paramList;
+	FString returnType;
+	FString FuncName = Function->GetName();
+	int count_all_param = 0;
+	int count_default_param = 0;
+	int index_first_default = 0;
+	bool hasDefaultAugmentParam = false;
+	const bool bHasParamsOrReturnValue = (Function->Children != NULL);
+	if (bHasParamsOrReturnValue)
+	{
+		int32 ParamIndex = 0;
+		if (bIsStaticFunc)
+			ParamIndex = -1;
+// 		auto x = Function->GetName() == "PlaySoundAtLocation";
+		for (TFieldIterator<UProperty> ParamIt(Function); ParamIt; ++ParamIt)
+		{
+			UProperty* Param = *ParamIt;
+			if (Param->GetName() == "ReturnValue")
+			{
+				returnType = GetPropertyTypeCPP(Param, CPPF_ArgumentOrReturnValue);
+			}
+			else
+			{
+				++count_all_param;
+				if (index_first_default == 0)
+				{
+					FString defaultvalue = Function->GetMetaData(*FString::Printf(TEXT("CPP_Default_%s"), *Param->GetName()));
+					if (!defaultvalue.IsEmpty())
+						index_first_default = count_all_param;
+				}
+			}
+		}
+		if (index_first_default != 0 )
+			count_default_param = count_all_param - index_first_default + 1;
+
+		Params += TEXT("\t#ifdef LuaDebug\r\n");
+		Params += TEXT("\tint totalPamCount = lua_gettop(L);\r\n");
+		if (bIsStaticFunc)
+		{
+			Params += FString::Printf(TEXT("\tif (totalPamCount < %d)\r\n"), count_all_param - count_default_param);
+		}
+		else
+		{
+			Params += FString::Printf(TEXT("\tif (totalPamCount < %d)\r\n"), count_all_param - count_default_param + 1);
+		}
+		Params += FString::Printf(TEXT("\t{\r\n\t\tlua_pushstring(L, \"too less param in %s\");\r\n"), *Function->GetName());
+		Params += FString::Printf(TEXT("\t\tlua_error(L);\r\n\t\treturn 0;\r\n\t}\r\n"));
+		Params += TEXT("\t#endif\r\n");
+
+		if (count_default_param > 0)
+		{
+			Params += TEXT("\tint num_params = lua_gettop(L);\r\n");
+			for (TFieldIterator<UProperty> ParamIt(Function); ParamIt; ++ParamIt)
+			{
+				UProperty* Param = *ParamIt;
+				if (! (Param->GetName() == "ReturnValue"))
+				{
+					if (Param->IsA(UStructProperty::StaticClass()))
+						Params += FString::Printf(TEXT("\t%s* %s;\r\n"), *GetPropertyTypeCPP(Param, CPPF_ArgumentOrReturnValue), *Param->GetName());
+					else
+						Params += FString::Printf(TEXT("\t%s %s;\r\n"), *GetPropertyTypeCPP(Param, CPPF_ArgumentOrReturnValue), *Param->GetName());
+				}
+			}
+			if (!returnType.IsEmpty())
+				Params += FString::Printf(TEXT("\t%s result;\r\n"), *returnType);
+		}
+		int count_init_param = 0;
+		if (count_default_param > 0 && count_default_param + count_init_param >= count_all_param)
+		{
+			Params += CallCode(Function, bIsStaticFunc, !returnType.IsEmpty(), count_init_param, paramList, ClassNameCPP, count_init_param == count_all_param);
+		}
+		for (TFieldIterator<UProperty> ParamIt(Function); ParamIt; ++ParamIt, ++ParamIndex)
+		{
+			UProperty* Param = *ParamIt;
+			if (Param->IsA(UArrayProperty::StaticClass()))
+			{ 
+				FString nameCpp = GetPropertyTypeCPP(Param, CPPF_ArgumentOrReturnValue);
+				if (Param->GetName() != "ReturnValue")
+				{
+					paramList += Param->GetName() + ",";
+					count_init_param++;
+					if (count_default_param > 0 )
+					{
+						Params += InitializeParam(Param, ParamIndex, false, Param->GetName());
+						if (count_default_param + count_init_param >= count_all_param)
+							Params += CallCode(Function, bIsStaticFunc, !returnType.IsEmpty(), count_init_param, paramList, ClassNameCPP, count_init_param == count_all_param);
+					}
+					else
+					{
+						Params += FString::Printf(TEXT("\t%s %s;\r\n"), *nameCpp, *Param->GetName());
+						Params += InitializeParam(Param, ParamIndex, false, Param->GetName());
+					}
+				}
+			}
+			else
+			{
+				if (Param->GetName() != "ReturnValue")
+				{
+					FString initParam = InitializeFunctionDispatchParam(Function, Param, ParamIndex);
+					FString nameCpp = GetPropertyTypeCPP(Param, CPPF_ArgumentOrReturnValue);
+
+					if (Param->IsA(UStructProperty::StaticClass()))
+						paramList += "*" + Param->GetName() + ",";
+					else
+						paramList += Param->GetName() + ",";
+
+					count_init_param++;
+					if (count_default_param > 0)
+					{
+						if (!nameCpp.Contains("*") && Param->IsA(UStructProperty::StaticClass()))
+							Params += FString::Printf(TEXT("\t%s = %s;\r\n"), *Param->GetName(), *initParam);
+						else
+							Params += FString::Printf(TEXT("\t%s = %s;\r\n"), *Param->GetName(), *initParam);
+						// SpawnSoundAttached ambiouscall blame UE4 not me
+						if (count_default_param + count_init_param >= count_all_param  && !(FuncName == "SpawnSoundAttached" && count_init_param == 4))
+							Params += CallCode(Function, bIsStaticFunc, !returnType.IsEmpty(), count_init_param, paramList, ClassNameCPP, count_init_param == count_all_param);
+					}
+					else
+					{
+						if (!nameCpp.Contains("*") && Param->IsA(UStructProperty::StaticClass()))
+							Params += FString::Printf(TEXT("\t%s* %s = %s;\r\n"), *nameCpp, *Param->GetName(), *initParam);
+						else
+							Params += FString::Printf(TEXT("\t%s %s = %s;\r\n"), *nameCpp, *Param->GetName(), *initParam);
+					}
+				}
+			}
+		}
+		
+	}
+	if (count_default_param == 0)
+	{
+		if (!returnType.IsEmpty())
+			Params += FString::Printf(TEXT("\t%s result = "), *returnType);
+		else
+			Params += "\t";
+		FString callobj = "Obj->";
+		if (bIsStaticFunc)
+			callobj = FString::Printf(TEXT("%s::"), *ClassNameCPP);
+		if (paramList.IsEmpty())
+		{
+			Params += FString::Printf(TEXT("%s%s();\r\n"), *callobj, *Function->GetName());
+		}
+		else
+		{
+			paramList.RemoveAt(paramList.Len() - 1);
+			Params += FString::Printf(TEXT("%s%s(%s);\r\n"), *callobj, *Function->GetName(), *paramList);
+		}
+	}
+	else
+	{
+		Params += "\tend:\r\n";
+	}
+	return Params;
+}
+
 FString FLuaScriptCodeGenerator::FuncCode(FString  ClassNameCPP, FString classname, UFunction* Function, UClass* FuncSuper)
 {
 	UProperty* ReturnValue = NULL;
@@ -456,8 +648,6 @@ FString FLuaScriptCodeGenerator::FuncCode(FString  ClassNameCPP, FString classna
 				FunctionBody += FString::Printf(TEXT("\t%s\r\n"), *GenerateObjectDeclarationFromContext(ClassNameCPP));
 			FunctionBody += GenerateFunctionDispatch(Function, ClassNameCPP, bIsStaticFunc);
 
-			FString FunctionCallArguments;
-			FString ReturnValueDeclaration;
 			int returnCount = 0;
 			for (TFieldIterator<UProperty> ParamIt(Function); !ReturnValue && ParamIt; ++ParamIt)
 			{
@@ -476,7 +666,7 @@ FString FLuaScriptCodeGenerator::FuncCode(FString  ClassNameCPP, FString classna
 				if ((Param->GetPropertyFlags() & (CPF_ConstParm | CPF_OutParm | CPF_ReturnParm)) == CPF_OutParm)
 				{
 					FString name = Param->GetName();
-					FunctionBody += FString::Printf(TEXT("\t%s\r\n"), *Push(ClassNameCPP, Function, Param, name));
+					FunctionBody += FString::Printf(TEXT("\t%s\r\n"), *Push(ClassNameCPP, nullptr, Param, name));
 					returnCount++;
 				}
 			}
@@ -730,6 +920,10 @@ FString FLuaScriptCodeGenerator::GetterCode(FString ClassNameCPP, FString classn
 			{
 				FunctionBody += FString::Printf(TEXT("\tauto result = Obj->%s;\r\n"), *Property->GetName());
 			}
+			else if ( Property->IsA(UStructProperty::StaticClass()))
+			{
+				FunctionBody += FString::Printf(TEXT("\t%s& result = Obj->%s;\r\n"), *GetPropertyTypeCPP(Property, CPPF_ArgumentOrReturnValue), *Property->GetName());
+			}
 			else
 			{
 				FunctionBody += FString::Printf(TEXT("\t%s result = Obj->%s;\r\n"), *GetPropertyTypeCPP(Property, CPPF_ArgumentOrReturnValue), *Property->GetName());
@@ -776,8 +970,8 @@ FString FLuaScriptCodeGenerator::GetterCode(FString ClassNameCPP, FString classn
 
 		if( Property->ArrayDim>1 && !(Property->PropertyFlags & CPF_NativeAccessSpecifierPublic))
 			FunctionBody += FString::Printf(TEXT("\treturn 0;\r\n"));
-		else if (Property->IsA(UStructProperty::StaticClass()) && !(Property->PropertyFlags & CPF_NativeAccessSpecifierPublic))
-			FunctionBody += FString::Printf(TEXT("\t%s\r\n\treturn 1;\r\n"), *Push(ClassNameCPP, NULL, Property, FString("*result")));
+		else if (Property->IsA(UStructProperty::StaticClass()) && Property->PropertyFlags & CPF_NativeAccessSpecifierPublic)
+			FunctionBody += FString::Printf(TEXT("\t%s\r\n\treturn 1;\r\n"), *Push(ClassNameCPP, NULL, Property, FString("&result")));
  		else if (Property->IsA(UWeakObjectProperty::StaticClass()))
  		{
 			FunctionBody += FString::Printf(TEXT("\t%s\r\n"), *GenerateReturnValueHandler(ClassNameCPP, NULL, Property));
@@ -810,21 +1004,17 @@ FString FLuaScriptCodeGenerator::SetterCode(FString ClassNameCPP, FString classn
 				if (exceptionOne)
 					FunctionBody += TEXT("\tObj->AnimBlueprintGeneratedClass = (UAnimBlueprintGeneratedClass*)(UTableUtil::tousertype(\"UClass\", 2));\r\n");
 				else if (!Property->IsA(UArrayProperty::StaticClass()))
-					FunctionBody += FString::Printf(TEXT("\tObj->%s = %s;\r\n"), *Property->GetName(), *InitializeParam(Property, 0));
+				{
+					if (Property->IsA(UStructProperty::StaticClass()))
+						FunctionBody += FString::Printf(TEXT("\tObj->%s = *%s;\r\n"), *Property->GetName(), *InitializeParam(Property, 0));
+					else
+						FunctionBody += FString::Printf(TEXT("\tObj->%s = %s;\r\n"), *Property->GetName(), *InitializeParam(Property, 0));
+				}
 				else if (Property->IsA(UArrayProperty::StaticClass()))
 				{
 					auto PropertyArr = Cast<UArrayProperty>(Property);
 					FunctionBody += FString::Printf(TEXT("\t%s& val = Obj->%s;\r\n"), *GetPropertyTypeCPP(Property, CPPF_ArgumentOrReturnValue), *Property->GetName());
-					FunctionBody += FString::Printf(TEXT("\tint32 len = lua_objlen(L, -1);\r\n"));
-					FunctionBody += FString::Printf(TEXT("\tval.SetNum(len);\r\n"));
-
-					FunctionBody += FString::Printf(TEXT("\tlua_pushnil(L);\r\n"));
-					FunctionBody += FString::Printf(TEXT("\twhile (lua_next(L, -2) != 0) {\r\n"));
-					FString inerTypeCpp = GetPropertyTypeCPP(PropertyArr->Inner, CPPF_ArgumentOrReturnValue);
-					FunctionBody += FString::Printf(TEXT("\t\tint32 i = lua_tointeger(L, -2)-1;\r\n"));
-					FString to = InitializeParam(PropertyArr->Inner, -3);
-					FunctionBody += FString::Printf(TEXT("\t\tval[i] = %s;\r\n"), *to);
-					FunctionBody += FString::Printf(TEXT("\t\tlua_pop(L, 1);\r\n\t}\r\n"));
+					FunctionBody += InitializeParam(Property, 0, false, "val");
 				}
 			}
 			else
@@ -853,8 +1043,7 @@ FString FLuaScriptCodeGenerator::SetterCode(FString ClassNameCPP, FString classn
 					{
 						auto PropertyArr = Cast<UArrayProperty>(Property);
 						auto innerType = PropertyArr->Inner;
-						bool bIsStruct = innerType->IsA(UStructProperty::StaticClass());
-						FString statictype = GetPropertyType(Property);
+						bIsStruct = innerType->IsA(UStructProperty::StaticClass());
 						FString typecpp = GetPropertyTypeCPP(innerType, CPPF_ArgumentOrReturnValue);
 						FString typecast = GetPropertySetCastType(innerType);
 						if (typecast.IsEmpty())
@@ -875,7 +1064,6 @@ FString FLuaScriptCodeGenerator::SetterCode(FString ClassNameCPP, FString classn
 							FunctionBody += FString::Printf(TEXT("\t\tinnerProperty->%s(innerProperty->ContainerPtrToValuePtr<void>(result.GetRawPtr(i)), (void*)value);\r\n"), *GetPropertySetFunc(innerType));
 						else
 							FunctionBody += FString::Printf(TEXT("\t\tinnerProperty->%s(result.GetRawPtr(i), value);\r\n"), *GetPropertySetFunc(innerType));
-
 						FunctionBody += FString::Printf(TEXT("\t\tlua_pop(L, 1);\r\n\t}\r\n"));
 
 					}
@@ -890,7 +1078,11 @@ FString FLuaScriptCodeGenerator::SetterCode(FString ClassNameCPP, FString classn
 			FunctionBody += FString::Printf(TEXT("\t\tlua_pushinteger(L, i+1);\r\n"));
 			FunctionBody += FString::Printf(TEXT("\t\tlua_rawget(L, -2);\r\n"));
 			FunctionBody += FString::Printf(TEXT("\t\tif (!lua_isnil(L, -1))\r\n"));
-			FunctionBody += FString::Printf(TEXT("\t\t\tval[i] = %s;\r\n"), *InitializeParam(Property, -3, false));
+			if (Property->IsA(UStructProperty::StaticClass()))
+				FunctionBody += FString::Printf(TEXT("\t\t\tval[i] = *%s;\r\n"), *InitializeParam(Property, -3, false));
+			else	
+				
+				FunctionBody += FString::Printf(TEXT("\t\t\tval[i] = %s;\r\n"), *InitializeParam(Property, -3, false));
 			FunctionBody += FString::Printf(TEXT("\t\tlua_pop(L, 1);\r\n"), *InitializeParam(Property, -3, false));
 			FunctionBody += FString::Printf(TEXT("\t}\r\n"), *InitializeParam(Property, -3, false));
 		}
@@ -957,9 +1149,8 @@ FString FLuaScriptCodeGenerator::ExportAdditionalClassGlue(const FString& ClassN
 		GeneratedGlue += TEXT("\tFName Name = FName(luaL_checkstring(L, 2));\r\n");
 		GeneratedGlue += FString::Printf(TEXT("\tUObject* Obj = NewObject<%s>(Outer, Name);\r\n"), *ClassNameCPP);
 		GeneratedGlue += TEXT("\tif (Obj)\r\n\t{\r\n");
-		//GeneratedGlue += TEXT("\t\tFScriptObjectReferencer::Get().AddObjectReference(Obj);\r\n");
 		GeneratedGlue += TEXT("\t}\r\n");
-		GeneratedGlue += FString::Printf(TEXT("\tUTableUtil::pushclass(\"%s\", (void*)Obj, true);\r\n"), *ClassNameCPP);
+		GeneratedGlue += FString::Printf(TEXT("\tUTableUtil::pushclass(\"%s\", (void*)Obj);\r\n"), *ClassNameCPP);
 		GeneratedGlue += TEXT("\treturn 1;\r\n");
 		GeneratedGlue += TEXT("}\r\n\r\n");
 
@@ -967,7 +1158,6 @@ FString FLuaScriptCodeGenerator::ExportAdditionalClassGlue(const FString& ClassN
 		GeneratedGlue += TEXT("\r\n{\r\n");
 		GeneratedGlue += FString::Printf(TEXT("\t%s\r\n"), *GenerateObjectDeclarationFromContext(ClassNameCPP));
 		GeneratedGlue += TEXT("\tif (Obj)\r\n\t{\r\n");
-		GeneratedGlue += TEXT("\t\tUTableUtil::rmgcref((UObject*)Obj);\r\n");
 		GeneratedGlue += TEXT("\t}\r\n\treturn 0;\r\n");
 		GeneratedGlue += TEXT("}\r\n\r\n");
 
@@ -977,9 +1167,8 @@ FString FLuaScriptCodeGenerator::ExportAdditionalClassGlue(const FString& ClassN
 		GeneratedGlue += TEXT("\tFName Name = FName(luaL_checkstring(L, 2));\r\n");
 		GeneratedGlue += FString::Printf(TEXT("\tUObject* Obj = Outer->CreateDefaultSubobject<%s>(Name);\r\n"), *ClassNameCPP);
 		GeneratedGlue += TEXT("\tif (Obj)\r\n\t{\r\n");
-		//GeneratedGlue += TEXT("\t\tFScriptObjectReferencer::Get().AddObjectReference(Obj);\r\n");
 		GeneratedGlue += TEXT("\t}\r\n");
-		GeneratedGlue += FString::Printf(TEXT("\tUTableUtil::pushclass(\"%s\", (void*)Obj, true);\r\n"), *ClassNameCPP);
+		GeneratedGlue += FString::Printf(TEXT("\tUTableUtil::pushclass(\"%s\", (void*)Obj);\r\n"), *ClassNameCPP);
 		GeneratedGlue += TEXT("\treturn 1;\r\n");
 		GeneratedGlue += TEXT("}\r\n\r\n");
 	}
@@ -988,7 +1177,7 @@ FString FLuaScriptCodeGenerator::ExportAdditionalClassGlue(const FString& ClassN
 	GeneratedGlue += TEXT("\r\n{\r\n");
 	GeneratedGlue += TEXT("\tUObject* from = (UObject*)UTableUtil::tousertype(\"UObject\", 1);\r\n");
 	GeneratedGlue += FString::Printf(TEXT("\t%s* to = Cast<%s>(from);\r\n"), *ClassNameCPP, *ClassNameCPP);
-	GeneratedGlue += FString::Printf(TEXT("\tUTableUtil::pushclass(\"%s\", (void*)to, true);\r\n"), *ClassNameCPP);
+	GeneratedGlue += FString::Printf(TEXT("\tUTableUtil::pushclass(\"%s\", (void*)to);\r\n"), *ClassNameCPP);
 	GeneratedGlue += TEXT("\treturn 1;\r\n");
 	GeneratedGlue += TEXT("}\r\n\r\n");
 	// Class: Equivalent of StaticClass()
@@ -1083,7 +1272,7 @@ void FLuaScriptCodeGenerator::ExportStruct()
 		}
 		FString addition = FString::Printf(TEXT("static int32 %s_New(lua_State* L)\r\n{\r\n"), *namecpp);
 		addition += FString::Printf(TEXT("\t%s* Obj = new %s;\r\n"), *namecpp, *namecpp);
-		addition += FString::Printf(TEXT("\tUTableUtil::pushclass(\"%s\", (void*)Obj);\r\n"), *namecpp);
+		addition += FString::Printf(TEXT("\tUTableUtil::pushclass(\"%s\", (void*)Obj, true);\r\n"), *namecpp);
 		addition += FString::Printf(TEXT("\treturn 1;\r\n}\r\n\r\n"));
 
 		addition += FString::Printf(TEXT("static int32 %s_Destroy(lua_State* L)\r\n{\r\n"), *namecpp);
@@ -1091,11 +1280,17 @@ void FLuaScriptCodeGenerator::ExportStruct()
 		addition += FString::Printf(TEXT("\tdelete Obj;\r\n"));
 		addition += TEXT("\treturn 0;\r\n}\r\n\r\n");
 
+		addition += FString::Printf(TEXT("static int32 %s_Copy(lua_State* L)\r\n{\r\n"), *namecpp);
+		addition += FString::Printf(TEXT("\t%s* Obj = (%s*)UTableUtil::tousertype(\"%s\",1);\r\n"), *namecpp, *namecpp, *namecpp);
+		addition += FString::Printf(TEXT("\tUTableUtil::pushclass(\"%s\", (void*)(new %s(*Obj)), true);\r\n"), *namecpp, *namecpp);
+		addition += TEXT("\treturn 1;\r\n}\r\n\r\n");
+
 		GeneratedGlue += addition;
 
 		GeneratedGlue += FString::Printf(TEXT("static const luaL_Reg %s_Lib[] =\r\n{\r\n"), *namecpp);
 		GeneratedGlue += FString::Printf(TEXT("\t{ \"New\", %s_New },\r\n"), *namecpp);
 		GeneratedGlue += FString::Printf(TEXT("\t{ \"Destroy\", %s_Destroy },\r\n"), *namecpp);
+		GeneratedGlue += FString::Printf(TEXT("\t{ \"Copy\", %s_Copy },\r\n"), *namecpp);
 
 
 		for (auto& PropertyName : allPropertyName)
@@ -1203,8 +1398,17 @@ void FLuaScriptCodeGenerator::GenerateWeakClass()
 		GeneratedGlue += FString::Printf(TEXT("\treturn 1;\r\n"), *name);
 		GeneratedGlue += TEXT("}\r\n");
 
+		GeneratedGlue += GenerateWrapperFunctionDeclaration(className, className, "Destroy");
+		GeneratedGlue += TEXT("\r\n{\r\n");
+		GeneratedGlue += FString::Printf(TEXT("\t%s* Obj = (%s*)UTableUtil::tousertype(\"%s\", 1);\r\n"), *className, *className, *className);
+		GeneratedGlue += FString::Printf(TEXT("\tif(Obj)\r\n"));
+		GeneratedGlue += FString::Printf(TEXT("\t\tdelete Obj;\r\n"), *name);
+		GeneratedGlue += FString::Printf(TEXT("\treturn 0;\r\n"), *name);
+		GeneratedGlue += TEXT("}\r\n");
+
 		GeneratedGlue += FString::Printf(TEXT("static const luaL_Reg %s_Lib[] =\r\n{\r\n"), *className);
 		GeneratedGlue += FString::Printf(TEXT("\t{ \"Get\", %s_Get },\r\n"), *className);
+		GeneratedGlue += FString::Printf(TEXT("\t{ \"Destroy\", %s_Destroy },\r\n"), *className);
 		GeneratedGlue += FString::Printf(TEXT("\t{ NULL, NULL}\r\n};\r\n\r\n\r\n"));
 		LuaExportedTMPClasses.Add(className);
 

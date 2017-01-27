@@ -85,11 +85,9 @@ function ShooterWeapon_Instan:ProcessInstantHit_Confirmed(Impact, Origin, ShootD
 		self:DealDamage(Impact, ShootDir)
 	end
 	if self.Role == ENetRole.ROLE_Authority then
-		local HitNotify = self.HitNotify 
-		HitNotify.Origin = Origin
-		HitNotify.RandomSeed = RandomSeed
-		HitNotify.ReticleSpread = ReticleSpread
-		self.HitNotify = HitNotify
+		self.HitNotify.Origin = Origin
+		self.HitNotify.RandomSeed = RandomSeed
+		self.HitNotify.ReticleSpread = ReticleSpread
 	end
 
 	if not UKismetSystemLibrary.IsDedicatedServer(self) then

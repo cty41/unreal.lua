@@ -15,7 +15,7 @@ function Init()
         A_("lua memory: ", collectgarbage("count"))
     end
     InitLuahotupdate()
-    -- TimerMgr:Get():On(ShowMem):Time(5000):Fire()
+    -- TimerMgr:Get():On(ShowMem):Time(1000)
 end
 
 function InitLuahotupdate()

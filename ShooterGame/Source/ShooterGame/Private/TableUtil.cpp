@@ -10,10 +10,11 @@
 DEFINE_LOG_CATEGORY(LuaLog);
 
 lua_State* UTableUtil::L = nullptr;
-bool UTableUtil::bIsGcRef = true;
-bool UTableUtil::bIsBeginPlay = false;
 TMap<FString, TMap<FString, UProperty*>> UTableUtil::propertyMap;
-FLuaGcObj UTableUtil::gcobjs;
+#ifdef LuaDebug
+TMap<FString, int> UTableUtil::countforgc;
+#endif
+// FLuaGcObj UTableUtil::gcobjs;
 void UTableUtil::InitClassMap()
 {
 	for (TObjectIterator<UClass> uClass; uClass; ++uClass)
@@ -87,6 +88,11 @@ void UTableUtil::init()
 		lua_setfield(L, -2, "__mode");
 		lua_setmetatable(L, -2);
 		lua_setfield(L, LUA_REGISTRYINDEX, "_existuserdata");
+
+		//set table for need Destroy data
+		lua_newtable(L);
+		lua_setfield(L, LUA_REGISTRYINDEX, "_needgcdata");
+
 		push(luaDir);
 		lua_setfield(L, LUA_GLOBALSINDEX, "_luadir");
 		//register all function
@@ -95,16 +101,10 @@ void UTableUtil::init()
 	}
 }
 
-void UTableUtil::beginplay()
-{
-	bIsBeginPlay = true;
-}
-
 void UTableUtil::shutdown()
 {
 	if (L != nullptr)
 	{
-		bIsBeginPlay = false;
 		Call_void("Shutdown");
 		lua_close(L);
 		L = nullptr;
@@ -173,26 +173,32 @@ int32 cast(lua_State* L)
 int32 gcfunc(lua_State *L)
 {
 	auto u = (void**)lua_touserdata(L, -1);
-	if (*u != nullptr)
+	lua_getfield(L, LUA_REGISTRYINDEX, "_needgcdata");
+	lua_pushlightuserdata(L, *u);
+	lua_rawget(L, -2);
+	if ( !lua_isnil(L, -1) )
 	{
-		UTableUtil::rmgcref((UObject*)(*u));
-	}
-	lua_getmetatable(L, -1);
-	lua_pushstring(L, "Destroy");
-	lua_gettable(L, -2);
-	if (lua_iscfunction(L, -1))
-	{
-		lua_remove(L, -2);
-		lua_pushvalue(L, 1);
-		if (lua_pcall(L, 1, 0, 0))
+		lua_pop(L, 1);
+		lua_pushlightuserdata(L, *u);
+		lua_pushnil(L);
+		lua_rawset(L, -3);
+		lua_getmetatable(L, 1);
+		lua_getfield(L, -1, "Destroy");
+		if (lua_iscfunction(L, -1))
 		{
-			UTableUtil::log(FString(lua_tostring(L, -1)));
+			lua_getmetatable(L, 1);
+			lua_getfield(L, -1, "classname");
+			FString n = lua_tostring(L, -1);
+			lua_pop(L, 2);
+#ifdef LuaDebug
+			UTableUtil::countforgc[n]--;
+#endif
+			lua_pushvalue(L, 1);
+			if (lua_pcall(L, 1, 0, 0))
+			{
+				UTableUtil::log(FString(lua_tostring(L, -1)));
+			}
 		}
-	}
-	else
-	{
-// 		lua_getmetatable(L, 1);
-// 		log("memoryleak")
 	}
 	return 0;
 }
@@ -314,8 +320,6 @@ void UTableUtil::pushclass(const char* classname, void* p, bool bgcrecord)
 	}
 	if (!existdata(p))
 	{
-		if (bgcrecord && bIsGcRef)
-			addgcref((UObject*)p);
 		*(void**)lua_newuserdata(L, sizeof(void *)) = p;
 
 		lua_getfield(L, LUA_REGISTRYINDEX, "_existuserdata");
@@ -323,6 +327,21 @@ void UTableUtil::pushclass(const char* classname, void* p, bool bgcrecord)
 		lua_pushvalue(L, -3);
 		lua_rawset(L, -3);
 		lua_pop(L, 1);
+
+		if (bgcrecord)
+		{
+			lua_getfield(L, LUA_REGISTRYINDEX, "_needgcdata");
+			lua_pushlightuserdata(L, p);
+			lua_pushboolean(L, true);
+			lua_rawset(L, -3);
+			lua_pop(L, 1);
+#ifdef LuaDebug
+			if (countforgc.Contains(classname))  
+				countforgc[classname]++;
+			else
+				countforgc.Add(classname, 1);
+#endif
+		}
 	}
 	setmeta(classname, -1);
 }
@@ -351,8 +370,6 @@ void UTableUtil::loadlib(const luaL_Reg funclist[], const char* classname)
 		i++;
 	}
 	UTableUtil::closemodule();
-	// int j = lua_gettop(L);
-	// UE_LOG(LogScriptPlugin, Warning, TEXT("lalala %d"), j);
 }
 
 void UTableUtil::addutil(const luaL_Reg funclist[], const char* tablename)
@@ -399,7 +416,6 @@ void UTableUtil::loadEnum(const EnumItem list[], const char* enumname)
 
 void UTableUtil::executeFunc(FString funcName, int n, int nargs)
 {
-// 	int nargs = lua_gettop(L);
 	lua_getfield(L, LUA_GLOBALSINDEX, TCHAR_TO_ANSI(*funcName));
 	if (nargs > 0)
 		lua_insert(L, -nargs-1);
@@ -407,10 +423,6 @@ void UTableUtil::executeFunc(FString funcName, int n, int nargs)
 		log(lua_tostring(L, -1));
 }
 
-void UTableUtil::clearStack()
-{
-	lua_pop(L, lua_gettop(L));
-}
 // api for blueprint start:
 void UTableUtil::Push_obj(UObject *p)
 {
@@ -440,8 +452,6 @@ void UTableUtil::Call_void(FString funcName, int count_param)
 	if (count_param == -1)
 		count_param = lua_gettop(L);
 	executeFunc(funcName, 0, count_param);
-	clearStack();
-	// lua_tinker::call<void>(L, TCHAR_TO_ANSI(*funcName));
 }
 
 float UTableUtil::Call_float(FString funcName, int count_param)
@@ -450,7 +460,6 @@ float UTableUtil::Call_float(FString funcName, int count_param)
 		count_param = lua_gettop(L);
 	executeFunc(funcName, 0, count_param);
 	auto result = lua_tonumber(L, -1);
-	clearStack();
 	return result;
 }
 
@@ -460,7 +469,6 @@ UObject* UTableUtil::Call_obj(FString funcName, int count_param)
 		count_param = lua_gettop(L);
 	executeFunc(funcName, 0, count_param);
 	auto result = (UObject*)tousertype("", -1);
-	clearStack();
 	return result;
 }
 
@@ -470,7 +478,6 @@ FString UTableUtil::Call_str(FString funcName, int count_param)
 		count_param = lua_gettop(L);
 	executeFunc(funcName, 0, count_param);
 	FString result = ANSI_TO_TCHAR(luaL_checkstring(L, -1));
-	clearStack();
 	return result;
 }
 
@@ -480,7 +487,6 @@ bool UTableUtil::Call_bool(FString funcName, int count_param)
 		count_param = lua_gettop(L);
 	executeFunc(funcName, 0, count_param);
 	bool result = !!lua_toboolean(L, -1);
-	clearStack();
 	return result;
 }
 
@@ -506,34 +512,11 @@ void UTableUtil::log(FString content)
 	UE_LOG(LuaLog, Warning, TEXT("[lua error] %s"), *content);
 }
 
-void UTableUtil::addgcref(UObject* p)
-{
-	//gcobjs.objs.Add(p);
-}
-
-void UTableUtil::rmgcref(UObject* p)
-{
-	//gcobjs.objs.Remove(p);
-}
-
-void UTableUtil::stopgcref()
-{
-	if (!bIsBeginPlay)
-		bIsGcRef = false;
-}
-
-void UTableUtil::startgcref()
-{
-	bIsGcRef = true;
-}
-
 void UTableUtil::CtorCpp(UObject* p, FString classpath)
 {
 	if (L == nullptr)
 		init();
-	stopgcref();
 	pushclass("UObject", (void*)p, true);
 	push(classpath);
 	Call_void(FString("CtorCpp"));
-	startgcref();
 }

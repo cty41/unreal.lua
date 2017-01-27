@@ -36,13 +36,15 @@ class UTableUtil : public UBlueprintFunctionLibrary
 	static lua_State* L;
 
 public:
+#ifdef LuaDebug
+	static TMap<FString, int> countforgc;
+#endif
 	 UTableUtil();
 	static void addmodule(const char* classname);
 
 	UFUNCTION(BlueprintCallable, Category = "TableUtil", meta = (DisplayName = "Initlua"))
 	static void init();
-	UFUNCTION(BlueprintCallable, Category = "TableUtil")
-	static void beginplay();
+
 	static void openmodule(const char* classname);
 	static void closemodule();
 	static void addfunc(const char* classname, luafunc f);
@@ -54,17 +56,12 @@ public:
 	static void loadlib(const luaL_Reg funclist[], const char* classname);
 	static void loadEnum(const EnumItem list[], const char* enumname);
 	static void addutil(const luaL_Reg funclist[], const char* tablename);
-	static void stopgcref();
-	static void startgcref();
-	static bool bIsGcRef;
-	static bool bIsBeginPlay;
 
 	UFUNCTION(BlueprintCallable, Category = "TableUtil")
 	static void log(FString content);
 
 	UFUNCTION(BlueprintCallable, Category = "TableUtil")
 	static void shutdown();
-	static void clearStack();
 	static bool existdata(void * p);
 	
 	static void executeFunc(FString funcName, int n = 0, int nargs = 0);
@@ -98,10 +95,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "TableUtil")
 	static void CtorCpp(UObject* p, FString classpath);
 
-	static void addgcref(UObject* p);
 	static void rmgcref(UObject* p);
 
-	static FLuaGcObj gcobjs;
+	// static FLuaGcObj gcobjs;
 	static int push() { return 0; }
 	template<typename T>
 	static int push(T value);
@@ -276,7 +272,7 @@ int UTableUtil::push(T* value)
 // 	class T;
 	UClass* Class = T::StaticClass();
 	FString namecpp = FString::Printf(TEXT("%s%s"), Class->GetPrefixCPP(), *Class->GetName());
-	pushclass(TCHAR_TO_ANSI(*namecpp), (void*)value, true);
+	pushclass(TCHAR_TO_ANSI(*namecpp), (void*)value);
 	return 1;
 }
 
@@ -287,7 +283,7 @@ int UTableUtil::push(T value)
 	FString name = typeid(T).name();
 	int FirstSpaceIndex = name.Find(TEXT(" "));
 	name = name.Mid(FirstSpaceIndex + 1);
-	pushclass(TCHAR_TO_ANSI(*name), (void*)(new T(value)));
+	pushclass(TCHAR_TO_ANSI(*name), (void*)(new T(value)), true);
 	return 1;
 }
 
@@ -312,6 +308,6 @@ int UTableUtil::push(TWeakObjectPtr<T> value)
 	UClass* Class = T::StaticClass();
 	FString namecpp = FString::Printf(TEXT("%s%s"), Class->GetPrefixCPP(), *Class->GetName());
 	namecpp = "TWeakObjectPtr_" + namecpp;
-	pushclass(TCHAR_TO_ANSI(*namecpp), (void*)weakObj);
+	pushclass(TCHAR_TO_ANSI(*namecpp), (void*)weakObj, true);
 	return 1;
 }

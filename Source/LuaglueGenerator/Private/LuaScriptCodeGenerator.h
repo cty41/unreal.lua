@@ -62,8 +62,9 @@ protected:
 	FString SetterCode(FString  ClassNameCPP, FString classname, FString FuncName, UProperty* Property, UClass* PropertySuper = nullptr);
 	FString FuncCode(FString  ClassNameCPP, FString classname, UFunction* Function, UClass* FuncSuper = nullptr);
 	void GenerateWeakClass();
-
-	FString InitializeParam(UProperty* Param, int32 ParamIndex, bool isnotpublicproperty = false);
+	
+	virtual FString GenerateFunctionDispatch(UFunction* Function, const FString &ClassNameCPP, bool bIsStaticFunc = false);
+	FString InitializeParam(UProperty* Param, int32 ParamIndex, bool isnotpublicproperty = false, FString arrayName = "");
 	void ExportStruct();
 	void ExportEnum();
 	// FScriptCodeGeneratorBase interface
