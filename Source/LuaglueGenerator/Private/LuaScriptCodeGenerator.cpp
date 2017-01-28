@@ -1171,6 +1171,13 @@ FString FLuaScriptCodeGenerator::ExportAdditionalClassGlue(const FString& ClassN
 		GeneratedGlue += FString::Printf(TEXT("\tUTableUtil::pushclass(\"%s\", (void*)Obj);\r\n"), *ClassNameCPP);
 		GeneratedGlue += TEXT("\treturn 1;\r\n");
 		GeneratedGlue += TEXT("}\r\n\r\n");
+
+		GeneratedGlue += GenerateWrapperFunctionDeclaration(ClassNameCPP, Class->GetName(), TEXT("FObjectFinder"));
+		GeneratedGlue += TEXT("\r\n{\r\n");
+		GeneratedGlue += FString::Printf(TEXT("\tvoid* Obj = (void*)UTableUtil::FObjectFinder(%s::StaticClass(), luaL_checkstring(L, 1));\r\n"), *ClassNameCPP);
+		GeneratedGlue += FString::Printf(TEXT("\tUTableUtil::pushclass(\"%s\", Obj);\r\n"), *ClassNameCPP);
+		GeneratedGlue += TEXT("\treturn 1;\r\n");
+		GeneratedGlue += TEXT("}\r\n\r\n");
 	}
 	
 	GeneratedGlue += GenerateWrapperFunctionDeclaration(ClassNameCPP, Class->GetName(), TEXT("Cast"));
@@ -1195,6 +1202,7 @@ FString FLuaScriptCodeGenerator::ExportAdditionalClassGlue(const FString& ClassN
 		GeneratedGlue += FString::Printf(TEXT("\t{ \"New\", %s_New },\r\n"), *ClassNameCPP);
 		GeneratedGlue += FString::Printf(TEXT("\t{ \"Destroy\", %s_Destroy },\r\n"), *ClassNameCPP);
 		GeneratedGlue += FString::Printf(TEXT("\t{ \"CreateDefaultSubobject\", %s_CreateDefaultSubobject },\r\n"), *ClassNameCPP);
+		GeneratedGlue += FString::Printf(TEXT("\t{ \"FObjectFinder\", %s_FObjectFinder },\r\n"), *ClassNameCPP);
 	}
 
 	GeneratedGlue += FString::Printf(TEXT("\t{ \"Cast\", %s_Cast },\r\n"), *ClassNameCPP);

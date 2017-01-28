@@ -5,6 +5,7 @@
 #define _includefile "ShooterGame.h"
 #include  "ShooterGame.h" 
 #include "TableUtil.h"
+#include "UObject/UObjectThreadContext.h"
 #include "GeneratedScriptLibraries.inl"
 
 DEFINE_LOG_CATEGORY(LuaLog);
@@ -519,4 +520,31 @@ void UTableUtil::CtorCpp(UObject* p, FString classpath)
 	pushclass("UObject", (void*)p, true);
 	push(classpath);
 	Call_void(FString("CtorCpp"));
+}
+
+UObject* UTableUtil::FObjectFinder( UClass* Class, FString PathName )
+{
+	auto& ThreadContext = FUObjectThreadContext::Get();
+	UE_CLOG(!ThreadContext.IsInConstructor, LogUObjectGlobals, Fatal, TEXT("FObjectFinders can't be used outside of constructors to find %s"), *PathName);
+	ConstructorHelpers::StripObjectClass(PathName, true);
+	int32 PackageDelimPos = INDEX_NONE;
+	PathName.FindChar(TCHAR('.'), PackageDelimPos);
+	if (PackageDelimPos == INDEX_NONE)
+	{
+		int32 ObjectNameStart = INDEX_NONE;
+		PathName.FindLastChar(TCHAR('/'), ObjectNameStart);
+		if (ObjectNameStart != INDEX_NONE)
+		{
+			const FString ObjectName = PathName.Mid(ObjectNameStart + 1);
+			PathName += TCHAR('.');
+			PathName += ObjectName;
+		}
+	}
+	Class->GetDefaultObject(); // force the CDO to be created if it hasn't already
+	UObject * result = (UObject*)StaticLoadObject(Class, nullptr, *PathName);
+	if (result)
+	{
+		result->AddToRoot();
+	}
+	return result;
 }

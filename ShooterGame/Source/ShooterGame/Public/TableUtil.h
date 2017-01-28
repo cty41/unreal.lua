@@ -56,6 +56,7 @@ public:
 	static void loadlib(const luaL_Reg funclist[], const char* classname);
 	static void loadEnum(const EnumItem list[], const char* enumname);
 	static void addutil(const luaL_Reg funclist[], const char* tablename);
+	static UObject* FObjectFinder( UClass* Class, FString PathName );
 
 	UFUNCTION(BlueprintCallable, Category = "TableUtil")
 	static void log(FString content);

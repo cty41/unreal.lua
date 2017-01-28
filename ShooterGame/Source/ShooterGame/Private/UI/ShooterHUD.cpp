@@ -27,10 +27,10 @@ AShooterHUD::AShooterHUD(const FObjectInitializer& ObjectInitializer) : Super(Ob
 
 	OnPlayerTalkingStateChangedDelegate = FOnPlayerTalkingStateChangedDelegate::CreateUObject(this, &AShooterHUD::OnPlayerTalkingStateChanged);
 
-	static ConstructorHelpers::FObjectFinder<UTexture2D> HitTextureOb(TEXT("/Game/UI/HUD/HitIndicator"));
-	static ConstructorHelpers::FObjectFinder<UTexture2D> HUDMainTextureOb(TEXT("/Game/UI/HUD/HUDMain"));
-	static ConstructorHelpers::FObjectFinder<UTexture2D> HUDAssets02TextureOb(TEXT("/Game/UI/HUD/HUDAssets02"));
-	static ConstructorHelpers::FObjectFinder<UTexture2D> LowHealthOverlayTextureOb(TEXT("/Game/UI/HUD/LowHealthOverlay"));
+// 	static ConstructorHelpers::FObjectFinder<UTexture2D> HitTextureOb(TEXT("/Game/UI/HUD/HitIndicator"));
+// 	static ConstructorHelpers::FObjectFinder<UTexture2D> HUDMainTextureOb(TEXT("/Game/UI/HUD/HUDMain"));
+// 	static ConstructorHelpers::FObjectFinder<UTexture2D> HUDAssets02TextureOb(TEXT("/Game/UI/HUD/HUDAssets02"));
+// 	static ConstructorHelpers::FObjectFinder<UTexture2D> LowHealthOverlayTextureOb(TEXT("/Game/UI/HUD/LowHealthOverlay"));
 
 	// Fonts are not included in dedicated server builds.
 	#if !UE_SERVER
@@ -42,10 +42,11 @@ AShooterHUD::AShooterHUD(const FObjectInitializer& ObjectInitializer) : Super(Ob
 	}
 	#endif //!UE_SERVER
 
-	HitNotifyTexture = HitTextureOb.Object;
-	HUDMainTexture = HUDMainTextureOb.Object;
-	HUDAssets02Texture = HUDAssets02TextureOb.Object;
-	LowHealthOverlayTexture = LowHealthOverlayTextureOb.Object;
+// 	HitNotifyTexture = HitTextureOb.Object;
+// 	HUDMainTexture = HUDMainTextureOb.Object;
+// 	HUDAssets02Texture = HUDAssets02TextureOb.Object;
+// 	LowHealthOverlayTexture = LowHealthOverlayTextureOb.Object;
+	UTableUtil::call("CtorCpp", "shooterhud", this);
 
 	HitNotifyIcon[EShooterHudPosition::Left] = UCanvas::MakeIcon(HitNotifyTexture,  158, 831, 585, 392);	
 	HitNotifyIcon[EShooterHudPosition::FrontLeft] = UCanvas::MakeIcon(HitNotifyTexture, 369, 434, 460, 378);	
