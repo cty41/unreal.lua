@@ -1,5 +1,4 @@
 // Copyright 1998-2016 Epic Games, Inc. All Rights Reserved.
-#define _projectname "ShooterGame"
 #include "LuaglueGeneratorPrivatePCH.h"
 #include "ScriptCodeGeneratorBase.h"
 #include "LuaScriptCodeGenerator.h"
@@ -8,17 +7,19 @@
 
 DEFINE_LOG_CATEGORY(LogScriptGenerator);
 
+FString GameModuleName;
 class FLuaglueGenerator : public ILuaglueGenerator
 {
 	/** Specialized script code generator */
 	TAutoPtr<FScriptCodeGeneratorBase> CodeGenerator;
 
+	TArray<FString> SupportModules;
 	/** IModuleInterface implementation */
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
 
 	/** ILuaglueGenerator interface */
-	virtual FString GetGeneratedCodeModuleName() const override { return TEXT(_projectname); }
+	virtual FString GetGeneratedCodeModuleName() const override { return GameModuleName; }
 	virtual bool ShouldExportClassesForModule(const FString& ModuleName, EBuildModuleType::Type ModuleType, const FString& ModuleGeneratedIncludeDirectory) const override;
 	virtual bool SupportsTarget(const FString& TargetName) const override;
 	virtual void Initialize(const FString& RootLocalPath, const FString& RootBuildPath, const FString& OutputDirectory, const FString& IncludeBase) override;
@@ -53,6 +54,15 @@ void FLuaglueGenerator::Initialize(const FString& RootLocalPath, const FString& 
 {
 	UE_LOG(LogScriptGenerator, Log, TEXT("Using Lua Script Generator."));
 	CodeGenerator = new FLuaScriptCodeGenerator(RootLocalPath, RootBuildPath, OutputDirectory, IncludeBase);
+	FString configPath = IncludeBase / ".." / ".." / "Config" / "luaconfig.ini";
+	GConfig->GetArray(TEXT("Lua"), TEXT("SupportedModules"), SupportModules, configPath);
+	FProjectDescriptor ProjectDescriptor;
+	FText OutError;
+	ProjectDescriptor.Load(FPaths::GetProjectFilePath(), OutError);
+	for (auto &module : ProjectDescriptor.Modules)
+	{
+		SupportModules.Add(module.Name.ToString());
+	}
 }
 
 bool FLuaglueGenerator::ShouldExportClassesForModule(const FString& ModuleName, EBuildModuleType::Type ModuleType, const FString& ModuleGeneratedIncludeDirectory) const
@@ -60,16 +70,7 @@ bool FLuaglueGenerator::ShouldExportClassesForModule(const FString& ModuleName, 
 	bool bCanExport = (ModuleType == EBuildModuleType::EngineRuntime || ModuleType == EBuildModuleType::GameRuntime);
 	if (bCanExport)
 	{
-		// Only export functions from selected modules
-		static struct FSupportedModules
-		{
-			TArray<FString> SupportedScriptModules;
-			FSupportedModules()
-			{
-				GConfig->GetArray(TEXT("Plugins"), TEXT("ScriptSupportedModules"), SupportedScriptModules, GEngineIni);
-			}
-		} SupportedModules;
-		bCanExport = SupportedModules.SupportedScriptModules.Num() == 0 || SupportedModules.SupportedScriptModules.Contains(ModuleName);
+		bCanExport = SupportModules.Contains(ModuleName);
 	}
 	return bCanExport;
 }
@@ -86,5 +87,12 @@ void FLuaglueGenerator::FinishExport()
 
 bool FLuaglueGenerator::SupportsTarget(const FString& TargetName) const
 {
+	if (FPaths::IsProjectFilePathSet())
+	{
+		FProjectDescriptor ProjectDescriptor;
+		FText OutError;
+		ProjectDescriptor.Load(FPaths::GetProjectFilePath(), OutError);
+		GameModuleName = ProjectDescriptor.Modules[0].Name.ToString();
+	}
 	return true;
 }

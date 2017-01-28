@@ -48,9 +48,8 @@ class AShooterWeapon_Projectile : public AShooterWeapon
 	GENERATED_UCLASS_BODY()
 
 	/** apply config on projectile */
+public:
 	void ApplyWeaponConfig(FProjectileWeaponData& Data);
-
-protected:
 
 	virtual EAmmoType GetAmmoType() const override
 	{

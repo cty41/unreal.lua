@@ -57,22 +57,24 @@ end
 
 local function __indexcpp(t, k)
 	local class = getmetatable(t)
-	while class do
+	local cppclass = rawget(class, "_cppclass")
+	while class and not rawget(class, "__iscppclass") do
 		local v = rawget(class, k)
 		if v then return v end 
-		v = rawget(class, "Get_"..k)
-		if v then return v(t) end
-		class = class.Super and class:Super() 
+		class = rawget(class, "_parentclass") 
 	end
+
+	v = cppclass[k] 
+	if v then return v end
+	v = cppclass["Get_"..k]
+	if v then return v(t) end
 end
 
 local function __newindexcpp(t, k, v)
 	local class = getmetatable(t)
-	while class do
-		local f = class["Set_"..k]
-		if f then f(t, v); return end
-		class = class.Super and class:Super() 
-	end
+	local cppclass = rawget(class, "_cppclass")
+	local f = cppclass["Set_"..k]
+	if f then f(t, v); return end
 	rawset(t, k, v)
 end
 
@@ -86,7 +88,7 @@ local function CtorCppRecursively(theclass, inscpp, ...)
 end
 
 local function CtorFromCpp(theclass, inscpp, ...)
-	theclass._cppclass:cast(inscpp)
+	-- theclass._cppclass:cast(inscpp)
 	CtorCppRecursively(theclass, inscpp, ...)
 end
 
@@ -96,7 +98,7 @@ local function NewInsCpp(self, ...)
 end
 
 local function Bind(self, inscpp)
-	self._cppclass:cast(inscpp) 
+	-- self._cppclass:cast(inscpp) 
 	self._cppinstance_ = inscpp 
 end
 
@@ -113,11 +115,11 @@ local function DestroyCpp(self)
 	ActorMgr:Get():DestroyActor(self)
 end
 
-function Inherit(parent)
+function Inherit(parent, cppclass)
 	local TheNewClass = {}
 	TheNewClass._parentclass = parent
 	if parent.__iscppclass then
-		TheNewClass._cppclass = parent._cppclass or parent
+		TheNewClass._cppclass = cppclass or parent._cppclass or parent
 		TheNewClass.Bind = Bind
 		TheNewClass.NewOn = NewOn
 		TheNewClass.NewInsCpp = NewInsCpp

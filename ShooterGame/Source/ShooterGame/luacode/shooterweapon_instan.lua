@@ -1,4 +1,4 @@
-local ShooterWeapon_Instan = Inherit(AShooterWeapon_Instant)
+local ShooterWeapon_Instan = Inherit(require "shooterweapon", AShooterWeapon_Instant)
 local function RunCppCode()
 	return false
 end
@@ -10,7 +10,6 @@ function ShooterWeapon_Instan:FireWeapon()
 
 	local CurrentSpread = self:GetCurrentSpread()
 	local ConeHalfAngle = UKismetMathLibrary.DegreesToRadians(CurrentSpread*0.5)
-
 	local AimDir = self:GetAdjustedAim()
 	local StartTrace = self:GetCameraDamageStartLocation(AimDir)
 	local ShootDir = ULuautils.VRandCone(WeaponRandomStream, AimDir, ConeHalfAngle, ConeHalfAngle)
@@ -128,12 +127,12 @@ function ShooterWeapon_Instan:SpawnImpactEffects(Impact)
 		if not Impact.Component:Get() then
 			local StartTrace = Impact.ImpactPoint + Impact.ImpactNormal * 10
 			local EndTrace = Impact.ImpactPoint - Impact.ImpactNormal * 10
-			UseImpact = WeaponTrace(StartTrace, EndTrace)
+			UseImpact = self:WeaponTrace(StartTrace, EndTrace)
 		end
 
-		local SpawnTransform = FTransform.Make(Impact.ImpactNormal:Rotation(), Impact.ImpactPoint)
+		local SpawnTransform = FTransform.Make(Impact.ImpactPoint, Impact.ImpactNormal:Rotation())
 		local EffectActor = UGameplayStatics.BeginDeferredActorSpawnFromClass(self, self.ImpactTemplate, SpawnTransform)
-		AShooterImpactEffect:cast(EffectActor)
+		EffectActor = AShooterImpactEffect.Cast(EffectActor)
 		if EffectActor then
 			EffectActor.SurfaceHit = UseImpact
 			UGameplayStatics.FinishSpawningActor(EffectActor, SpawnTransform)
