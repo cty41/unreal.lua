@@ -1,1 +1,0 @@
-xcopy .\ShooterGame E:\ue4projects\ShooterGame /e /y
