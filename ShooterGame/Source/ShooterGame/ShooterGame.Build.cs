@@ -8,7 +8,7 @@ public class ShooterGame : ModuleRules
     {
         get { return ModuleDirectory; }
     }
-    private string ThirdPartyPath
+    private string LuaLibPath
     {
         get { return Path.GetFullPath(Path.Combine(ModulePath, "../../Lua/")); }
     }
@@ -62,7 +62,7 @@ public class ShooterGame : ModuleRules
 				"NetworkReplayStreaming"
 			}
 		);
-		PublicIncludePaths.Add(Path.Combine(ThirdPartyPath, "Include"));
-        PublicAdditionalLibraries.Add(Path.Combine(ThirdPartyPath, "Lib", "Win64", "Release","lua.lib"));
+		PublicIncludePaths.Add(Path.Combine(LuaLibPath, "Include"));
+        PublicAdditionalLibraries.Add(Path.Combine(LuaLibPath, "Lib", "Win64", "Release","lua.lib"));
 	}
 }
