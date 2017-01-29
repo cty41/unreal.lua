@@ -29,8 +29,8 @@ protected:
 	TMap<UClass*, TArray<FName> > ClassExportedFunctions;
 	/** Proprties exported for a class */
 	TMap<UClass*, TArray<FPropertyAccessor> > ClassExportedProperties;
-	TSet<FString> SupportedStruct;
-	TSet<FString> NoexportPropertyStruct;
+	TArray<FString> SupportedStruct;
+	TArray<FString> NoexportPropertyStruct;
 	TSet<FString> WeakPtrClass;
 
 	/** Creats a 'glue' file that merges all generated script files */

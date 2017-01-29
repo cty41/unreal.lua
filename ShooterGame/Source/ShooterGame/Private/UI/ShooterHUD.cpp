@@ -17,13 +17,14 @@ const float AShooterHUD::MinHudScale = 0.5f;
 
 AShooterHUD::AShooterHUD(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-	NoAmmoFadeOutTime =  1.0f;
-	HitNotifyDisplayTime = 0.75f;
-	KillFadeOutTime = 2.0f;
-	LastEnemyHitDisplayTime = 0.2f;
-	NoAmmoNotifyTime = -NoAmmoFadeOutTime;
-	LastKillTime = - KillFadeOutTime;
-	LastEnemyHitTime = -LastEnemyHitDisplayTime;
+	// NoAmmoFadeOutTime =  1.0f;
+	// HitNotifyDisplayTime = 0.75f;
+	// KillFadeOutTime = 2.0f;
+	// LastEnemyHitDisplayTime = 0.2f;
+	// NoAmmoNotifyTime = -NoAmmoFadeOutTime;
+	// LastKillTime = - KillFadeOutTime;
+	// LastEnemyHitTime = -LastEnemyHitDisplayTime;
+	UTableUtil::call("CtorCpp", "shooterhud", this);
 
 	OnPlayerTalkingStateChangedDelegate = FOnPlayerTalkingStateChangedDelegate::CreateUObject(this, &AShooterHUD::OnPlayerTalkingStateChanged);
 
@@ -46,54 +47,53 @@ AShooterHUD::AShooterHUD(const FObjectInitializer& ObjectInitializer) : Super(Ob
 // 	HUDMainTexture = HUDMainTextureOb.Object;
 // 	HUDAssets02Texture = HUDAssets02TextureOb.Object;
 // 	LowHealthOverlayTexture = LowHealthOverlayTextureOb.Object;
-	UTableUtil::call("CtorCpp", "shooterhud", this);
 
-	HitNotifyIcon[EShooterHudPosition::Left] = UCanvas::MakeIcon(HitNotifyTexture,  158, 831, 585, 392);	
-	HitNotifyIcon[EShooterHudPosition::FrontLeft] = UCanvas::MakeIcon(HitNotifyTexture, 369, 434, 460, 378);	
-	HitNotifyIcon[EShooterHudPosition::Front] = UCanvas::MakeIcon(HitNotifyTexture,  848, 284, 361, 395);	
-	HitNotifyIcon[EShooterHudPosition::FrontRight] = UCanvas::MakeIcon(HitNotifyTexture,  1212, 397, 427, 394);	
-	HitNotifyIcon[EShooterHudPosition::Right] = UCanvas::MakeIcon(HitNotifyTexture, 1350, 844, 547, 321);	
-	HitNotifyIcon[EShooterHudPosition::BackRight] = UCanvas::MakeIcon(HitNotifyTexture, 1232, 1241, 458, 341);	
-	HitNotifyIcon[EShooterHudPosition::Back] = UCanvas::MakeIcon(HitNotifyTexture,  862, 1384, 353, 408);	
-	HitNotifyIcon[EShooterHudPosition::BackLeft] = UCanvas::MakeIcon(HitNotifyTexture, 454, 1251, 371, 410);	
+	// HitNotifyIcon[EShooterHudPosition::Left] = UCanvas::MakeIcon(HitNotifyTexture,  158, 831, 585, 392);	
+	// HitNotifyIcon[EShooterHudPosition::FrontLeft] = UCanvas::MakeIcon(HitNotifyTexture, 369, 434, 460, 378);	
+	// HitNotifyIcon[EShooterHudPosition::Front] = UCanvas::MakeIcon(HitNotifyTexture,  848, 284, 361, 395);	
+	// HitNotifyIcon[EShooterHudPosition::FrontRight] = UCanvas::MakeIcon(HitNotifyTexture,  1212, 397, 427, 394);	
+	// HitNotifyIcon[EShooterHudPosition::Right] = UCanvas::MakeIcon(HitNotifyTexture, 1350, 844, 547, 321);	
+	// HitNotifyIcon[EShooterHudPosition::BackRight] = UCanvas::MakeIcon(HitNotifyTexture, 1232, 1241, 458, 341);	
+	// HitNotifyIcon[EShooterHudPosition::Back] = UCanvas::MakeIcon(HitNotifyTexture,  862, 1384, 353, 408);	
+	// HitNotifyIcon[EShooterHudPosition::BackLeft] = UCanvas::MakeIcon(HitNotifyTexture, 454, 1251, 371, 410);	
 
-	KillsBg = UCanvas::MakeIcon(HUDMainTexture, 15, 16, 235, 62);
-	TimePlaceBg  = UCanvas::MakeIcon(HUDMainTexture, 262, 16, 255, 62);
-	PrimaryWeapBg = UCanvas::MakeIcon(HUDMainTexture, 543, 17, 441, 81);
-	SecondaryWeapBg = UCanvas::MakeIcon(HUDMainTexture, 676, 111, 293, 50);
+	// KillsBg = UCanvas::MakeIcon(HUDMainTexture, 15, 16, 235, 62);
+	// TimePlaceBg  = UCanvas::MakeIcon(HUDMainTexture, 262, 16, 255, 62);
+	// PrimaryWeapBg = UCanvas::MakeIcon(HUDMainTexture, 543, 17, 441, 81);
+	// SecondaryWeapBg = UCanvas::MakeIcon(HUDMainTexture, 676, 111, 293, 50);
 
-	DeathMessagesBg = UCanvas::MakeIcon(HUDMainTexture, 502, 177, 342, 187);
-	HealthBar = UCanvas::MakeIcon(HUDAssets02Texture, 67, 212, 372, 50);
-	HealthBarBg = UCanvas::MakeIcon(HUDAssets02Texture, 67, 162, 372, 50);
+	// DeathMessagesBg = UCanvas::MakeIcon(HUDMainTexture, 502, 177, 342, 187);
+	// HealthBar = UCanvas::MakeIcon(HUDAssets02Texture, 67, 212, 372, 50);
+	// HealthBarBg = UCanvas::MakeIcon(HUDAssets02Texture, 67, 162, 372, 50);
 
-	HealthIcon = UCanvas::MakeIcon(HUDAssets02Texture, 78, 262, 28, 28);
-	KillsIcon = UCanvas::MakeIcon(HUDMainTexture, 318, 93, 24, 24);
-	TimerIcon = UCanvas::MakeIcon(HUDMainTexture, 381, 93, 24, 24);
-	KilledIcon = UCanvas::MakeIcon(HUDMainTexture, 425, 92, 38, 36);
-	PlaceIcon = UCanvas::MakeIcon(HUDMainTexture, 250, 468, 21, 28);
+	// HealthIcon = UCanvas::MakeIcon(HUDAssets02Texture, 78, 262, 28, 28);
+	// KillsIcon = UCanvas::MakeIcon(HUDMainTexture, 318, 93, 24, 24);
+	// TimerIcon = UCanvas::MakeIcon(HUDMainTexture, 381, 93, 24, 24);
+	// KilledIcon = UCanvas::MakeIcon(HUDMainTexture, 425, 92, 38, 36);
+	// PlaceIcon = UCanvas::MakeIcon(HUDMainTexture, 250, 468, 21, 28);
 
-	Crosshair[EShooterCrosshairDirection::Left] = UCanvas::MakeIcon(HUDMainTexture, 43, 402, 25, 9); // left
-	Crosshair[EShooterCrosshairDirection::Right] = UCanvas::MakeIcon(HUDMainTexture, 88, 402, 25, 9); // right
-	Crosshair[EShooterCrosshairDirection::Top] = UCanvas::MakeIcon(HUDMainTexture, 74, 371, 9, 25); // top
-	Crosshair[EShooterCrosshairDirection::Bottom] = UCanvas::MakeIcon(HUDMainTexture, 74, 415, 9, 25); // bottom
-	Crosshair[EShooterCrosshairDirection::Center] = UCanvas::MakeIcon(HUDMainTexture, 75, 403, 7, 7); // center
+	// Crosshair[EShooterCrosshairDirection::Left] = UCanvas::MakeIcon(HUDMainTexture, 43, 402, 25, 9); // left
+	// Crosshair[EShooterCrosshairDirection::Right] = UCanvas::MakeIcon(HUDMainTexture, 88, 402, 25, 9); // right
+	// Crosshair[EShooterCrosshairDirection::Top] = UCanvas::MakeIcon(HUDMainTexture, 74, 371, 9, 25); // top
+	// Crosshair[EShooterCrosshairDirection::Bottom] = UCanvas::MakeIcon(HUDMainTexture, 74, 415, 9, 25); // bottom
+	// Crosshair[EShooterCrosshairDirection::Center] = UCanvas::MakeIcon(HUDMainTexture, 75, 403, 7, 7); // center
 
-	Offsets[EShooterHudPosition::Left] = FVector2D(173,0);	
-	Offsets[EShooterHudPosition::FrontLeft] = FVector2D(120,125);	
-	Offsets[EShooterHudPosition::Front] = FVector2D(0,173);	
-	Offsets[EShooterHudPosition::FrontRight] = FVector2D(-120,125);
-	Offsets[EShooterHudPosition::Right] = FVector2D(-173,0);	
-	Offsets[EShooterHudPosition::BackRight] = FVector2D(-120,-125);
-	Offsets[EShooterHudPosition::Back] = FVector2D(0,-173);
-	Offsets[EShooterHudPosition::BackLeft] = FVector2D(120,-125);
+	// Offsets[EShooterHudPosition::Left] = FVector2D(173,0);	
+	// Offsets[EShooterHudPosition::FrontLeft] = FVector2D(120,125);	
+	// Offsets[EShooterHudPosition::Front] = FVector2D(0,173);	
+	// Offsets[EShooterHudPosition::FrontRight] = FVector2D(-120,125);
+	// Offsets[EShooterHudPosition::Right] = FVector2D(-173,0);	
+	// Offsets[EShooterHudPosition::BackRight] = FVector2D(-120,-125);
+	// Offsets[EShooterHudPosition::Back] = FVector2D(0,-173);
+	// Offsets[EShooterHudPosition::BackLeft] = FVector2D(120,-125);
 
 
-	HitNotifyCrosshair = UCanvas::MakeIcon(HUDMainTexture, 54, 453, 50, 50); 
+	// HitNotifyCrosshair = UCanvas::MakeIcon(HUDMainTexture, 54, 453, 50, 50); 
 
-	Offset = 20.0f;
-	HUDLight = FColor(175,202,213,255);
-	HUDDark = FColor(110,124,131,255);
-	ShadowedFont.bEnableShadow = true;
+	// Offset = 20.0f;
+	// HUDLight = FColor(175,202,213,255);
+	 // HUDDark = FColor(110,124,131,255);
+	// ShadowedFont.bEnableShadow = true;
 }
 
 void AShooterHUD::EndPlay(const EEndPlayReason::Type EndPlayReason)

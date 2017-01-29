@@ -74,7 +74,7 @@ void UTableUtil::init()
 	FString gameDir = FPaths::GameDir();
 	FString projectname = _includefile;
 	projectname.RemoveAt(projectname.Len() - 1, 2);
-	FString luaDir = gameDir / "Source" / projectname /TEXT("luacode");
+	FString luaDir = gameDir /TEXT("LuaSource");
 	FString mainFilePath = luaDir / TEXT("main.lua");
 	if (luaL_dofile(l, TCHAR_TO_ANSI(*mainFilePath)))
 	{

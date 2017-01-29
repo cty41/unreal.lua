@@ -75,3 +75,8 @@ function FTransform.Make(Location, Rotation, Scale)
 	Scale = Scale or FVector.New(1,1,1)
 	return UKismetMathLibrary.MakeTransform(Location, Rotation, Scale)
 end
+
+
+UCanvas.MakeIcon = ULuautils.MakeIcon
+FVector2D.New = ULuautils.FVector2D_New
+FColor.New = ULuautils.FColor_New

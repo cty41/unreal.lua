@@ -36,3 +36,19 @@ FVector ULuautils::VRandCone(FRandomStream stream, FVector const& Dir, float Hor
 {
 	return stream.VRandCone(Dir, HorizontalConeHalfAngleRad, VerticalConeHalfAngleRad);
 }
+
+FCanvasIcon ULuautils::MakeIcon(UTexture* Texture, float U, float V, float UL, float VL)
+{
+	return UCanvas::MakeIcon(Texture, U, V, UL, VL);
+}
+
+FVector2D ULuautils::FVector2D_New(float InX, float InY)
+{
+	return FVector2D(InX, InY);
+}
+
+FColor ULuautils::FColor_New(uint8 InR, uint8 InG, uint8 InB, uint8 InA)
+{
+	return FColor(InR,InG,InB,InA);
+}
+

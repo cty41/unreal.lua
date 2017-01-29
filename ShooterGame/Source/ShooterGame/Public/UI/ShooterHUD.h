@@ -173,28 +173,28 @@ public:
 	/** Floor for automatic hud scaling. */
 	static const float MinHudScale;
 
-	/** Lighter HUD color. */
+	UPROPERTY()/** Lighter HUD color. */
 	FColor HUDLight;
 
-	/** Darker HUD color. */
+	UPROPERTY()/** Darker HUD color. */
 	FColor HUDDark;
 
-	/** When we got last notice about out of ammo. */
+	UPROPERTY()/** When we got last notice about out of ammo. */
 	float NoAmmoNotifyTime;
 
-	/** How long notice is fading out. */
+	UPROPERTY()/** How long notice is fading out. */
 	float NoAmmoFadeOutTime;
 
-	/** Most recent hit time, used to check if we need to draw hit indicator at all. */
+	UPROPERTY()/** Most recent hit time, used to check if we need to draw hit indicator at all. */
 	float LastHitTime;
 
-	/** How long till hit notify fades out completely. */
+	UPROPERTY()/** How long till hit notify fades out completely. */
 	float HitNotifyDisplayTime;
 
-	/** When we last time hit the enemy. */
+	UPROPERTY()/** When we last time hit the enemy. */
 	float LastEnemyHitTime;
 
-	/** How long till enemy hit notify fades out completely. */
+	UPROPERTY()/** How long till enemy hit notify fades out completely. */
 	float LastEnemyHitDisplayTime;
 
 	/** Icons for hit indicator. */
@@ -257,25 +257,25 @@ public:
 	UPROPERTY()
 	FCanvasIcon PlaceIcon;
 
-	/** UI scaling factor for other resolutions than Full HD. */
+	UPROPERTY()/** UI scaling factor for other resolutions than Full HD. */
 	float ScaleUI;
 
-	/** Current animation pulse value. */
+	UPROPERTY()/** Current animation pulse value. */
 	float PulseValue;
 
-	/** FontRenderInfo enabling casting shadow.s */
+	UPROPERTY()/** FontRenderInfo enabling casting shadow.s */
 	FFontRenderInfo ShadowedFont;
 
-	/** Big "KILLED [PLAYER]" message text above the crosshair. */
+	UPROPERTY()/** Big "KILLED [PLAYER]" message text above the crosshair. */
 	FText CenteredKillMessage;
 
-	/** last time we killed someone. */
+	UPROPERTY()/** last time we killed someone. */
 	float LastKillTime;
 
-	/** How long the message will fade out. */
+	UPROPERTY()/** How long the message will fade out. */
 	float KillFadeOutTime;
 
-	/** Offsets to display hit indicator parts. */
+	UPROPERTY()/** Offsets to display hit indicator parts. */
 	FVector2D Offsets[8];
 
 	/** Texture for hit indicator. */
@@ -302,34 +302,34 @@ public:
 	UPROPERTY()
 	UFont* NormalFont;
 
-	/** General offset for HUD elements. */
+	UPROPERTY()/** General offset for HUD elements. */
 	float Offset;
 
-	/** Runtime data for hit indicator. */
+	UPROPERTY()/** Runtime data for hit indicator. */
 	FHitData HitNotifyData[8];
 
-	/** Active death messages. */
+	UPROPERTY()/** Active death messages. */
 	TArray<FDeathMessage> DeathMessages;
 
-	/** State of match. */
+	//UPROPERTY()/** State of match. */
 	EShooterMatchState::Type MatchState;
 
-	/** Is the scoreboard widget on screen? */
+	UPROPERTY()/** Is the scoreboard widget on screen? */
 	uint32 bIsScoreBoardVisible:1;
 
-	/** Scoreboard widget. */
+//	UPROPERTY()/** Scoreboard widget. */
 	TSharedPtr<class SShooterScoreboardWidget>	ScoreboardWidget;
 
-	/** Scoreboard widget overlay. */
+//	UPROPERTY()/** Scoreboard widget overlay. */
 	TSharedPtr<class SOverlay>	ScoreboardWidgetOverlay;
 
-	/** Scoreboard widget container - used for removing */
+//	UPROPERTY()/** Scoreboard widget container - used for removing */
 	TSharedPtr<class SWidget> ScoreboardWidgetContainer;
 
-	/** Chatbox widget. */
+//	UPROPERTY()/** Chatbox widget. */
 	TSharedPtr<class SChatWidget> ChatWidget;
 
-	/** Array of information strings to render (Waiting to respawn etc) */
+//	UPROPERTY()/** Array of information strings to render (Waiting to respawn etc) */
 	TArray<FCanvasTextItem> InfoItems;
 
 	/** Called every time game is started. */

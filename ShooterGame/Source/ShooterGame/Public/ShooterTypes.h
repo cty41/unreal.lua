@@ -2,7 +2,7 @@
 
 #include "ShooterTypes.generated.h"
 #pragma once
-
+UENUM(meta = (Lua=2))
 namespace EShooterMatchState
 {
 	enum Type
@@ -13,7 +13,7 @@ namespace EShooterMatchState
 		Lost,
 	};
 }
-
+UENUM(meta = (Lua=2))
 namespace EShooterCrosshairDirection
 {
 	enum Type
@@ -25,7 +25,7 @@ namespace EShooterCrosshairDirection
 		Center=4
 	};
 }
-
+UENUM(meta = (Lua=2))
 namespace EShooterHudPosition
 {
 	enum Type
@@ -42,7 +42,7 @@ namespace EShooterHudPosition
 }
 
 /** keep in sync with ShooterImpactEffect */
-UENUM()
+UENUM(meta = (Lua=2))
 namespace EShooterPhysMaterialType
 {
 	enum Type
@@ -59,6 +59,7 @@ namespace EShooterPhysMaterialType
 	};
 }
 
+UENUM(meta = (Lua=2))
 namespace EShooterDialogType
 {
 	enum Type

@@ -40,4 +40,13 @@ public:
 	UFUNCTION()
 	static FVector VRandCone(FRandomStream stream, FVector const& Dir, float HorizontalConeHalfAngleRad, float VerticalConeHalfAngleRad);
 
+	UFUNCTION()
+	static FCanvasIcon MakeIcon(UTexture* Texture, float U, float V, float UL, float VL);
+
+	UFUNCTION()
+	static FVector2D FVector2D_New(float InX =0, float InY =0);
+
+	UFUNCTION()
+	static FColor FColor_New(uint8 InR = 0, uint8 InG = 0, uint8 InB = 0, uint8 InA = 255);
+
 };

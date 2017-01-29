@@ -6,7 +6,6 @@ function Init()
     require "logutil"
     require "luaclass"
     require "globalevent"
-    require "inputmgr"
     require "timermgr"
     require "actormgr"
     require "baseutil"

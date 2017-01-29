@@ -39,10 +39,6 @@ local function CallBack(Callbackfunction, parameters, args)
 	xpcall(function()Callbackfunction(unpack(par, 1, table.maxn(par))) end, errhandle)
 end
 
--- EventName可以是任意类型数据，如果是table则用table的子项订阅，方便同一函数注册多个事件，
--- Callbackfunction为触发事件时的回调方法
--- 返回的东西需要保存，用来取消订阅
--- 如果传入继承于Singleton的实例的话，不需要取消订阅，当实例销毁时，会自动取消订阅
 function GlobalEvent.Subscribe(EventName, Callbackfunction, ...)
 	if type(Callbackfunction) ~= "function" then return end
 	local parameters = {...}
@@ -71,13 +67,11 @@ function GlobalEvent.Subscribe(EventName, Callbackfunction, ...)
 	return Handle
 end
 
--- 触发事件函数，EventName如上，将以订阅时的参数...与回调数据...拼接后调用回调函数
 function GlobalEvent.FireEvent(EventName, ...)
 	local arg = {...}
 	GlobalEvent.FiringEvent = EventName
 	GlobalEvent.LastEventData[EventName] = arg
 	if GlobalEvent.SubscriberList[EventName] == nil then return end
-	-- FireList防止了遍历GlobalEvent.SubscriberList的同时修改GlobalEvent.SubscriberList，大忌
 	local FireList = {}
 	for Subscriber in pairs(GlobalEvent.SubscriberList[EventName]) do
 		table.insert(FireList, Subscriber)
@@ -89,7 +83,6 @@ function GlobalEvent.FireEvent(EventName, ...)
 	end
 end
 
--- 用Subscribe的返回值来取消订阅
 function GlobalEvent.UnSubscribe(SubscriberInfo)
 	if type(SubscriberInfo) ~= "table" then return end
 	local EventName = SubscriberInfo[1]
@@ -103,11 +96,9 @@ function GlobalEvent.UnSubscribe(SubscriberInfo)
 	end
 end
 
--- 取得正在触发的那个事件，正在FireEvent的那个事件
 function GlobalEvent.GetEvent()
 	return GlobalEvent.FiringEvent
 end
--- 取得EventName事件最后触发时的数据, 即EventName最后一次fireevent的...，如果没有指定EventName，则会拿到最后一次事件的data
 function GlobalEvent.GetLastEventData(EventName)
 	if EventName == nil then
 		if GlobalEvent.FiringEvent then return GlobalEvent.GetLastEventData(GlobalEvent.FiringEvent) end
