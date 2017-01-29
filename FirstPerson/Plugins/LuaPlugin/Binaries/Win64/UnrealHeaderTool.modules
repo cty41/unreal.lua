@@ -1,0 +1,8 @@
+{
+	"Changelist" : 0,
+	"BuildId" : "7e505e6f-d9eb-4725-9bc9-3b25dbd8acc7",
+	"Modules" : 
+	{
+		"LuaglueGenerator" : "UnrealHeaderTool-LuaglueGenerator.dll"
+	}
+}
