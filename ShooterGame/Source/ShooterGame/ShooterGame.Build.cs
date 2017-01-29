@@ -4,13 +4,9 @@ using UnrealBuildTool;
 
 public class ShooterGame : ModuleRules
 {
-	private string ModulePath
-    {
-        get { return ModuleDirectory; }
-    }
     private string LuaLibPath
     {
-        get { return Path.GetFullPath(Path.Combine(ModulePath, "../../Lua/")); }
+        get { return Path.GetFullPath(Path.Combine(ModuleDirectory, "../../Lua/")); }
     }
 	public ShooterGame(TargetInfo Target)
 	{
