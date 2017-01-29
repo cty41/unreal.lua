@@ -1303,6 +1303,7 @@ void FLuaScriptCodeGenerator::GenerateWeakClass()
 		GeneratedGlue += FString::Printf(TEXT("\t{ NULL, NULL}\r\n};\r\n\r\n\r\n"));
 		LuaExportedTMPClasses.Add(className);
 
+		TraitGlue += FString::Printf(TEXT("class %s;\r\n"), *name);
 		TraitGlue += FString::Printf(TEXT("class %s;\r\n"), *className);
 		TraitGlue += FString::Printf(TEXT("template<>\r\nclass traitweakclass<%s>{\r\n"), *name);
 		TraitGlue += FString::Printf(TEXT("public:\r\n\tusing traitType = %s;\r\n"), *className);
