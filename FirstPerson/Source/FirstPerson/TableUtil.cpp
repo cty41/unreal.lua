@@ -1,7 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-// #include "TestCamera.h"
-// #include "ScriptPluginPrivatePCH.h"
 #define _includefile "FirstPerson.h"
 #include  "FirstPerson.h" 
 #include "TableUtil.h"
