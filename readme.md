@@ -25,10 +25,21 @@
 ### 2.How to Add levelblueprint Event
 ![show how to add blueprint event](https://github.com/asqbtcupid/asqbtcupid.github.com/blob/master/_image/addbpevent_shooter.gif?raw=true)
 
-​
-## 使用步骤：
+## Some Useful Debug function
 
-1. 打开UE4的启动器，切换到学习页签，找到那个叫做shootergame的示例项目
+1.A\_, output thing to UE4 log, such as A\_("hello world")
+
+2.a\_, output thing to log.txt ,such as a\_("hello world")
+
+3.Q\_, examine an lua data to the log.txt, such as Q\_(\_G)
+
+4.you can change shootercharater.lua or shooterweapon.lua or shooterweapon_instan.lua or shooterweapon_projectile's function code during running.
+
+​
+​
+## 创建步骤：
+
+1.打开UE4的启动器，切换到学习页签，找到那个叫做shootergame的示例项目
 
 2.创建一个shootergame项目，项目的名字必须是ShooterGame，创建成功后你项目的文件夹就是ShooterGame
 
@@ -52,4 +63,13 @@
 ### 2.添加蓝图事件
 ![show how to add blueprint event](https://github.com/asqbtcupid/asqbtcupid.github.com/blob/master/_image/addbpevent_shooter.gif?raw=true)
 
+## 一些有用的函数
+
+1.A\_, 输出文字到 UE4 log, 例如 A\_("hello world")
+
+2.a\_, 输出文字到 log.txt , 例如a\_("hello world")
+
+3.Q\_, 把lua数据变成可读字符串，输出到log.txt, 例如 Q\_(\_G)
+
+4.可以在游戏运行中修改shootercharater.lua、shooterweapon.lua、shooterweapon_instan.lua，shooterweapon_projectile.lua的函数代码，可以热更新。
 
