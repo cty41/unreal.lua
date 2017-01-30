@@ -23,8 +23,7 @@
 
 ### 2.How to Add levelblueprint Event
 ![show how to add blueprint event](https://github.com/asqbtcupid/asqbtcupid.github.com/blob/master/_image/addbpevent_fp.gif?raw=true)
-​
-​
+
 ## Some Useful Debug function
 
 1.A\_, output thing to UE4 log, such as A\_("hello world")
@@ -35,7 +34,8 @@
 
 4.you can change luacharacter.lua and luaprojectile.lua's function code during running.
 
-
+​
+​
 ## 创建步骤：
 1.创建一个c++第一个人称模板项目，项目名称必须是FirstPerson
 
