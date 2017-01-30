@@ -27,7 +27,9 @@
 ​
 ## Some Useful Debug function
 1. A\_, output thing to log, such as A\_("hello world")
+
 2.Q\_, examine an lua data to the log.txt, such as Q\_(\_G)
+
 3.you can change luacharacter.lua and luaprojectile.lua during running.
 
 
