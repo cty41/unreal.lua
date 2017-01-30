@@ -23,6 +23,8 @@
 
 ### 2.How to Add levelblueprint Event
 ![show how to add blueprint event](https://github.com/asqbtcupid/asqbtcupid.github.com/blob/master/_image/addbpevent_fp.gif?raw=true)
+​
+​
 
 ## 创建步骤：
 1.创建一个c++第一个人称模板项目，项目名称必须是FirstPerson
@@ -39,8 +41,6 @@
 
 7.运行游戏
 
-​
-​
 ## 动图教程
 ### 1.创建FirstPerson项目
 ![show how to create project](https://github.com/asqbtcupid/asqbtcupid.github.com/blob/master/_image/firstperson.gif?raw=true)
