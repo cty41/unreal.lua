@@ -25,6 +25,11 @@
 ![show how to add blueprint event](https://github.com/asqbtcupid/asqbtcupid.github.com/blob/master/_image/addbpevent_fp.gif?raw=true)
 ​
 ​
+## Some Useful Debug function
+1. A\_, output thing to log, such as A\_("hello world")
+2.Q\_, examine an lua data to the log.txt, such as Q\_(\_G)
+3.you can change luacharacter.lua and luaprojectile.lua during running.
+
 
 ## 创建步骤：
 1.创建一个c++第一个人称模板项目，项目名称必须是FirstPerson
@@ -47,4 +52,3 @@
 ​
 ### 2.添加蓝图事件
 ![show how to add blueprint event](https://github.com/asqbtcupid/asqbtcupid.github.com/blob/master/_image/addbpevent_fp.gif?raw=true)
-
