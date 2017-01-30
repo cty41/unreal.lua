@@ -27,7 +27,7 @@
 ​
 ## Some Useful Debug function
 
-1. A\_, output thing to UE4 log, such as A\_("hello world")
+1.A\_, output thing to UE4 log, such as A\_("hello world")
 
 2.a\_, output thing to log.txt ,such as a\_("hello world")
 
