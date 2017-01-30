@@ -25,8 +25,6 @@
 ### 2.How to Add levelblueprint Event
 ![show how to add blueprint event](https://github.com/asqbtcupid/asqbtcupid.github.com/blob/master/_image/addbpevent_shooter.gif?raw=true)
 
-​
-​
 ## 使用步骤：
 
 1. 打开UE4的启动器，切换到学习页签，找到那个叫做shootergame的示例项目
