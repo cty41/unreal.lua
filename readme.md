@@ -33,7 +33,7 @@
 
 3.Q\_, examine an lua data to the log.txt, such as Q\_(\_G)
 
-4.you can change luacharacter.lua and luaprojectile.lua during running.
+4.you can change luacharacter.lua and luaprojectile.lua's function code during running.
 
 
 ## 创建步骤：
@@ -57,3 +57,13 @@
 ​
 ### 2.添加蓝图事件
 ![show how to add blueprint event](https://github.com/asqbtcupid/asqbtcupid.github.com/blob/master/_image/addbpevent_fp.gif?raw=true)
+
+## 一些有用的函数
+
+1.A\_, 输出文字到 UE4 log, 例如 A\_("hello world")
+
+2.a\_, 输出文字到 log.txt , 例如a\_("hello world")
+
+3.Q\_, 把lua数据变成可读字符串，输出到log.txt, 例如 Q\_(\_G)
+
+4.可以在游戏运行中修改luacharacter.lua和luaprojectile.lua的函数代码，可以热更新。
