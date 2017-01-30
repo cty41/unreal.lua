@@ -29,6 +29,7 @@
 
 ## 怎么运行起来
 
+
 1. 打开UE4的启动器，切换到学习页签，找到那个叫做shootergame的示例项目
 
 2.创建一个shootergame项目，项目的名字必须是ShooterGame，创建成功后你项目的文件夹就是ShooterGame
