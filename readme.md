@@ -39,8 +39,9 @@
 
 7.运行游戏
 
-## 动图教程
 ​
+​
+## 动图教程
 ### 1.创建FirstPerson项目
 ![show how to create project](https://github.com/asqbtcupid/asqbtcupid.github.com/blob/master/_image/firstperson.gif?raw=true)
 ​
