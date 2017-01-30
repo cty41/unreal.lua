@@ -3,7 +3,7 @@
 
 2.Copy the FirstPerson folder of the github repository to the project you create.
 
-3.Build the lua lib
+3.Build the lua lib under X64 config.
 
 4.Run the game under Development Editor config.
 
