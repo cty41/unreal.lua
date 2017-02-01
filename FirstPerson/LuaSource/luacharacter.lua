@@ -34,9 +34,14 @@ function Character_lua:CtorCpp()
 	FP_MuzzleLocation:K2_SetRelativeLocation(FVector.New(0.2, 48.4, -10.6), false, FHitResult.New(), false)
 
 	self.GunOffset = FVector.New(100.0, 0.0, 10.0)
+	Character_lua.xxwidget = UUserWidget.FClassFinder("/Game/FirstPerson/test")
 end
 
 function Character_lua:BeginPlayLua()
+	if Character_lua.xxwidget then
+		local testwindow = UWidgetBlueprintLibrary.Create(self, Character_lua.xxwidget, nil)
+		testwindow:AddToViewport()
+	end
 	self.FP_Gun:K2_AttachToComponent(self.Mesh1P, "GripPoint", EAttachmentRule.SnapToTarget, EAttachmentRule.SnapToTarget, EAttachmentRule.SnapToTarget, true)
 	if self.bUsingMotionControllers then
 		self.VR_Gun:SetHiddenInGame(false, true)

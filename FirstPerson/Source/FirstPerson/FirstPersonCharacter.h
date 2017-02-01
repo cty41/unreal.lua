@@ -75,7 +75,8 @@ public:
 	uint32 bUsingMotionControllers : 1;
 
 protected:
-	
+	UFUNCTION()
+	int32 test(int n);
 	/** Fires a projectile. */
 	void OnFire();
 

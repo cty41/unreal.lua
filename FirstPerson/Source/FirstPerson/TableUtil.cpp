@@ -4,12 +4,15 @@
 #include  "FirstPerson.h" 
 #include "TableUtil.h"
 #include "UObject/UObjectThreadContext.h"
+#include "SlateCore.h"
+#include "UMG.h"
 #include "GeneratedScriptLibraries.inl"
 
 DEFINE_LOG_CATEGORY(LuaLog);
 
 lua_State* UTableUtil::L = nullptr;
 TMap<FString, TMap<FString, UProperty*>> UTableUtil::propertyMap;
+TMap<FString, TMap<FString, UFunction*>> UTableUtil::functionMap;
 #ifdef LuaDebug
 TMap<FString, int> UTableUtil::countforgc;
 #endif
@@ -27,12 +30,24 @@ void UTableUtil::InitClassMap()
 			m.Add(Property->GetName(), Property);
 		}
 		propertyMap.Add(className ,m);
+		TMap<FString, UFunction*> funcs;
+		for (TFieldIterator<UFunction> FuncIt(theClass); FuncIt; ++FuncIt)
+		{
+			UFunction* func = *FuncIt;
+			funcs.Add(func->GetName(), func);
+		}
+		functionMap.Add(className, funcs);
 	}
 }
 
 UProperty* UTableUtil::GetPropertyByName(FString classname, FString propertyname)
 {
 	return propertyMap[classname][propertyname];
+}
+
+UFunction* UTableUtil::GetFunctionByName(FString classname, FString funcname)
+{
+	return functionMap[classname][funcname];
 }
 
 UProperty* UTableUtil::GetPropertyByName(UClass *Class, FString propertyname)

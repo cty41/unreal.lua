@@ -223,9 +223,13 @@ public:
 	}
 
 	static TMap<FString, TMap<FString, UProperty*>> propertyMap;
+	static TMap<FString, TMap<FString, UFunction*>> functionMap;
+
 	static void InitClassMap();
 	static UProperty* GetPropertyByName(FString classname, FString propertyname);
 	static UProperty* GetPropertyByName(UClass *Class, FString propertyname);
+	static UFunction* GetFunctionByName(FString classname, FString funcname);
+
 };
 
 template<>

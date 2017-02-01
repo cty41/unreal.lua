@@ -297,3 +297,7 @@ bool AFirstPersonCharacter::EnableTouchscreenMovement(class UInputComponent* Pla
 	}
 	return bResult;
 }
+int32 AFirstPersonCharacter::test(int n)
+{
+	return 100+n;
+}
