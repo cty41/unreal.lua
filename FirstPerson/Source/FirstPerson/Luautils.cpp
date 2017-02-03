@@ -42,3 +42,12 @@ FColor ULuautils::FColor_New(uint8 InR, uint8 InG, uint8 InB, uint8 InA)
 	return FColor(InR,InG,InB,InA);
 }
 
+void ULuautils::GetAllWidgets(UUserWidget* UserWidget, TArray<FName>& Names, TArray<UWidget*>& Widgets)
+{
+	UWidgetTree* WidgetTree = UserWidget->WidgetTree;
+	WidgetTree->GetAllWidgets(Widgets);
+	for (auto &v : Widgets)
+	{
+		Names.Add(v->GetFName());
+	}
+}

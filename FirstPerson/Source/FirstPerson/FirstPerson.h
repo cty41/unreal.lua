@@ -4,6 +4,7 @@
 #define __FIRSTPERSON_H__
 
 #include "EngineMinimal.h"
-
+#include "SlateCore.h"
+#include "UMG.h"
 
 #endif

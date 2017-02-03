@@ -1436,19 +1436,10 @@ void FLuaScriptCodeGenerator::GenerateDelegateClass()
 	const FString ClassGlueFilename = IncludeBase / TEXT("DelegateLuaProxy.h");
 	FString GeneratedGlue = TEXT("#pragma once\r\n");
 	GeneratedGlue += FString::Printf(TEXT("#include \"%s.h\"\r\n"), *GameModuleName);
-	// GeneratedGlue += TEXT("#include \"TableUtil.h\"\r\n");
-	for (auto &v : AllSourceClassHeaders)
-	{
-		if (v.Contains("DelegateLuaProxy"))
-			continue;
-		FString NewFilename(RebaseToBuildPath(v));
-		GeneratedGlue += FString::Printf(TEXT("#include \"%s\"\r\n"), *NewFilename);
-	}
-	// GeneratedGlue += TEXT("#include \"GeneratedScriptLibraries.inl\"\r\n");
+	GeneratedGlue += TEXT("#include \"allheader.inl\"\r\n");
 	GeneratedGlue += TEXT("#include \"DelegateLuaProxy.generated.h\"\r\n");
 	for (auto &info:delegates)
 	{
-		
 		FString paramlist;
 		FString paramNames;
 		for (TFieldIterator<UProperty> ParamIt(info.SignatureFunction); ParamIt; ++ParamIt)
@@ -1494,7 +1485,7 @@ void FLuaScriptCodeGenerator::GenerateDelegateClass()
 		GeneratedGlue += TEXT("\t}\r\n\r\n");
 
 		GeneratedGlue += TEXT("\tUFUNCTION()\r\n");
-		GeneratedGlue += TEXT("\tint Add() {int r = UTableUtil::pushluafunc(-1);LuaCallBacks.Add(r);return r;}\r\n");
+		GeneratedGlue += TEXT("\tint Add() {int r = UTableUtil::pushluafunc(2);LuaCallBacks.Add(r);return r;}\r\n");
 		GeneratedGlue += TEXT("\tUFUNCTION()\r\n");
 		GeneratedGlue += TEXT("\tvoid Remove(int32 r)\r\n\t{\r\n");
 		GeneratedGlue += TEXT("\t\tUTableUtil::unref(r);\r\n");
@@ -1502,7 +1493,7 @@ void FLuaScriptCodeGenerator::GenerateDelegateClass()
 
 		GeneratedGlue += TEXT("\tUFUNCTION()\r\n");
 		GeneratedGlue += TEXT("\tvoid RemoveByF()\r\n\t{\r\n");
-		GeneratedGlue += TEXT("\t\tint r = UTableUtil::popluafunc(-1);\r\n");
+		GeneratedGlue += TEXT("\t\tint r = UTableUtil::popluafunc(2);\r\n");
 		GeneratedGlue += TEXT("\t\tUTableUtil::unref(r);\r\n");
 		GeneratedGlue += TEXT("\t\tLuaCallBacks.Remove(r);\r\n\t}\r\n");
 
@@ -1531,15 +1522,18 @@ void FLuaScriptCodeGenerator::GlueAllGeneratedFiles()
 	// Generate inl library file
 	FString LibGlueFilename = GeneratedCodePath / TEXT("GeneratedScriptLibraries.inl");
 	FString LibGlue;
+	FString AllHeaderFilename = GeneratedCodePath / TEXT("allheader.inl");
+	FString HeaderGlue;
 
 	// Include all source header files
 	for (auto& HeaderFilename : AllSourceClassHeaders)
 	{
 		// Re-base to make sure we're including the right files on a remote machine
 		FString NewFilename(RebaseToBuildPath(HeaderFilename));
-		LibGlue += FString::Printf(TEXT("#include \"%s\"\r\n"), *NewFilename);
+		HeaderGlue += FString::Printf(TEXT("#include \"%s\"\r\n"), *NewFilename);
 	}
 
+	LibGlue += TEXT("#include \"allheader.inl\"\r\n");
 	// Include all script glue headers
 	for (auto& HeaderFilename : AllScriptHeaders)
 	{
@@ -1568,4 +1562,5 @@ void FLuaScriptCodeGenerator::GlueAllGeneratedFiles()
 	LibGlue += TEXT("}\r\n\r\n");
 
 	SaveHeaderIfChanged(LibGlueFilename, LibGlue);
+	SaveHeaderIfChanged(AllHeaderFilename, HeaderGlue);
 }

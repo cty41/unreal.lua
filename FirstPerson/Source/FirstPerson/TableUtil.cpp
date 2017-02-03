@@ -37,6 +37,18 @@ void UTableUtil::InitClassMap()
 		}
 		functionMap.Add(className, funcs);
 	}
+	for (TObjectIterator<UScriptStruct> uStruct; uStruct; ++uStruct)
+	{
+		auto theStruct = *uStruct;
+		FString className = FString::Printf(TEXT("%s%s"), theStruct->GetPrefixCPP(), *theStruct->GetName());
+		TMap<FString, UProperty*> m;
+		for (TFieldIterator<UProperty> PropertyIt(theStruct); PropertyIt; ++PropertyIt)
+		{
+			UProperty* Property = *PropertyIt;
+			m.Add(Property->GetName(), Property);
+		}
+		propertyMap.Add(className ,m);
+	}
 }
 
 UProperty* UTableUtil::GetPropertyByName(FString classname, FString propertyname)

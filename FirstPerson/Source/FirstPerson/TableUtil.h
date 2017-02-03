@@ -87,16 +87,16 @@ public:
 	static void Push_bool(bool isTrue);
 
 	UFUNCTION(BlueprintCallable, Category = "TableUtil")
-	static UObject* Call_obj(FString funcName, int count_param);
+	static UObject* Call_obj(FString funcName, int count_param = -1);
 
 	UFUNCTION(BlueprintCallable, Category = "TableUtil")
-	static float Call_float(FString funcName, int count_param);
+	static float Call_float(FString funcName, int count_param = -1);
 
 	UFUNCTION(BlueprintCallable, Category = "TableUtil")
-	static FString Call_str(FString funcName, int count_param);
+	static FString Call_str(FString funcName, int count_param = -1);
 
 	UFUNCTION(BlueprintCallable, Category = "TableUtil")
-	static bool Call_bool(FString funcName, int count_param);
+	static bool Call_bool(FString funcName, int count_param = -1);
 
 	UFUNCTION(BlueprintCallable, Category = "TableUtil")
 	static void CtorCpp(UObject* p, FString classpath);

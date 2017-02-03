@@ -34,14 +34,24 @@ function Character_lua:CtorCpp()
 	FP_MuzzleLocation:K2_SetRelativeLocation(FVector.New(0.2, 48.4, -10.6), false, FHitResult.New(), false)
 
 	self.GunOffset = FVector.New(100.0, 0.0, 10.0)
-	Character_lua.xxwidget = UUserWidget.FClassFinder("/Game/FirstPerson/test")
+	Character_lua.exampleUMG = Character_lua.exampleUMG or UUserWidget.FClassFinder("/Game/FirstPerson/UMG_example")
 end
 
 function Character_lua:BeginPlayLua()
-	if Character_lua.xxwidget then
-		local testwindow = UWidgetBlueprintLibrary.Create(self, Character_lua.xxwidget, nil)
-		testwindow:AddToViewport()
+	if Character_lua.exampleUMG then
+		local exampleUMG = UWidgetBlueprintLibrary.Create(self, Character_lua.exampleUMG, nil)
+		exampleUMG:AddToViewport()
+		local names, widgets = ULuautils.GetAllWidgets(exampleUMG, {}, {})
+		local name2widget = {}
+		for i = 1, #names do
+			name2widget[names[i]] = widgets[i]
+		end
+		self.txt_Count = UTextBlock.Cast(name2widget.Text_FireCount)
+		self.Delegate_OnClicked = UButton.Cast(name2widget.Button_Reset).OnClicked
+		self.Delegate_OnClicked:Add(MakeCallBack(self.OnClickedReset, self))
+		self:OnClickedReset()
 	end
+
 	self.FP_Gun:K2_AttachToComponent(self.Mesh1P, "GripPoint", EAttachmentRule.SnapToTarget, EAttachmentRule.SnapToTarget, EAttachmentRule.SnapToTarget, true)
 	if self.bUsingMotionControllers then
 		self.VR_Gun:SetHiddenInGame(false, true)
@@ -52,7 +62,16 @@ function Character_lua:BeginPlayLua()
 	end
 end
 
+function Character_lua:OnClickedReset()
+	self.firecount = 0
+	self.txt_Count:SetText("0")
+end
+
 function Character_lua:OnFire()
+	if self.txt_Count then
+		self.firecount = self.firecount + 1
+		self.txt_Count:SetText(tostring(self.firecount))
+	end
 	if self.ProjectileClass then
 		local world = ULuautils.GetWorld(self)
 		if world then

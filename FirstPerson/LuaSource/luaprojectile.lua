@@ -1,5 +1,18 @@
 local luaprojectile = Inherit(AFirstPersonProjectile)
+
 function luaprojectile:CtorCpp()
+	self = ActorMgr:Get():GetIns(self, "luaprojectile")
+	local CollisionComp = USphereComponent.CreateDefaultSubobject(self, "SphereCompXXX11")
+	self.CollisionComp = CollisionComp
+	CollisionComp.SphereRadius = 5.0
+	CollisionComp.BodyInstance.CollisionProfileName = "Projectile"
+	local WalkableSlopeOverride = FWalkableSlopeOverride.New()
+	WalkableSlopeOverride.WalkableSlopeBehavior = EWalkableSlopeBehavior.WalkableSlope_Unwalkable
+	WalkableSlopeOverride.WalkableSlopeAngle = 0
+	CollisionComp:SetWalkableSlopeOverride(WalkableSlopeOverride)
+	CollisionComp.CanCharacterStepUpOn = ECanBeCharacterBase.ECB_No
+	self.RootComponent = CollisionComp
+
 	local ProjectileMovement = UProjectileMovementComponent.CreateDefaultSubobject(self, "ProjectileComp")
 	self.ProjectileMovement = ProjectileMovement
 	ProjectileMovement.UpdatedComponent = self.CollisionComp
@@ -9,6 +22,12 @@ function luaprojectile:CtorCpp()
  	ProjectileMovement.bShouldBounce = true
  	
  	self.InitialLifeSpan = 3
+ 	collectgarbage("collect")
+end
+
+function luaprojectile:BeginPlay( )
+	self.OnComponentHit = self.CollisionComp.OnComponentHit
+	self.OnComponentHit:Add(MakeCallBack(self.OnHit, self))		
 end
 
 function luaprojectile:OnHit(HitComp, OtherActor, OtherComp, NormalImpulse, Hit)
