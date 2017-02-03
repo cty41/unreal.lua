@@ -4,8 +4,6 @@
 #include  "FirstPerson.h" 
 #include "TableUtil.h"
 #include "UObject/UObjectThreadContext.h"
-#include "SlateCore.h"
-#include "UMG.h"
 #include "GeneratedScriptLibraries.inl"
 
 DEFINE_LOG_CATEGORY(LuaLog);
@@ -13,6 +11,7 @@ DEFINE_LOG_CATEGORY(LuaLog);
 lua_State* UTableUtil::L = nullptr;
 TMap<FString, TMap<FString, UProperty*>> UTableUtil::propertyMap;
 TMap<FString, TMap<FString, UFunction*>> UTableUtil::functionMap;
+FLuaGcObj UTableUtil::gcobjs;
 #ifdef LuaDebug
 TMap<FString, int> UTableUtil::countforgc;
 #endif
@@ -106,6 +105,9 @@ void UTableUtil::init()
 		//set table for need Destroy data
 		lua_newtable(L);
 		lua_setfield(L, LUA_REGISTRYINDEX, "_needgcdata");
+
+		lua_newtable(L);
+		lua_setfield(L, LUA_REGISTRYINDEX, "_luacallback");
 
 		push(luaDir);
 		lua_setfield(L, LUA_GLOBALSINDEX, "_luadir");
@@ -437,12 +439,21 @@ void UTableUtil::executeFunc(FString funcName, int n, int nargs)
 		log(lua_tostring(L, -1));
 }
 
+void UTableUtil::executeFuncid(int32 funcid, int n, int nargs)
+{
+	lua_rawgeti(L, LUA_REGISTRYINDEX, funcid);
+	if (nargs > 0)
+		lua_insert(L, -nargs-1);
+	if (lua_pcall(L, nargs, n, 0))
+		log(lua_tostring(L, -1));
+}
+
 // api for blueprint start:
 void UTableUtil::Push_obj(UObject *p)
 {
 	auto Class = p->StaticClass();
 	FString ClassName = FString::Printf(TEXT("%s%s"), Class->GetPrefixCPP(), *Class->GetName());
-	pushclass(TCHAR_TO_ANSI(*ClassName), (void*)p, true);
+	pushclass(TCHAR_TO_ANSI(*ClassName), (void*)p);
 }
 
 void UTableUtil::Push_float(float value)
@@ -560,4 +571,76 @@ UObject* UTableUtil::FObjectFinder( UClass* Class, FString PathName )
 		result->AddToRoot();
 	}
 	return result;
+}
+
+int UTableUtil::pushluafunc(int index)
+{
+	if (index < 0)
+		index = lua_gettop(L) + index + 1;
+	lua_getfield(L, LUA_REGISTRYINDEX, "_luacallback");
+	lua_pushvalue(L, index);
+	lua_rawget(L, -2);
+	if (lua_isnil(L, -1))
+	{
+		lua_pop(L, 1);
+		lua_pushvalue(L, index);
+		int r = luaL_ref(L, LUA_REGISTRYINDEX);
+		lua_pushvalue(L, index);
+		lua_pushinteger(L, r);
+		lua_rawset(L, -3);
+		lua_pop(L, 2);
+		return r;
+	}
+	else
+	{
+		int result = lua_tointeger(L, -1);
+		lua_pop(L, 3);
+		return result;
+	}
+}
+
+int UTableUtil::popluafunc(int index)
+{
+	if (index < 0)
+		index = lua_gettop(L) + index + 1;
+	lua_getfield(L, LUA_REGISTRYINDEX, "_luacallback");
+	lua_pushvalue(L, index);
+	lua_rawget(L, -2);
+	if (lua_isnil(L, -1))
+	{
+		lua_pop(L, 3);
+		return -1;
+	}
+	else
+	{
+		int r = lua_tointeger(L, -1);
+		luaL_unref(L, LUA_REGISTRYINDEX, r);
+		lua_pushvalue(L, index);
+		lua_pushnil(L);
+		lua_rawset(L, -4);
+		lua_pop(L, 3);
+		return r;
+	}
+
+}
+
+void UTableUtil::unref(int r)
+{
+	lua_rawgeti(L, LUA_REGISTRYINDEX, r);
+	if (lua_isnil(L, -1))
+		lua_pop(L, 1);
+	else
+	{
+		popluafunc(-1);
+	}
+}
+
+void UTableUtil::addgcref(UObject *p)
+{
+	gcobjs.objs.Add(p);
+}
+
+void UTableUtil::rmgcref(UObject *p)
+{
+	gcobjs.objs.Remove(p);
 }

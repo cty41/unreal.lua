@@ -33,9 +33,9 @@ UCLASS(MinimalAPI)
 class UTableUtil : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
-	static lua_State* L;
 
 public:
+	static lua_State* L;
 #ifdef LuaDebug
 	static TMap<FString, int> countforgc;
 #endif
@@ -56,6 +56,10 @@ public:
 	static void loadlib(const luaL_Reg funclist[], const char* classname);
 	static void loadEnum(const EnumItem list[], const char* enumname);
 	static void addutil(const luaL_Reg funclist[], const char* tablename);
+	static int pushluafunc(int index = -1);
+	static int popluafunc(int index = -1);
+	static void unref(int r);
+
 	static UObject* FObjectFinder( UClass* Class, FString PathName );
 
 	UFUNCTION(BlueprintCallable, Category = "TableUtil")
@@ -66,6 +70,7 @@ public:
 	static bool existdata(void * p);
 	
 	static void executeFunc(FString funcName, int n = 0, int nargs = 0);
+	static void executeFuncid(int32 funcid, int n = 0, int nargs = 0);
 	UFUNCTION(BlueprintCallable, Category = "TableUtil")
 	static void Call_void(FString funcName, int count_param = -1);
 
@@ -96,7 +101,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "TableUtil")
 	static void CtorCpp(UObject* p, FString classpath);
 
+	static FLuaGcObj gcobjs;
 	static void rmgcref(UObject* p);
+	static void addgcref(UObject* p);
 
 	// static FLuaGcObj gcobjs;
 	static int push() { return 0; }
@@ -220,6 +227,14 @@ public:
 		if (L == nullptr)
 			init();
 		executeFunc(funcname, 0, push(args...));
+	}
+
+	template<class... T>
+	static void callid(int funcid, T... args)
+	{
+		if (L == nullptr)
+			init();
+		executeFuncid(funcid, 0, push(args...));
 	}
 
 	static TMap<FString, TMap<FString, UProperty*>> propertyMap;

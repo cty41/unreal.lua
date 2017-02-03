@@ -54,6 +54,7 @@ void FLuaglueGenerator::Initialize(const FString& RootLocalPath, const FString& 
 {
 	UE_LOG(LogScriptGenerator, Log, TEXT("Using Lua Script Generator."));
 	CodeGenerator = new FLuaScriptCodeGenerator(RootLocalPath, RootBuildPath, OutputDirectory, IncludeBase);
+	CodeGenerator->GameModuleName = GameModuleName;
 	FString configPath = IncludeBase / ".." / ".." / "Config" / "luaconfig.ini";
 	GConfig->GetArray(TEXT("Lua"), TEXT("SupportedModules"), SupportModules, configPath);
 	FProjectDescriptor ProjectDescriptor;
