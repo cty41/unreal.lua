@@ -1,3 +1,9 @@
+## Goal of this demo
+1.How to write UMG logic by lua 
+
+2.How to Add lua function to c++ multicastdelegate for callback.
+
+
 ## How to Run:
 1.Create a firstperson shoot template projcet, the name of the project must be "FirstPerson".
 
