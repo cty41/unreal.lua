@@ -589,26 +589,26 @@ int UTableUtil::pushluafunc(int index)
 {
 	if (index < 0)
 		index = lua_gettop(L) + index + 1;
-	lua_getfield(L, LUA_REGISTRYINDEX, "_luacallback");
-	lua_pushvalue(L, index);
-	lua_rawget(L, -2);
-	if (lua_isnil(L, -1))
-	{
-		lua_pop(L, 1);
+	// lua_getfield(L, LUA_REGISTRYINDEX, "_luacallback");
+	// lua_pushvalue(L, index);
+	// lua_rawget(L, -2);
+	// if (lua_isnil(L, -1))
+	// {
+		// lua_pop(L, 1);
 		lua_pushvalue(L, index);
 		int r = luaL_ref(L, LUA_REGISTRYINDEX);
-		lua_pushvalue(L, index);
-		lua_pushinteger(L, r);
-		lua_rawset(L, -3);
-		lua_pop(L, 2);
+		// lua_pushvalue(L, index);
+		// lua_pushinteger(L, r);
+		// lua_rawset(L, -3);
+		// lua_pop(L, 2);
 		return r;
-	}
-	else
-	{
-		int result = lua_tointeger(L, -1);
-		lua_pop(L, 3);
-		return result;
-	}
+	// }
+	// else
+	// {
+	// 	int result = lua_tointeger(L, -1);
+	// 	lua_pop(L, 3);
+	// 	return result;
+	// }
 }
 
 int UTableUtil::popluafunc(int index)
@@ -633,18 +633,19 @@ int UTableUtil::popluafunc(int index)
 		lua_pop(L, 3);
 		return r;
 	}
-
 }
 
 void UTableUtil::unref(int r)
 {
-	lua_rawgeti(L, LUA_REGISTRYINDEX, r);
-	if (lua_isnil(L, -1))
-		lua_pop(L, 1);
-	else
-	{
-		popluafunc(-1);
-	}
+	luaL_unref(L, LUA_REGISTRYINDEX, r);
+	
+	// lua_rawgeti(L, LUA_REGISTRYINDEX, r);
+	// if (lua_isnil(L, -1))
+	// 	lua_pop(L, 1);
+	// else
+	// {
+	// 	popluafunc(-1);
+	// }
 }
 
 void UTableUtil::addgcref(UObject *p)

@@ -1491,15 +1491,21 @@ void FLuaScriptCodeGenerator::GenerateDelegateClass()
 		GeneratedGlue += TEXT("\t\tUTableUtil::unref(r);\r\n");
 		GeneratedGlue += TEXT("\t\tLuaCallBacks.Remove(r);\r\n\t}\r\n");
 
-		GeneratedGlue += TEXT("\tUFUNCTION()\r\n");
-		GeneratedGlue += TEXT("\tvoid RemoveByF()\r\n\t{\r\n");
-		GeneratedGlue += TEXT("\t\tint r = UTableUtil::popluafunc(2);\r\n");
-		GeneratedGlue += TEXT("\t\tUTableUtil::unref(r);\r\n");
-		GeneratedGlue += TEXT("\t\tLuaCallBacks.Remove(r);\r\n\t}\r\n");
+		// GeneratedGlue += TEXT("\tUFUNCTION()\r\n");
+		// GeneratedGlue += TEXT("\tvoid RemoveByF()\r\n\t{\r\n");
+		// GeneratedGlue += TEXT("\t\tint r = UTableUtil::popluafunc(2);\r\n");
+		// GeneratedGlue += TEXT("\t\tUTableUtil::unref(r);\r\n");
+		// GeneratedGlue += TEXT("\t\tLuaCallBacks.Remove(r);\r\n\t}\r\n");
 
 
 		GeneratedGlue += TEXT("\tUFUNCTION()\r\n");
-		GeneratedGlue += TEXT("\tvoid Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}\r\n");
+		GeneratedGlue += TEXT("\tvoid Destroy() {\r\n");
+		GeneratedGlue += TEXT("\t\tfor(auto v : LuaCallBacks){\r\n");
+		GeneratedGlue += TEXT("\t\t\tUTableUtil::unref(v);\r\n\t\t}\r\n");
+		GeneratedGlue += TEXT("\t\tLuaCallBacks.Reset();\r\n");
+		GeneratedGlue += TEXT("\t\tUTableUtil::rmgcref(this);\r\n");
+		GeneratedGlue += TEXT("\t}\r\n");
+
 		GeneratedGlue += TEXT("};\r\n\r\n");
 	}
 

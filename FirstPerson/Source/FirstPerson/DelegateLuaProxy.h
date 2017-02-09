@@ -30,14 +30,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -68,14 +67,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -106,14 +104,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -144,14 +141,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -182,14 +178,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -220,14 +215,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -258,14 +252,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -296,14 +289,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -334,14 +326,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -372,14 +363,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -410,14 +400,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -448,14 +437,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -486,14 +474,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -524,14 +511,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -562,14 +548,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -600,14 +585,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -638,14 +622,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -676,14 +659,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -714,14 +696,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -752,14 +733,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -790,14 +770,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -828,14 +807,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -866,14 +844,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -904,14 +881,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -942,14 +918,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -980,14 +955,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1018,14 +992,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1056,14 +1029,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1094,14 +1066,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1132,14 +1103,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1170,14 +1140,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1208,14 +1177,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1246,14 +1214,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1284,14 +1251,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1322,14 +1288,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1360,14 +1325,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1398,14 +1362,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1436,14 +1399,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1474,14 +1436,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1512,14 +1473,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1550,14 +1510,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1588,14 +1547,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1626,14 +1584,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1664,14 +1621,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1702,14 +1658,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1740,14 +1695,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1778,14 +1732,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1816,14 +1769,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1854,14 +1806,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1892,14 +1843,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1930,14 +1880,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -1968,14 +1917,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2006,14 +1954,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2044,14 +1991,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2082,14 +2028,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2120,14 +2065,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2158,14 +2102,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2196,14 +2139,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2234,14 +2176,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2272,14 +2213,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2310,14 +2250,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2348,14 +2287,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2386,14 +2324,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2424,14 +2361,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2462,14 +2398,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2500,14 +2435,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2538,14 +2472,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2576,14 +2509,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2614,14 +2546,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2652,14 +2583,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2690,14 +2620,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2728,14 +2657,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2766,14 +2694,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2804,14 +2731,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2842,14 +2768,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2880,14 +2805,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2918,14 +2842,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2956,14 +2879,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -2994,14 +2916,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3032,14 +2953,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3070,14 +2990,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3108,14 +3027,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3146,14 +3064,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3184,14 +3101,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3222,14 +3138,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3260,14 +3175,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3298,14 +3212,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3336,14 +3249,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3374,14 +3286,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3412,14 +3323,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3450,14 +3360,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3488,14 +3397,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3526,14 +3434,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3564,14 +3471,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3602,14 +3508,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3640,14 +3545,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3678,14 +3582,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3716,14 +3619,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3754,14 +3656,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3792,14 +3693,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3830,14 +3730,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3868,14 +3767,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3906,14 +3804,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3944,14 +3841,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -3982,14 +3878,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -4020,14 +3915,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -4058,14 +3952,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -4096,14 +3989,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -4134,14 +4026,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -4172,14 +4063,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -4210,14 +4100,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -4248,14 +4137,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -4286,14 +4174,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -4324,14 +4211,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -4362,14 +4248,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -4400,14 +4285,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -4438,14 +4322,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -4476,14 +4359,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -4514,14 +4396,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -4552,14 +4433,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -4590,14 +4470,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -4628,14 +4507,13 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
 UCLASS(meta=(Lua=1))
@@ -4666,13 +4544,12 @@ public:
 		LuaCallBacks.Remove(r);
 	}
 	UFUNCTION()
-	void RemoveByF()
-	{
-		int r = UTableUtil::popluafunc(2);
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+	void Destroy() {
+		for(auto v : LuaCallBacks){
+			UTableUtil::unref(v);
+		}
+		LuaCallBacks.Reset();
+		UTableUtil::rmgcref(this);
 	}
-	UFUNCTION()
-	void Destroy() { LuaCallBacks.Reset(); UTableUtil::rmgcref(this);}
 };
 
