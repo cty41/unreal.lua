@@ -1488,8 +1488,10 @@ void FLuaScriptCodeGenerator::GenerateDelegateClass()
 		GeneratedGlue += TEXT("\tint Add() {int r = UTableUtil::pushluafunc(2);LuaCallBacks.Add(r);return r;}\r\n");
 		GeneratedGlue += TEXT("\tUFUNCTION()\r\n");
 		GeneratedGlue += TEXT("\tvoid Remove(int32 r)\r\n\t{\r\n");
-		GeneratedGlue += TEXT("\t\tUTableUtil::unref(r);\r\n");
-		GeneratedGlue += TEXT("\t\tLuaCallBacks.Remove(r);\r\n\t}\r\n");
+		GeneratedGlue += TEXT("\t\tif(LuaCallBacks.Contains(r)){\r\n");
+		GeneratedGlue += TEXT("\t\t\tUTableUtil::unref(r);\r\n");
+		GeneratedGlue += TEXT("\t\t\tLuaCallBacks.Remove(r);\r\n\t\t}\r\n");
+		GeneratedGlue += TEXT("\t}\r\n");
 
 		// GeneratedGlue += TEXT("\tUFUNCTION()\r\n");
 		// GeneratedGlue += TEXT("\tvoid RemoveByF()\r\n\t{\r\n");
