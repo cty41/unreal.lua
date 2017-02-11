@@ -15,6 +15,8 @@ FLuaScriptCodeGenerator::FLuaScriptCodeGenerator(const FString& RootLocalPath, c
 	IncludeBase = InIncludeBase;
 	GConfig->GetArray(TEXT("Lua"), TEXT("SupportedStruct"), SupportedStruct, configPath);
 	GConfig->GetArray(TEXT("Lua"), TEXT("NoPropertyStruct"), NoexportPropertyStruct, configPath);
+	bExportDelegateProxy = false;
+	GConfig->GetBool(TEXT("Lua"), TEXT("ExportDelegateProxy"), bExportDelegateProxy, configPath);
 }
 
 FString FLuaScriptCodeGenerator::GenerateWrapperFunctionDeclaration(const FString& ClassNameCPP, FString classname, UFunction* Function)
@@ -890,6 +892,8 @@ FString FLuaScriptCodeGenerator::GetterCode(FString ClassNameCPP, FString classn
 	//FunctionBody += FString::Printf(TEXT("\tstatic UProperty* Property = FindScriptPropertyHelper(%s::StaticClass(), TEXT(\"%s\"));\r\n"), *ClassNameCPP, *Property->GetName());
 	if (PropertySuper == nullptr)
 	{
+		if (Property->PropertyFlags & CPF_EditorOnly)
+			FunctionBody += TEXT("#if WITH_EDITORONLY_DATA\r\n");
 		FunctionBody += FString::Printf(TEXT("\t%s\r\n"), *GenerateObjectDeclarationFromContext(ClassNameCPP));
 		if (Property->PropertyFlags & CPF_NativeAccessSpecifierPublic)
 		{
@@ -961,6 +965,9 @@ FString FLuaScriptCodeGenerator::GetterCode(FString ClassNameCPP, FString classn
 	 	}
 		else
 			FunctionBody += FString::Printf(TEXT("\t%s\r\n"), *GenerateReturnValueHandler(ClassNameCPP, NULL, Property));
+
+		if (Property->PropertyFlags & CPF_EditorOnly)
+			FunctionBody += TEXT("#else\r\n\treturn 0;\r\n#endif\r\n");
 	}
 	else
 	{
@@ -978,6 +985,8 @@ FString FLuaScriptCodeGenerator::SetterCode(FString ClassNameCPP, FString classn
 	FString FunctionBody;
 	if (PropertySuper == NULL)
 	{
+		if (Property->PropertyFlags & CPF_EditorOnly)
+			FunctionBody += TEXT("#if WITH_EDITORONLY_DATA\r\n");
 		FunctionBody += FString::Printf(TEXT("\t%s\r\n"), *GenerateObjectDeclarationFromContext(ClassNameCPP));
 		if(Property->IsA(UMulticastDelegateProperty::StaticClass()))
 		{
@@ -1075,6 +1084,9 @@ FString FLuaScriptCodeGenerator::SetterCode(FString ClassNameCPP, FString classn
 		}
 
 		FunctionBody += TEXT("\treturn 0;\r\n");
+
+		if (Property->PropertyFlags & CPF_EditorOnly)
+			FunctionBody += TEXT("#else\r\n\treturn 0;\r\n#endif\r\n");
 	}
 	else
 	{
@@ -1520,7 +1532,8 @@ void FLuaScriptCodeGenerator::FinishExport()
 	ExportEnum();
 	ExportStruct();
 	GenerateWeakClass();
-	GenerateDelegateClass();
+	if(bExportDelegateProxy)
+		GenerateDelegateClass();
 	GlueAllGeneratedFiles();
 	RenameTempFiles();
 }

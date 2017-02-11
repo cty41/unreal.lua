@@ -41,7 +41,7 @@ protected:
 	TSet<FString> WeakPtrClass;
 
 	TArray<FDelegateExported> delegates;
-
+	bool bExportDelegateProxy;
 	/** Creats a 'glue' file that merges all generated script files */
 	void GlueAllGeneratedFiles();
 	/** Exports a wrapper function */

@@ -2,6 +2,8 @@
 #include "FirstPerson.h"
 #include "allheader.inl"
 #include "DelegateLuaProxy.generated.h"
+
+
 UCLASS(meta=(Lua=1))
 class UDelegate_AActor_OnTakeAnyDamage : public UObject{
 	GENERATED_BODY()
@@ -26,8 +28,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -63,8 +67,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -100,8 +106,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -137,8 +145,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -174,8 +184,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -211,8 +223,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -248,8 +262,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -285,8 +301,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -322,8 +340,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -359,8 +379,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -396,8 +418,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -433,8 +457,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -470,8 +496,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -507,8 +535,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -544,8 +574,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -581,8 +613,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -618,8 +652,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -655,8 +691,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -692,8 +730,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -729,8 +769,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -766,8 +808,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -803,8 +847,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -840,8 +886,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -877,8 +925,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -914,8 +964,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -951,8 +1003,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -988,8 +1042,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1025,8 +1081,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1062,8 +1120,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1099,8 +1159,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1136,8 +1198,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1173,8 +1237,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1210,8 +1276,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1247,8 +1315,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1284,8 +1354,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1321,8 +1393,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1358,8 +1432,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1395,8 +1471,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1432,8 +1510,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1469,8 +1549,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1506,8 +1588,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1543,8 +1627,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1580,8 +1666,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1617,8 +1705,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1654,8 +1744,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1691,8 +1783,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1728,8 +1822,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1765,8 +1861,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1802,8 +1900,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1839,8 +1939,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1876,8 +1978,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1913,8 +2017,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1950,8 +2056,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -1987,8 +2095,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2024,8 +2134,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2061,8 +2173,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2098,8 +2212,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2135,8 +2251,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2172,8 +2290,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2209,8 +2329,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2246,8 +2368,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2283,8 +2407,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2320,8 +2446,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2357,8 +2485,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2394,8 +2524,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2431,8 +2563,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2468,8 +2602,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2505,8 +2641,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2542,8 +2680,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2579,8 +2719,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2616,8 +2758,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2653,8 +2797,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2690,8 +2836,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2727,8 +2875,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2764,8 +2914,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2801,8 +2953,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2838,8 +2992,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2875,8 +3031,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2912,8 +3070,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2949,8 +3109,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -2986,8 +3148,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3023,8 +3187,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3060,8 +3226,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3097,8 +3265,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3134,8 +3304,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3171,8 +3343,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3208,8 +3382,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3245,8 +3421,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3282,8 +3460,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3319,8 +3499,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3356,8 +3538,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3393,8 +3577,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3430,8 +3616,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3467,8 +3655,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3504,8 +3694,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3541,8 +3733,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3578,8 +3772,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3615,8 +3811,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3652,8 +3850,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3689,8 +3889,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3726,8 +3928,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3763,8 +3967,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3800,8 +4006,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3837,8 +4045,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3874,8 +4084,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3911,8 +4123,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3948,8 +4162,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -3985,8 +4201,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -4022,8 +4240,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -4059,8 +4279,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -4096,8 +4318,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -4133,8 +4357,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -4170,8 +4396,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -4207,8 +4435,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -4244,8 +4474,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -4281,8 +4513,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -4318,8 +4552,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -4355,8 +4591,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -4392,8 +4630,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -4429,8 +4669,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -4466,8 +4708,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -4503,8 +4747,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {
@@ -4540,8 +4786,10 @@ public:
 	UFUNCTION()
 	void Remove(int32 r)
 	{
-		UTableUtil::unref(r);
-		LuaCallBacks.Remove(r);
+		if(LuaCallBacks.Contains(r)){
+			UTableUtil::unref(r);
+			LuaCallBacks.Remove(r);
+		}
 	}
 	UFUNCTION()
 	void Destroy() {

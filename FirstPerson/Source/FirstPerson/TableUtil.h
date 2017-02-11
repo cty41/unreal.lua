@@ -12,11 +12,18 @@ DECLARE_LOG_CATEGORY_EXTERN(LuaLog, Log, All);
 using namespace std;
 using luafunc = int( struct lua_State* );
 
-
-class FLuaGcObj : FGCObject
+class FLuaGcObj : public FGCObject
 {
 public:
 	TSet<UObject*> objs;
+	static FLuaGcObj* Get()
+	{
+		static FLuaGcObj* Singleton = nullptr;
+		if(Singleton == nullptr)
+			Singleton = new FLuaGcObj;
+		return Singleton;
+	}
+
 	virtual void AddReferencedObjects(FReferenceCollector& Collector) override
 	{
 		Collector.AllowEliminatingReferences(false);
@@ -101,7 +108,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "TableUtil")
 	static void CtorCpp(UObject* p, FString classpath);
 
-	static FLuaGcObj gcobjs;
+	// static FLuaGcObj gcobjs;
 	static void rmgcref(UObject* p);
 	static void addgcref(UObject* p);
 

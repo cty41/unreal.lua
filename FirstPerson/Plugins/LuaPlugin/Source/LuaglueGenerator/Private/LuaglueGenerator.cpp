@@ -56,9 +56,11 @@ void FLuaglueGenerator::Initialize(const FString& RootLocalPath, const FString& 
 	CodeGenerator = new FLuaScriptCodeGenerator(RootLocalPath, RootBuildPath, OutputDirectory, IncludeBase);
 	CodeGenerator->GameModuleName = GameModuleName;
 	FString configPath = IncludeBase / ".." / ".." / "Config" / "luaconfig.ini";
+	
 	GConfig->GetArray(TEXT("Lua"), TEXT("SupportedModules"), SupportModules, configPath);
 	FProjectDescriptor ProjectDescriptor;
 	FText OutError;
+
 	ProjectDescriptor.Load(FPaths::GetProjectFilePath(), OutError);
 	for (auto &module : ProjectDescriptor.Modules)
 	{
@@ -90,10 +92,17 @@ bool FLuaglueGenerator::SupportsTarget(const FString& TargetName) const
 {
 	if (FPaths::IsProjectFilePathSet())
 	{
-		FProjectDescriptor ProjectDescriptor;
-		FText OutError;
-		ProjectDescriptor.Load(FPaths::GetProjectFilePath(), OutError);
-		GameModuleName = ProjectDescriptor.Modules[0].Name.ToString();
+		FString ConfigDir = FPaths::GetPath(FPaths::GetProjectFilePath()) / "Config";
+		FString configPath = ConfigDir / "luaconfig.ini";
+		FConfigFile* File = GConfig->Find(configPath, false);
+		if (File != nullptr)
+		{
+			FProjectDescriptor ProjectDescriptor;
+			FText OutError;
+			ProjectDescriptor.Load(FPaths::GetProjectFilePath(), OutError);
+			GameModuleName = ProjectDescriptor.Modules[0].Name.ToString();
+			return true;
+		}
 	}
-	return true;
+	return false;
 }

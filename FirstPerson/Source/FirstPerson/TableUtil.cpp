@@ -11,7 +11,7 @@ DEFINE_LOG_CATEGORY(LuaLog);
 lua_State* UTableUtil::L = nullptr;
 TMap<FString, TMap<FString, UProperty*>> UTableUtil::propertyMap;
 TMap<FString, TMap<FString, UFunction*>> UTableUtil::functionMap;
-FLuaGcObj UTableUtil::gcobjs;
+// FLuaGcObj UTableUtil::gcobjs;
 #ifdef LuaDebug
 TMap<FString, int> UTableUtil::countforgc;
 #endif
@@ -650,10 +650,10 @@ void UTableUtil::unref(int r)
 
 void UTableUtil::addgcref(UObject *p)
 {
-	gcobjs.objs.Add(p);
+	FLuaGcObj::Get()->objs.Add(p);
 }
 
 void UTableUtil::rmgcref(UObject *p)
 {
-	gcobjs.objs.Remove(p);
+	FLuaGcObj::Get()->objs.Remove(p);
 }

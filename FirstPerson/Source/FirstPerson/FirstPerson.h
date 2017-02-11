@@ -5,6 +5,6 @@
 
 #include "EngineMinimal.h"
 #include "SlateCore.h"
-#include "UMG.h"
+#include  "UMG.h"
 
 #endif
