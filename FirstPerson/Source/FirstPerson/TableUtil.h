@@ -36,6 +36,78 @@ public:
 
 };
 
+template<class T>
+class popiml{
+	public:
+		static T pop(lua_State *L, int index)
+		{
+			return *(T*)tousertype("", index);
+		}
+};
+template<class T>
+class popiml<T*> {
+public:
+	static T* pop(lua_State *L, int index)
+	{
+		return (T*)tousertype("", index);
+	}
+};
+
+template<class T>
+class popiml< TArray<T> > {
+public:
+	static TArray<T> pop(lua_State *L, int index)
+	{
+		TArray<T> result;
+#ifdef LuaDebug
+		if (!lua_istable(L, -1))
+		{
+			log("not table poparr");
+			return result;
+		}
+#endif
+		lua_pushnil(L);
+		while (lua_next(L, -2) != 0)
+		{
+			result.Add(UTableUtil::pop<T>(-1));
+		}
+		return result;
+	}
+};
+
+	
+template<> class popiml<int>{
+public:
+	static int pop(lua_State *L, int index){return (int)lua_tointeger(L, index);}
+};
+
+template<> class popiml<bool> {
+public:
+	static bool pop(lua_State *L, int index){return !!(lua_toboolean(L, index));}
+};
+
+template<> class popiml<FName> {
+public:
+	static FName pop(lua_State *L, int index) { return FName(luaL_checkstring(L, index)); }
+};
+template<> class popiml<FString> {
+public:
+	static FString pop(lua_State *L, int index) { return ANSI_TO_TCHAR(luaL_checkstring(L, index));}
+};
+template<> class popiml<float> {
+public:
+	static float pop(lua_State *L, int index) { return (float)lua_tonumber(L, index); }
+};
+template<> class popiml<double> {
+public:
+	static double pop(lua_State *L, int index) { return (double)lua_tonumber(L, index); }
+};
+template<> class popiml<void> {
+public:
+	static void pop(lua_State *L, int index) { lua_pop(L, 1); }
+};
+
+
 UCLASS(MinimalAPI)
 class UTableUtil : public UBlueprintFunctionLibrary
 {
@@ -120,12 +192,12 @@ public:
 	static int push(T* value);
 
 	static void pushclass(const char* classname, void* p, bool bgcrecord = false);
-	template<> static int push(int value);
-	template<> static int push(float value);
-	template<> static int push(double value);
-	template<> static int push(bool value);
-	template<> static int push(FString value);
-	template<> static int push(const char* value);
+	static int push(int value);
+	static int push(float value);
+	static int push(double value);
+	static int push(bool value);
+	static int push(FString value);
+	static int push(const char* value);
 
 	template<class T> 
 	static int push(TArray<T> value);
@@ -133,84 +205,15 @@ public:
 	template<class T>
 	static int push(TWeakObjectPtr<T> value);
 
-	template<class T>
-	class popiml{
-		public:
-			static T pop(int index)
-			{
-// 				FString name = typeid(T).name();
-// 				int FirstSpaceIndex = name.Find(TEXT(" "));
-// 				name = name.Mid(FirstSpaceIndex + 1);
-				return *(T*)tousertype("", index);
-			}
-	};
-	template<class T>
-	class popiml<T*> {
-	public:
-		static T* pop(int index)
-		{
-			return (T*)tousertype("", index);
-		}
-	};
-
-	template<class T>
-	class popiml< TArray<T> > {
-	public:
-		static TArray<T> pop(int index)
-		{
-			TArray<T> result;
-#ifdef LuaDebug
-			if (!lua_istable(L, -1))
-			{
-				log("not table poparr");
-				return result;
-			}
-#endif
-			lua_pushnil(L);
-			while (lua_next(L, -2) != 0)
-			{
-				result.Add(UTableUtil::pop<T>(-1));
-			}
-			return result;
-		}
-	};
-
 	
-	template<> class popiml<int>{
-	public:
-		static int pop(int index){return (int)lua_tointeger(L, index);}
-	};
-
-	template<> class popiml<bool> {
-	public:
-		static bool pop(int index){return !!(lua_toboolean(L, index));}
-	};
-
-	template<> class popiml<FName> {
-	public:
-		static FName pop(int index) { return FName(luaL_checkstring(L, index)); }
-	};
-	template<> class popiml<FString> {
-	public:
-		static FString pop(int index) { return ANSI_TO_TCHAR(luaL_checkstring(L, index));}
-	};
-	template<> class popiml<float> {
-	public:
-		static float pop(int index) { return (float)lua_tonumber(L, index); }
-	};
-	template<> class popiml<double> {
-	public:
-		static double pop(int index) { return (double)lua_tonumber(L, index); }
-	};
 
 	template<typename T>
 	static T pop(int index) 
 	{
-		auto result = popiml<T>::pop(index);
+		auto result = popiml<T>::pop(L, index);
 		lua_pop(L, 1);
 		return result;
 	};
-	template<> static void pop<void>(int index) { lua_pop(L, 1); };
 
 	template<class T1, class... T>
 	static int push(T1 value, T... args)
@@ -237,6 +240,14 @@ public:
 	}
 
 	template<class... T>
+	static void call(int funcid, T... args)
+	{
+		if (L == nullptr)
+			init();
+		executeFuncid(funcid, 0, push(args...));
+	}
+
+	template<class... T>
 	static void callid(int funcid, T... args)
 	{
 		if (L == nullptr)
@@ -253,45 +264,6 @@ public:
 	static UFunction* GetFunctionByName(FString classname, FString funcname);
 
 };
-
-template<>
-int UTableUtil::push(int value)
-{
-	lua_pushinteger(L, value);
-	return 1;
-}
-template<>
-int UTableUtil::push(float value)
-{
-	lua_pushnumber(L, value);
-	return 1;
-}
-template<>
-int UTableUtil::push(double value)
-{
-	lua_pushnumber(L, value);
-	return 1;
-}
-template<>
-int UTableUtil::push(bool value)
-{
-	lua_pushboolean(L, value);
-	return 1;
-}
-
-template<>
-int UTableUtil::push(FString value)
-{
-	lua_pushstring(L, TCHAR_TO_ANSI(*value));
-	return 1;
-}
-
-template<>
-int UTableUtil::push(const char* value)
-{
-	lua_pushstring(L, value);
-	return 1;
-}
 
 template<typename T>
 int UTableUtil::push(T* value)

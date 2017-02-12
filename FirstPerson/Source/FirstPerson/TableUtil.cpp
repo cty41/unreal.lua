@@ -339,6 +339,39 @@ void UTableUtil::setmeta(const char* classname, int index)
 	}
 }
 
+int UTableUtil::push(int value)
+{
+	lua_pushinteger(L, value);
+	return 1;
+}
+int UTableUtil::push(float value)
+{
+	lua_pushnumber(L, value);
+	return 1;
+}
+int UTableUtil::push(double value)
+{
+	lua_pushnumber(L, value);
+	return 1;
+}
+int UTableUtil::push(bool value)
+{
+	lua_pushboolean(L, value);
+	return 1;
+}
+
+int UTableUtil::push(FString value)
+{
+	lua_pushstring(L, TCHAR_TO_ANSI(*value));
+	return 1;
+}
+
+int UTableUtil::push(const char* value)
+{
+	lua_pushstring(L, value);
+	return 1;
+}
+
 void UTableUtil::pushclass(const char* classname, void* p, bool bgcrecord)
 {
 	if (p == nullptr)
