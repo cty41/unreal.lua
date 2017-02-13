@@ -36,7 +36,7 @@ public:
 
 };
 
-void* tousertype(lua_State* L, const char* classname, int i)
+void* tousertype(lua_State* L, const char* classname, int i);
 {
 	if (lua_isnil(L, i))
 		return nullptr;
@@ -333,7 +333,7 @@ template<class T>
 int UTableUtil::push(TWeakObjectPtr<T> value)
 {
 	T *p = (T *)(value.Get());
-	typename traitweakclass<T>::traitType* weakObj = new traitweakclass<T>::traitType(p);
+	typename traitweakclass<T>::traitType* weakObj = new typename traitweakclass<T>::traitType(p);
 	UClass* Class = T::StaticClass();
 	FString namecpp = FString::Printf(TEXT("%s%s"), Class->GetPrefixCPP(), *Class->GetName());
 	namecpp = "TWeakObjectPtr_" + namecpp;

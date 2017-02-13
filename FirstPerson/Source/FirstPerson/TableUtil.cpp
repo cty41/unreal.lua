@@ -289,6 +289,35 @@ void UTableUtil::closemodule()
 	lua_pop(L, 2);
 }
 
+void* tousertype(lua_State* L, const char* classname, int i)
+{
+	if (lua_isnil(L, i))
+		return nullptr;
+	else if (lua_istable(L, i))
+	{
+		lua_pushstring(L,  "_cppinstance_");
+		lua_rawget(L, i);
+		if (lua_isnil(L, -1))
+		{
+			lua_pushstring(L, "suck in tousertype");
+			lua_error(L);
+			return nullptr;
+		}
+		else
+		{
+			lua_replace(L, i);
+			return tousertype(L, classname, i);
+		}
+	}
+	else if (lua_isuserdata(L, i))
+	{
+		auto u = static_cast<void**>(lua_touserdata(L, i));
+		return *u;
+	}
+	else
+		return nullptr;
+}
+
 void* UTableUtil::tousertype(const char* classname, int i)
 {
 	if (lua_isnil(L, i))
