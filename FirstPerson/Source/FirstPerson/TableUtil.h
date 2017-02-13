@@ -36,29 +36,54 @@ public:
 
 };
 
-class UTableUtil;
+void* tousertype(lua_State* L, const char* classname, int i)
+{
+	if (lua_isnil(L, i))
+		return nullptr;
+	else if (lua_istable(L, i))
+	{
+		lua_pushstring(L,  "_cppinstance_");
+		lua_rawget(L, i);
+		if (lua_isnil(L, -1))
+		{
+			lua_pushstring(L, "suck in tousertype");
+			lua_error(L);
+			return nullptr;
+		}
+		else
+		{
+			lua_replace(L, i);
+			return tousertype(L, classname, i);
+		}
+	}
+	else if (lua_isuserdata(L, i))
+	{
+		auto u = static_cast<void**>(lua_touserdata(L, i));
+		return *u;
+	}
+	else
+		return nullptr;
+}
+
 template<class T>
 class popiml{
-friend class UTableUtil;
 	public:
 		static T pop(lua_State *L, int index)
 		{
-			return *(T*)UTableUtil::tousertype("", index);
+			return *(T*)tousertype(L, "", index);
 		}
 };
 template<class T>
 class popiml<T*> {
-friend class UTableUtil;
 public:
 	static T* pop(lua_State *L, int index)
 	{
-		return (T*)UTableUtil::tousertype("", index);
+		return (T*)tousertype(L, "", index);
 	}
 };
 
 template<class T>
 class popiml< TArray<T> > {
-friend class UTableUtil;
 public:
 	static TArray<T> pop(lua_State *L, int index)
 	{
@@ -66,14 +91,15 @@ public:
 #ifdef LuaDebug
 		if (!lua_istable(L, -1))
 		{
-			UTableUtil::log("not table poparr");
+			//UTableUtil::log("not table poparr");
 			return result;
 		}
 #endif
 		lua_pushnil(L);
 		while (lua_next(L, -2) != 0)
 		{
-			result.Add(UTableUtil::pop<T>(-1));
+			result.Add(popiml<T>::pop(L, -1));
+			lua_pop(L, 1);
 		}
 		return result;
 	}
@@ -82,39 +108,32 @@ public:
 	
 template<> class popiml<int>{
 public:
-friend class UTableUtil;
 	static int pop(lua_State *L, int index){return (int)lua_tointeger(L, index);}
 };
 
 template<> class popiml<bool> {
 public:
-friend class UTableUtil;
 	static bool pop(lua_State *L, int index){return !!(lua_toboolean(L, index));}
 };
 
 template<> class popiml<FName> {
 public:
-friend class UTableUtil;
 	static FName pop(lua_State *L, int index) { return FName(luaL_checkstring(L, index)); }
 };
 template<> class popiml<FString> {
 public:
-friend class UTableUtil;
 	static FString pop(lua_State *L, int index) { return ANSI_TO_TCHAR(luaL_checkstring(L, index));}
 };
 template<> class popiml<float> {
 public:
-friend class UTableUtil;
 	static float pop(lua_State *L, int index) { return (float)lua_tonumber(L, index); }
 };
 template<> class popiml<double> {
 public:
-friend class UTableUtil;
 	static double pop(lua_State *L, int index) { return (double)lua_tonumber(L, index); }
 };
 template<> class popiml<void> {
 public:
-friend class UTableUtil;
 	static void pop(lua_State *L, int index) { lua_pop(L, 1); }
 };
 
@@ -314,8 +333,7 @@ template<class T>
 int UTableUtil::push(TWeakObjectPtr<T> value)
 {
 	T *p = (T *)(value.Get());
-	typename traitweakclass<T>::traitType;
-	traitweakclass<T>::traitType* weakObj = new traitweakclass<T>::traitType(p);
+	typename traitweakclass<T>::traitType* weakObj = new traitweakclass<T>::traitType(p);
 	UClass* Class = T::StaticClass();
 	FString namecpp = FString::Printf(TEXT("%s%s"), Class->GetPrefixCPP(), *Class->GetName());
 	namecpp = "TWeakObjectPtr_" + namecpp;
