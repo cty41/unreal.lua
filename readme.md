@@ -1,7 +1,9 @@
 ## Goal of this demo
-1.How to write UMG logic by lua 
+1.How to write game logic by lua
 
-2.How to Add lua function to c++ multicastdelegate for callback.
+2.How to write UMG logic by lua 
+
+3.How to Add lua function to c++ multicastdelegate for callback.
 
 
 ## How to Run:
