@@ -35,6 +35,8 @@ public:
 	}
 
 };
+
+class UTableUtil;
 template<class T>
 class popiml{
 friend class UTableUtil;
@@ -312,8 +314,8 @@ template<class T>
 int UTableUtil::push(TWeakObjectPtr<T> value)
 {
 	T *p = (T *)(value.Get());
-	using weakType = traitweakclass<T>::traitType;
-	weakType* weakObj = new traitweakclass<T>::traitType(p);
+	typename traitweakclass<T>::traitType;
+	traitweakclass<T>::traitType* weakObj = new traitweakclass<T>::traitType(p);
 	UClass* Class = T::StaticClass();
 	FString namecpp = FString::Printf(TEXT("%s%s"), Class->GetPrefixCPP(), *Class->GetName());
 	namecpp = "TWeakObjectPtr_" + namecpp;
