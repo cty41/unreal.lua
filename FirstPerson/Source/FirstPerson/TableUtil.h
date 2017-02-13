@@ -35,9 +35,9 @@ public:
 	}
 
 };
-class UTableUtil;
 template<class T>
 class popiml{
+friend class UTableUtil;
 	public:
 		static T pop(lua_State *L, int index)
 		{
@@ -46,6 +46,7 @@ class popiml{
 };
 template<class T>
 class popiml<T*> {
+friend class UTableUtil;
 public:
 	static T* pop(lua_State *L, int index)
 	{
@@ -55,6 +56,7 @@ public:
 
 template<class T>
 class popiml< TArray<T> > {
+friend class UTableUtil;
 public:
 	static TArray<T> pop(lua_State *L, int index)
 	{
@@ -78,32 +80,39 @@ public:
 	
 template<> class popiml<int>{
 public:
+friend class UTableUtil;
 	static int pop(lua_State *L, int index){return (int)lua_tointeger(L, index);}
 };
 
 template<> class popiml<bool> {
 public:
+friend class UTableUtil;
 	static bool pop(lua_State *L, int index){return !!(lua_toboolean(L, index));}
 };
 
 template<> class popiml<FName> {
 public:
+friend class UTableUtil;
 	static FName pop(lua_State *L, int index) { return FName(luaL_checkstring(L, index)); }
 };
 template<> class popiml<FString> {
 public:
+friend class UTableUtil;
 	static FString pop(lua_State *L, int index) { return ANSI_TO_TCHAR(luaL_checkstring(L, index));}
 };
 template<> class popiml<float> {
 public:
+friend class UTableUtil;
 	static float pop(lua_State *L, int index) { return (float)lua_tonumber(L, index); }
 };
 template<> class popiml<double> {
 public:
+friend class UTableUtil;
 	static double pop(lua_State *L, int index) { return (double)lua_tonumber(L, index); }
 };
 template<> class popiml<void> {
 public:
+friend class UTableUtil;
 	static void pop(lua_State *L, int index) { lua_pop(L, 1); }
 };
 
@@ -304,7 +313,7 @@ int UTableUtil::push(TWeakObjectPtr<T> value)
 {
 	T *p = (T *)(value.Get());
 	using weakType = traitweakclass<T>::traitType;
-	weakType* weakObj = new weakType(p);
+	weakType* weakObj = new traitweakclass<T>::traitType(p);
 	UClass* Class = T::StaticClass();
 	FString namecpp = FString::Printf(TEXT("%s%s"), Class->GetPrefixCPP(), *Class->GetName());
 	namecpp = "TWeakObjectPtr_" + namecpp;
