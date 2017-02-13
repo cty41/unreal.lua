@@ -690,3 +690,17 @@ void UTableUtil::rmgcref(UObject *p)
 {
 	FLuaGcObj::Get()->objs.Remove(p);
 }
+
+void UTableUtil::testtemplate()
+{
+	FVector f;
+	AActor *p = nullptr;
+	TArray<FVector> t;
+	call("testtemplate", f,1,"shit",p,2.0,true,t);
+	callr<int>("testtemplate");
+	callr<float>("testtemplate");
+	callr<double>("testtemplate");
+	callr<AActor*>("testtemplate");
+	callr<FVector>("testtemplate");
+	callr<TArray<FVector>>("testtemplate");
+}

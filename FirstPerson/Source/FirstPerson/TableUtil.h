@@ -35,13 +35,13 @@ public:
 	}
 
 };
-
+class UTableUtil;
 template<class T>
 class popiml{
 	public:
 		static T pop(lua_State *L, int index)
 		{
-			return *(T*)tousertype("", index);
+			return *(T*)UTableUtil::tousertype("", index);
 		}
 };
 template<class T>
@@ -49,7 +49,7 @@ class popiml<T*> {
 public:
 	static T* pop(lua_State *L, int index)
 	{
-		return (T*)tousertype("", index);
+		return (T*)UTableUtil::tousertype("", index);
 	}
 };
 
@@ -62,7 +62,7 @@ public:
 #ifdef LuaDebug
 		if (!lua_istable(L, -1))
 		{
-			log("not table poparr");
+			UTableUtil::log("not table poparr");
 			return result;
 		}
 #endif
@@ -198,7 +198,7 @@ public:
 	static int push(bool value);
 	static int push(FString value);
 	static int push(const char* value);
-
+	static void testtemplate();
 	template<class T> 
 	static int push(TArray<T> value);
 
@@ -303,7 +303,8 @@ template<class T>
 int UTableUtil::push(TWeakObjectPtr<T> value)
 {
 	T *p = (T *)(value.Get());
-	traitweakclass<T>::traitType* weakObj = new traitweakclass<T>::traitType(p);
+	using weakType = traitweakclass<T>::traitType;
+	weakType* weakObj = new weakType(p);
 	UClass* Class = T::StaticClass();
 	FString namecpp = FString::Printf(TEXT("%s%s"), Class->GetPrefixCPP(), *Class->GetName());
 	namecpp = "TWeakObjectPtr_" + namecpp;
