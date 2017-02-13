@@ -1337,7 +1337,7 @@ void FLuaScriptCodeGenerator::ExportEnum()
 		{
 			GeneratedGlue += FString::Printf(TEXT("\t{ \"%s\", %d },\r\n"), *e->GetEnumName(i), i);
 		}
-		GeneratedGlue += TEXT("\t{ NULL, NULL }\r\n};\r\n\r\n");
+		GeneratedGlue += TEXT("\t{ NULL, -1 }\r\n};\r\n\r\n");
 	}
 	AllScriptHeaders.Add(ClassGlueFilename);
 	SaveHeaderIfChanged(ClassGlueFilename, GeneratedGlue);
