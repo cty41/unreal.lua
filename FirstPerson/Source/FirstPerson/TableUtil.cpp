@@ -126,6 +126,7 @@ void UTableUtil::init()
 		//register all function
 		LuaRegisterExportedClasses(L);
 		executeFunc("Init", 0, 0);
+		testtemplate();
 	}
 }
 
@@ -320,36 +321,7 @@ void* tousertype(lua_State* L, const char* classname, int i)
 
 void* UTableUtil::tousertype(const char* classname, int i)
 {
-	if (lua_isnil(L, i))
-		return nullptr;
-	else if (lua_istable(L, i))
-	{
-		lua_pushstring(L,  "_cppinstance_");
-		lua_rawget(L, i);
-		if (lua_isnil(L, -1))
-		{
-			lua_pushstring(L, "suck in tousertype");
-			lua_error(L);
-			return nullptr;
-		}
-		else
-		{
-			lua_replace(L, i);
-			return tousertype(classname, i);
-		}
-	}
-	else if (lua_isuserdata(L, i))
-	{
-		auto u = static_cast<void**>(lua_touserdata(L, i));
-		return *u;
-	}
-	else
-		return nullptr;
-}
-
-int UTableUtil::toint(int i)
-{
-	return lua_tointeger(L, i);
+	return ::tousertype(L, classname, i);
 }
 
 void UTableUtil::setmeta(const char* classname, int index)
@@ -367,7 +339,11 @@ void UTableUtil::setmeta(const char* classname, int index)
 		lua_setmetatable(L, index-1);
 	}
 }
-
+int UTableUtil::push(uint8 value)
+{
+	lua_pushboolean(L, !!value);
+	return 1;
+}
 int UTableUtil::push(int value)
 {
 	lua_pushinteger(L, value);
@@ -392,6 +368,18 @@ int UTableUtil::push(bool value)
 int UTableUtil::push(FString value)
 {
 	lua_pushstring(L, TCHAR_TO_ANSI(*value));
+	return 1;
+}
+
+int UTableUtil::push(FText value)
+{
+	lua_pushstring(L, TCHAR_TO_ANSI(*value.ToString()));
+	return 1;
+}
+
+int UTableUtil::push(FName value)
+{
+	lua_pushstring(L, TCHAR_TO_ANSI(*value.ToString()));
 	return 1;
 }
 
@@ -651,26 +639,11 @@ int UTableUtil::pushluafunc(int index)
 {
 	if (index < 0)
 		index = lua_gettop(L) + index + 1;
-	// lua_getfield(L, LUA_REGISTRYINDEX, "_luacallback");
-	// lua_pushvalue(L, index);
-	// lua_rawget(L, -2);
-	// if (lua_isnil(L, -1))
-	// {
-		// lua_pop(L, 1);
-		lua_pushvalue(L, index);
-		int r = luaL_ref(L, LUA_REGISTRYINDEX);
-		// lua_pushvalue(L, index);
-		// lua_pushinteger(L, r);
-		// lua_rawset(L, -3);
-		// lua_pop(L, 2);
-		return r;
-	// }
-	// else
-	// {
-	// 	int result = lua_tointeger(L, -1);
-	// 	lua_pop(L, 3);
-	// 	return result;
-	// }
+
+	lua_pushvalue(L, index);
+	int r = luaL_ref(L, LUA_REGISTRYINDEX);
+
+	return r;
 }
 
 int UTableUtil::popluafunc(int index)
@@ -700,14 +673,6 @@ int UTableUtil::popluafunc(int index)
 void UTableUtil::unref(int r)
 {
 	luaL_unref(L, LUA_REGISTRYINDEX, r);
-	
-	// lua_rawgeti(L, LUA_REGISTRYINDEX, r);
-	// if (lua_isnil(L, -1))
-	// 	lua_pop(L, 1);
-	// else
-	// {
-	// 	popluafunc(-1);
-	// }
 }
 
 void UTableUtil::addgcref(UObject *p)
@@ -725,11 +690,19 @@ void UTableUtil::testtemplate()
 	FVector f;
 	AActor *p = nullptr;
 	TArray<FVector> t;
-	call("testtemplate", f,1,"shit",p,2.0,true,t);
-	callr<int>("testtemplate");
-	callr<float>("testtemplate");
-	callr<double>("testtemplate");
-	callr<AActor*>("testtemplate");
-	callr<FVector>("testtemplate");
-	callr<TArray<FVector>>("testtemplate");
+	call("testtemplate_call", f, 1,"test", p, 2.0, true, t);
+	if (callr<int>("testtemplate_r_int") != 1)
+		log("int");
+	if ( callr<float>("testtemplate_r_float") != 1.0 )
+		log("float");
+	if ( callr<double>("testtemplate_r_double") != 1.0 )
+		log("double");
+	if (callr<AActor*>("testtemplate_r_AActor") != nullptr)
+		log("AActor");
+	f = callr<FVector>("testtemplate_r_FVector");
+	if (f.X != 1 || f.Y != 2 || f.Z != 3)
+		log("FVector");
+	auto t1 = callr<TArray<int>>("testtemplate_r_TArray");
+	if (t1[0] != 1 || t1[1] != 2 || t1[2] != 3)
+		log("TArray");
 }

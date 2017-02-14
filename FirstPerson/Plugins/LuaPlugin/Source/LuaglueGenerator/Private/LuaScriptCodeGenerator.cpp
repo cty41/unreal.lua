@@ -1251,12 +1251,16 @@ bool FLuaScriptCodeGenerator::isStructSupported(UScriptStruct* thestruct) const
 
 void FLuaScriptCodeGenerator::ExportStruct()
 {
+	const FString TraitGlueFilename = GeneratedCodePath / TEXT("traitstructclass.h");
+	FString TraitGlue = "#pragma once\r\ntemplate<class T>\r\nclass traitstructclass{};\r\n";
+	TArray<FString> ExportTrait;
 	for (TObjectIterator<UScriptStruct> It; It; ++It)
 	{
 		FString name = *It->GetName();
 		if (!isStructSupported(*It))
 			continue;
 		FString namecpp = "F" + name;
+		ExportTrait.AddUnique(namecpp);
 		StructNames.Add(namecpp);
 		const FString ClassGlueFilename = GeneratedCodePath / (name + TEXT(".script.h"));
 		AllScriptHeaders.Add(ClassGlueFilename);
@@ -1318,6 +1322,12 @@ void FLuaScriptCodeGenerator::ExportStruct()
 
 		SaveHeaderIfChanged(ClassGlueFilename, GeneratedGlue);
 	}
+	for (auto &namecpp:ExportTrait)
+	{
+		TraitGlue += FString::Printf(TEXT("template<>\r\nclass traitstructclass<%s>{\r\npublic:\r\n"), *namecpp);
+		TraitGlue += FString::Printf(TEXT("inline static const char * name() { return \"%s\"; }\r\n};\r\n\r\n"), *namecpp);
+	}
+	SaveHeaderIfChanged(TraitGlueFilename, TraitGlue);
 }
 
 void FLuaScriptCodeGenerator::ExportEnum()

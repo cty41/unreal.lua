@@ -9,6 +9,7 @@ function Init()
     require "timermgr"
     require "actormgr"
     require "baseutil"
+    require "testtemplate"
     local function ShowMem()
         collectgarbage("collect")
         A_("lua memory: ", collectgarbage("count"))

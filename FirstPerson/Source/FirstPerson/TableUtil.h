@@ -1,9 +1,9 @@
 #pragma once
 #include "lua_tinker.h"
-#include <typeinfo>
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "Luautils.h"
 #include "traitweakclass.h"
+#include "traitstructclass.h"
 #include "TableUtil.generated.h"
 
 struct EnumItem;
@@ -93,6 +93,10 @@ template<> class popiml<FName> {
 public:
 	static FName pop(lua_State *L, int index) { return FName(luaL_checkstring(L, index)); }
 };
+template<> class popiml<FText> {
+public:
+	static FText pop(lua_State *L, int index) { return FText::FromString(luaL_checkstring(L, index)); }
+};
 template<> class popiml<FString> {
 public:
 	static FString pop(lua_State *L, int index) { return ANSI_TO_TCHAR(luaL_checkstring(L, index));}
@@ -134,7 +138,6 @@ public:
 	static void setmeta(const char* classname, int index);
 
 	static void* tousertype(const char* classname, int i);
-	static int toint(int i);
 	static void loadlib(const luaL_Reg funclist[], const char* classname);
 	static void loadEnum(const EnumItem list[], const char* enumname);
 	static void addutil(const luaL_Reg funclist[], const char* tablename);
@@ -196,10 +199,13 @@ public:
 
 	static void pushclass(const char* classname, void* p, bool bgcrecord = false);
 	static int push(int value);
+	static int push(uint8 value);
 	static int push(float value);
 	static int push(double value);
 	static int push(bool value);
 	static int push(FString value);
+	static int push(FText value);
+	static int push(FName value);
 	static int push(const char* value);
 	static void testtemplate();
 	template<class T> 
@@ -281,11 +287,8 @@ int UTableUtil::push(T* value)
 template<typename T>
 int UTableUtil::push(T value)
 {
-	// 	class T;
-	FString name = typeid(T).name();
-	int FirstSpaceIndex = name.Find(TEXT(" "));
-	name = name.Mid(FirstSpaceIndex + 1);
-	pushclass(TCHAR_TO_ANSI(*name), (void*)(new T(value)), true);
+	// 	struct name trait, because xcode project GCC_ENABLE_CPP_RTTI = No, can't use typeid
+	pushclass(traitstructclass<T>::name(), (void*)(new T(value)), true);
 	return 1;
 }
 
