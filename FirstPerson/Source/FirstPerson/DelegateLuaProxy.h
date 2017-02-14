@@ -2,8 +2,6 @@
 #include "FirstPerson.h"
 #include "allheader.inl"
 #include "DelegateLuaProxy.generated.h"
-
-
 UCLASS(meta=(Lua=1))
 class UDelegate_AActor_OnTakeAnyDamage : public UObject{
 	GENERATED_BODY()
@@ -19,7 +17,7 @@ public:
 	UFUNCTION()
 	void CallBack( AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  DamagedActor, Damage, DamageType, InstigatedBy, DamageCauser);
+			UTableUtil::call(v,  DamagedActor, Damage, DamageType, InstigatedBy, DamageCauser);
 		}
 	}
 
@@ -58,7 +56,7 @@ public:
 	UFUNCTION()
 	void CallBack( AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, const UDamageType* DamageType, AActor* DamageCauser){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  DamagedActor, Damage, InstigatedBy, HitLocation, FHitComponent, BoneName, ShotFromDirection, DamageType, DamageCauser);
+			UTableUtil::call(v,  DamagedActor, Damage, InstigatedBy, HitLocation, FHitComponent, BoneName, ShotFromDirection, DamageType, DamageCauser);
 		}
 	}
 
@@ -97,7 +95,7 @@ public:
 	UFUNCTION()
 	void CallBack( AActor* OverlappedActor, AActor* OtherActor){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  OverlappedActor, OtherActor);
+			UTableUtil::call(v,  OverlappedActor, OtherActor);
 		}
 	}
 
@@ -136,7 +134,7 @@ public:
 	UFUNCTION()
 	void CallBack( AActor* OverlappedActor, AActor* OtherActor){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  OverlappedActor, OtherActor);
+			UTableUtil::call(v,  OverlappedActor, OtherActor);
 		}
 	}
 
@@ -175,7 +173,7 @@ public:
 	UFUNCTION()
 	void CallBack( AActor* TouchedActor){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  TouchedActor);
+			UTableUtil::call(v,  TouchedActor);
 		}
 	}
 
@@ -214,7 +212,7 @@ public:
 	UFUNCTION()
 	void CallBack( AActor* TouchedActor){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  TouchedActor);
+			UTableUtil::call(v,  TouchedActor);
 		}
 	}
 
@@ -253,7 +251,7 @@ public:
 	UFUNCTION()
 	void CallBack( AActor* TouchedActor, FKey ButtonPressed){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  TouchedActor, ButtonPressed);
+			UTableUtil::call(v,  TouchedActor, ButtonPressed);
 		}
 	}
 
@@ -292,7 +290,7 @@ public:
 	UFUNCTION()
 	void CallBack( AActor* TouchedActor, FKey ButtonReleased){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  TouchedActor, ButtonReleased);
+			UTableUtil::call(v,  TouchedActor, ButtonReleased);
 		}
 	}
 
@@ -331,7 +329,7 @@ public:
 	UFUNCTION()
 	void CallBack( ETouchIndex::Type FingerIndex, AActor* TouchedActor){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  (int)(FingerIndex), TouchedActor);
+			UTableUtil::call(v,  (int)(FingerIndex), TouchedActor);
 		}
 	}
 
@@ -370,7 +368,7 @@ public:
 	UFUNCTION()
 	void CallBack( ETouchIndex::Type FingerIndex, AActor* TouchedActor){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  (int)(FingerIndex), TouchedActor);
+			UTableUtil::call(v,  (int)(FingerIndex), TouchedActor);
 		}
 	}
 
@@ -409,7 +407,7 @@ public:
 	UFUNCTION()
 	void CallBack( ETouchIndex::Type FingerIndex, AActor* TouchedActor){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  (int)(FingerIndex), TouchedActor);
+			UTableUtil::call(v,  (int)(FingerIndex), TouchedActor);
 		}
 	}
 
@@ -448,7 +446,7 @@ public:
 	UFUNCTION()
 	void CallBack( ETouchIndex::Type FingerIndex, AActor* TouchedActor){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  (int)(FingerIndex), TouchedActor);
+			UTableUtil::call(v,  (int)(FingerIndex), TouchedActor);
 		}
 	}
 
@@ -487,7 +485,7 @@ public:
 	UFUNCTION()
 	void CallBack( AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  SelfActor, OtherActor, NormalImpulse, Hit);
+			UTableUtil::call(v,  SelfActor, OtherActor, NormalImpulse, Hit);
 		}
 	}
 
@@ -526,7 +524,7 @@ public:
 	UFUNCTION()
 	void CallBack( AActor* DestroyedActor){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  DestroyedActor);
+			UTableUtil::call(v,  DestroyedActor);
 		}
 	}
 
@@ -565,7 +563,7 @@ public:
 	UFUNCTION()
 	void CallBack( AActor* Actor, EEndPlayReason::Type EndPlayReason){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Actor, (int)(EndPlayReason));
+			UTableUtil::call(v,  Actor, (int)(EndPlayReason));
 		}
 	}
 
@@ -604,7 +602,7 @@ public:
 	UFUNCTION()
 	void CallBack( UActorComponent* Component, bool bReset){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Component, bReset);
+			UTableUtil::call(v,  Component, bReset);
 		}
 	}
 
@@ -643,7 +641,7 @@ public:
 	UFUNCTION()
 	void CallBack( UActorComponent* Component){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Component);
+			UTableUtil::call(v,  Component);
 		}
 	}
 
@@ -682,7 +680,7 @@ public:
 	UFUNCTION()
 	void CallBack( UAnimMontage* Montage, bool bInterrupted){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Montage, bInterrupted);
+			UTableUtil::call(v,  Montage, bInterrupted);
 		}
 	}
 
@@ -721,7 +719,7 @@ public:
 	UFUNCTION()
 	void CallBack( UAnimMontage* Montage){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Montage);
+			UTableUtil::call(v,  Montage);
 		}
 	}
 
@@ -760,7 +758,7 @@ public:
 	UFUNCTION()
 	void CallBack( UAnimMontage* Montage, bool bInterrupted){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Montage, bInterrupted);
+			UTableUtil::call(v,  Montage, bInterrupted);
 		}
 	}
 
@@ -799,7 +797,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -838,7 +836,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -877,7 +875,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -916,7 +914,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -955,7 +953,7 @@ public:
 	UFUNCTION()
 	void CallBack( const FVector& HitPoint, const FVector& HitDirection){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  HitPoint, HitDirection);
+			UTableUtil::call(v,  HitPoint, HitDirection);
 		}
 	}
 
@@ -994,7 +992,7 @@ public:
 	UFUNCTION()
 	void CallBack( FName EventName, float EmitterTime, FVector Location, FVector Velocity){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  EventName, EmitterTime, Location, Velocity);
+			UTableUtil::call(v,  EventName, EmitterTime, Location, Velocity);
 		}
 	}
 
@@ -1033,7 +1031,7 @@ public:
 	UFUNCTION()
 	void CallBack( FName EventName, float EmitterTime, int32 ParticleCount){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  EventName, EmitterTime, ParticleCount);
+			UTableUtil::call(v,  EventName, EmitterTime, ParticleCount);
 		}
 	}
 
@@ -1072,7 +1070,7 @@ public:
 	UFUNCTION()
 	void CallBack( FName EventName, float EmitterTime, int32 ParticleTime, FVector Location, FVector Velocity, FVector Direction){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  EventName, EmitterTime, ParticleTime, Location, Velocity, Direction);
+			UTableUtil::call(v,  EventName, EmitterTime, ParticleTime, Location, Velocity, Direction);
 		}
 	}
 
@@ -1111,7 +1109,7 @@ public:
 	UFUNCTION()
 	void CallBack( FName EventName, float EmitterTime, int32 ParticleTime, FVector Location, FVector Velocity, FVector Direction, FVector Normal, FName BoneName, UPhysicalMaterial* PhysMat){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  EventName, EmitterTime, ParticleTime, Location, Velocity, Direction, Normal, BoneName, PhysMat);
+			UTableUtil::call(v,  EventName, EmitterTime, ParticleTime, Location, Velocity, Direction, Normal, BoneName, PhysMat);
 		}
 	}
 
@@ -1150,7 +1148,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -1189,7 +1187,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -1228,7 +1226,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -1267,7 +1265,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -1306,7 +1304,7 @@ public:
 	UFUNCTION()
 	void CallBack( float DeltaSeconds, FVector OldLocation, FVector OldVelocity){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  DeltaSeconds, OldLocation, OldVelocity);
+			UTableUtil::call(v,  DeltaSeconds, OldLocation, OldVelocity);
 		}
 	}
 
@@ -1345,7 +1343,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -1384,7 +1382,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -1423,7 +1421,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -1462,7 +1460,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -1501,7 +1499,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -1540,7 +1538,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -1579,7 +1577,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -1618,7 +1616,7 @@ public:
 	UFUNCTION()
 	void CallBack( APhysicsVolume* NewVolume){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  NewVolume);
+			UTableUtil::call(v,  NewVolume);
 		}
 	}
 
@@ -1657,7 +1655,7 @@ public:
 	UFUNCTION()
 	void CallBack( const FHitResult& ImpactResult, float Time){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  ImpactResult, Time);
+			UTableUtil::call(v,  ImpactResult, Time);
 		}
 	}
 
@@ -1696,7 +1694,7 @@ public:
 	UFUNCTION()
 	void CallBack( const FHitResult& ImpactResult, float Time){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  ImpactResult, Time);
+			UTableUtil::call(v,  ImpactResult, Time);
 		}
 	}
 
@@ -1735,7 +1733,7 @@ public:
 	UFUNCTION()
 	void CallBack( const FHitResult& ImpactResult, float Time){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  ImpactResult, Time);
+			UTableUtil::call(v,  ImpactResult, Time);
 		}
 	}
 
@@ -1774,7 +1772,7 @@ public:
 	UFUNCTION()
 	void CallBack( const FHitResult& ImpactResult, float Time){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  ImpactResult, Time);
+			UTableUtil::call(v,  ImpactResult, Time);
 		}
 	}
 
@@ -1813,7 +1811,7 @@ public:
 	UFUNCTION()
 	void CallBack( const FHitResult& ImpactResult, float Time){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  ImpactResult, Time);
+			UTableUtil::call(v,  ImpactResult, Time);
 		}
 	}
 
@@ -1852,7 +1850,7 @@ public:
 	UFUNCTION()
 	void CallBack( const FHitResult& ImpactResult, const FVector& ImpactVelocity){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  ImpactResult, ImpactVelocity);
+			UTableUtil::call(v,  ImpactResult, ImpactVelocity);
 		}
 	}
 
@@ -1891,7 +1889,7 @@ public:
 	UFUNCTION()
 	void CallBack( const FHitResult& ImpactResult){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  ImpactResult);
+			UTableUtil::call(v,  ImpactResult);
 		}
 	}
 
@@ -1930,7 +1928,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -1969,7 +1967,7 @@ public:
 	UFUNCTION()
 	void CallBack( const USoundWave* PlayingSoundWave, const float PlaybackPercent){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  PlayingSoundWave, PlaybackPercent);
+			UTableUtil::call(v,  PlayingSoundWave, PlaybackPercent);
 		}
 	}
 
@@ -2008,7 +2006,7 @@ public:
 	UFUNCTION()
 	void CallBack( int32 ConstraintIndex){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  ConstraintIndex);
+			UTableUtil::call(v,  ConstraintIndex);
 		}
 	}
 
@@ -2047,7 +2045,7 @@ public:
 	UFUNCTION()
 	void CallBack( UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  HitComponent, OtherActor, OtherComp, NormalImpulse, Hit);
+			UTableUtil::call(v,  HitComponent, OtherActor, OtherComp, NormalImpulse, Hit);
 		}
 	}
 
@@ -2086,7 +2084,7 @@ public:
 	UFUNCTION()
 	void CallBack( UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
+			UTableUtil::call(v,  OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 		}
 	}
 
@@ -2125,7 +2123,7 @@ public:
 	UFUNCTION()
 	void CallBack( UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex);
+			UTableUtil::call(v,  OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex);
 		}
 	}
 
@@ -2164,7 +2162,7 @@ public:
 	UFUNCTION()
 	void CallBack( UPrimitiveComponent* WakingComponent, FName BoneName){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  WakingComponent, BoneName);
+			UTableUtil::call(v,  WakingComponent, BoneName);
 		}
 	}
 
@@ -2203,7 +2201,7 @@ public:
 	UFUNCTION()
 	void CallBack( UPrimitiveComponent* SleepingComponent, FName BoneName){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  SleepingComponent, BoneName);
+			UTableUtil::call(v,  SleepingComponent, BoneName);
 		}
 	}
 
@@ -2242,7 +2240,7 @@ public:
 	UFUNCTION()
 	void CallBack( UPrimitiveComponent* TouchedComponent){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  TouchedComponent);
+			UTableUtil::call(v,  TouchedComponent);
 		}
 	}
 
@@ -2281,7 +2279,7 @@ public:
 	UFUNCTION()
 	void CallBack( UPrimitiveComponent* TouchedComponent){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  TouchedComponent);
+			UTableUtil::call(v,  TouchedComponent);
 		}
 	}
 
@@ -2320,7 +2318,7 @@ public:
 	UFUNCTION()
 	void CallBack( UPrimitiveComponent* TouchedComponent, FKey ButtonPressed){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  TouchedComponent, ButtonPressed);
+			UTableUtil::call(v,  TouchedComponent, ButtonPressed);
 		}
 	}
 
@@ -2359,7 +2357,7 @@ public:
 	UFUNCTION()
 	void CallBack( UPrimitiveComponent* TouchedComponent, FKey ButtonReleased){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  TouchedComponent, ButtonReleased);
+			UTableUtil::call(v,  TouchedComponent, ButtonReleased);
 		}
 	}
 
@@ -2398,7 +2396,7 @@ public:
 	UFUNCTION()
 	void CallBack( ETouchIndex::Type FingerIndex, UPrimitiveComponent* TouchedComponent){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  (int)(FingerIndex), TouchedComponent);
+			UTableUtil::call(v,  (int)(FingerIndex), TouchedComponent);
 		}
 	}
 
@@ -2437,7 +2435,7 @@ public:
 	UFUNCTION()
 	void CallBack( ETouchIndex::Type FingerIndex, UPrimitiveComponent* TouchedComponent){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  (int)(FingerIndex), TouchedComponent);
+			UTableUtil::call(v,  (int)(FingerIndex), TouchedComponent);
 		}
 	}
 
@@ -2476,7 +2474,7 @@ public:
 	UFUNCTION()
 	void CallBack( ETouchIndex::Type FingerIndex, UPrimitiveComponent* TouchedComponent){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  (int)(FingerIndex), TouchedComponent);
+			UTableUtil::call(v,  (int)(FingerIndex), TouchedComponent);
 		}
 	}
 
@@ -2515,7 +2513,7 @@ public:
 	UFUNCTION()
 	void CallBack( ETouchIndex::Type FingerIndex, UPrimitiveComponent* TouchedComponent){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  (int)(FingerIndex), TouchedComponent);
+			UTableUtil::call(v,  (int)(FingerIndex), TouchedComponent);
 		}
 	}
 
@@ -2554,7 +2552,7 @@ public:
 	UFUNCTION()
 	void CallBack( FName EventName, float EmitterTime, FVector Location, FVector Velocity){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  EventName, EmitterTime, Location, Velocity);
+			UTableUtil::call(v,  EventName, EmitterTime, Location, Velocity);
 		}
 	}
 
@@ -2593,7 +2591,7 @@ public:
 	UFUNCTION()
 	void CallBack( FName EventName, float EmitterTime, int32 ParticleCount){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  EventName, EmitterTime, ParticleCount);
+			UTableUtil::call(v,  EventName, EmitterTime, ParticleCount);
 		}
 	}
 
@@ -2632,7 +2630,7 @@ public:
 	UFUNCTION()
 	void CallBack( FName EventName, float EmitterTime, int32 ParticleTime, FVector Location, FVector Velocity, FVector Direction){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  EventName, EmitterTime, ParticleTime, Location, Velocity, Direction);
+			UTableUtil::call(v,  EventName, EmitterTime, ParticleTime, Location, Velocity, Direction);
 		}
 	}
 
@@ -2671,7 +2669,7 @@ public:
 	UFUNCTION()
 	void CallBack( FName EventName, float EmitterTime, int32 ParticleTime, FVector Location, FVector Velocity, FVector Direction, FVector Normal, FName BoneName, UPhysicalMaterial* PhysMat){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  EventName, EmitterTime, ParticleTime, Location, Velocity, Direction, Normal, BoneName, PhysMat);
+			UTableUtil::call(v,  EventName, EmitterTime, ParticleTime, Location, Velocity, Direction, Normal, BoneName, PhysMat);
 		}
 	}
 
@@ -2710,7 +2708,7 @@ public:
 	UFUNCTION()
 	void CallBack( UParticleSystemComponent* PSystem){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  PSystem);
+			UTableUtil::call(v,  PSystem);
 		}
 	}
 
@@ -2749,7 +2747,7 @@ public:
 	UFUNCTION()
 	void CallBack( const FVector& HitPoint, const FVector& HitDirection){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  HitPoint, HitDirection);
+			UTableUtil::call(v,  HitPoint, HitDirection);
 		}
 	}
 
@@ -2788,7 +2786,7 @@ public:
 	UFUNCTION()
 	void CallBack( int32 ConstraintIndex){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  ConstraintIndex);
+			UTableUtil::call(v,  ConstraintIndex);
 		}
 	}
 
@@ -2827,7 +2825,7 @@ public:
 	UFUNCTION()
 	void CallBack( ANavigationData* NavData){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  NavData);
+			UTableUtil::call(v,  NavData);
 		}
 	}
 
@@ -2866,7 +2864,7 @@ public:
 	UFUNCTION()
 	void CallBack( ANavigationData* NavData){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  NavData);
+			UTableUtil::call(v,  NavData);
 		}
 	}
 
@@ -2905,7 +2903,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -2944,7 +2942,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -2983,7 +2981,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -3022,7 +3020,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -3061,7 +3059,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -3100,7 +3098,7 @@ public:
 	UFUNCTION()
 	void CallBack( TArray<uint8> inArray){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  inArray);
+			UTableUtil::call(v,  inArray);
 		}
 	}
 
@@ -3139,7 +3137,7 @@ public:
 	UFUNCTION()
 	void CallBack( int32 inInt){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  inInt);
+			UTableUtil::call(v,  inInt);
 		}
 	}
 
@@ -3178,7 +3176,7 @@ public:
 	UFUNCTION()
 	void CallBack( FString inString){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  inString);
+			UTableUtil::call(v,  inString);
 		}
 	}
 
@@ -3217,7 +3215,7 @@ public:
 	UFUNCTION()
 	void CallBack( FString inString){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  inString);
+			UTableUtil::call(v,  inString);
 		}
 	}
 
@@ -3256,7 +3254,7 @@ public:
 	UFUNCTION()
 	void CallBack( FString inString, int32 inInt){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  inString, inInt);
+			UTableUtil::call(v,  inString, inInt);
 		}
 	}
 
@@ -3295,7 +3293,7 @@ public:
 	UFUNCTION()
 	void CallBack( EScreenOrientation::Type inScreenOrientation){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  (int)(inScreenOrientation));
+			UTableUtil::call(v,  (int)(inScreenOrientation));
 		}
 	}
 
@@ -3334,7 +3332,7 @@ public:
 	UFUNCTION()
 	void CallBack( UCanvas* Canvas, int32 Width, int32 Height){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Canvas, Width, Height);
+			UTableUtil::call(v,  Canvas, Width, Height);
 		}
 	}
 
@@ -3373,7 +3371,7 @@ public:
 	UFUNCTION()
 	void CallBack( UTexture2D* Texture){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Texture);
+			UTableUtil::call(v,  Texture);
 		}
 	}
 
@@ -3412,7 +3410,7 @@ public:
 	UFUNCTION()
 	void CallBack( UTexture2D* Texture){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Texture);
+			UTableUtil::call(v,  Texture);
 		}
 	}
 
@@ -3451,7 +3449,7 @@ public:
 	UFUNCTION()
 	void CallBack( UDragDropOperation* Operation){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Operation);
+			UTableUtil::call(v,  Operation);
 		}
 	}
 
@@ -3490,7 +3488,7 @@ public:
 	UFUNCTION()
 	void CallBack( UDragDropOperation* Operation){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Operation);
+			UTableUtil::call(v,  Operation);
 		}
 	}
 
@@ -3529,7 +3527,7 @@ public:
 	UFUNCTION()
 	void CallBack( UDragDropOperation* Operation){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Operation);
+			UTableUtil::call(v,  Operation);
 		}
 	}
 
@@ -3568,7 +3566,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -3607,7 +3605,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -3646,7 +3644,7 @@ public:
 	UFUNCTION()
 	void CallBack( UWidgetComponent* WidgetComponent, UWidgetComponent* PreviousWidgetComponent){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  WidgetComponent, PreviousWidgetComponent);
+			UTableUtil::call(v,  WidgetComponent, PreviousWidgetComponent);
 		}
 	}
 
@@ -3685,7 +3683,7 @@ public:
 	UFUNCTION()
 	void CallBack( FString SelectedItem, ESelectInfo::Type SelectionType){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  SelectedItem, (int)(SelectionType));
+			UTableUtil::call(v,  SelectedItem, (int)(SelectionType));
 		}
 	}
 
@@ -3724,7 +3722,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -3763,7 +3761,7 @@ public:
 	UFUNCTION()
 	void CallBack( const FText& Text){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Text);
+			UTableUtil::call(v,  Text);
 		}
 	}
 
@@ -3802,7 +3800,7 @@ public:
 	UFUNCTION()
 	void CallBack( const FText& Text, ETextCommit::Type CommitMethod){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Text, (int)(CommitMethod));
+			UTableUtil::call(v,  Text, (int)(CommitMethod));
 		}
 	}
 
@@ -3841,7 +3839,7 @@ public:
 	UFUNCTION()
 	void CallBack( const FText& Text){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Text);
+			UTableUtil::call(v,  Text);
 		}
 	}
 
@@ -3880,7 +3878,7 @@ public:
 	UFUNCTION()
 	void CallBack( const FText& Text, ETextCommit::Type CommitMethod){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Text, (int)(CommitMethod));
+			UTableUtil::call(v,  Text, (int)(CommitMethod));
 		}
 	}
 
@@ -3919,7 +3917,7 @@ public:
 	UFUNCTION()
 	void CallBack( UExpandableArea* Area, bool bIsExpanded){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Area, bIsExpanded);
+			UTableUtil::call(v,  Area, bIsExpanded);
 		}
 	}
 
@@ -3958,7 +3956,7 @@ public:
 	UFUNCTION()
 	void CallBack( FInputChord SelectedKey){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  SelectedKey);
+			UTableUtil::call(v,  SelectedKey);
 		}
 	}
 
@@ -3997,7 +3995,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -4036,7 +4034,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -4075,7 +4073,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -4114,7 +4112,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -4153,7 +4151,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -4192,7 +4190,7 @@ public:
 	UFUNCTION()
 	void CallBack( float Value){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Value);
+			UTableUtil::call(v,  Value);
 		}
 	}
 
@@ -4231,7 +4229,7 @@ public:
 	UFUNCTION()
 	void CallBack( float InValue){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  InValue);
+			UTableUtil::call(v,  InValue);
 		}
 	}
 
@@ -4270,7 +4268,7 @@ public:
 	UFUNCTION()
 	void CallBack( float InValue, ETextCommit::Type CommitMethod){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  InValue, (int)(CommitMethod));
+			UTableUtil::call(v,  InValue, (int)(CommitMethod));
 		}
 	}
 
@@ -4309,7 +4307,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -4348,7 +4346,7 @@ public:
 	UFUNCTION()
 	void CallBack( float InValue){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  InValue);
+			UTableUtil::call(v,  InValue);
 		}
 	}
 
@@ -4387,7 +4385,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -4426,7 +4424,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -4465,7 +4463,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -4504,7 +4502,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -4543,7 +4541,7 @@ public:
 	UFUNCTION()
 	void CallBack(){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v);
+			UTableUtil::call(v);
 		}
 	}
 
@@ -4582,7 +4580,7 @@ public:
 	UFUNCTION()
 	void CallBack( bool bIsChecked){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  bIsChecked);
+			UTableUtil::call(v,  bIsChecked);
 		}
 	}
 
@@ -4621,7 +4619,7 @@ public:
 	UFUNCTION()
 	void CallBack( bool bIsOpen){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  bIsOpen);
+			UTableUtil::call(v,  bIsOpen);
 		}
 	}
 
@@ -4660,7 +4658,7 @@ public:
 	UFUNCTION()
 	void CallBack( const FText& Text){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Text);
+			UTableUtil::call(v,  Text);
 		}
 	}
 
@@ -4699,7 +4697,7 @@ public:
 	UFUNCTION()
 	void CallBack( const FText& Text, ETextCommit::Type CommitMethod){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Text, (int)(CommitMethod));
+			UTableUtil::call(v,  Text, (int)(CommitMethod));
 		}
 	}
 
@@ -4738,7 +4736,7 @@ public:
 	UFUNCTION()
 	void CallBack( const FText& Text){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Text);
+			UTableUtil::call(v,  Text);
 		}
 	}
 
@@ -4777,7 +4775,7 @@ public:
 	UFUNCTION()
 	void CallBack( const FText& Text, ETextCommit::Type CommitMethod){
 		for (auto v : LuaCallBacks){
-			UTableUtil::callid(v,  Text, (int)(CommitMethod));
+			UTableUtil::call(v,  Text, (int)(CommitMethod));
 		}
 	}
 

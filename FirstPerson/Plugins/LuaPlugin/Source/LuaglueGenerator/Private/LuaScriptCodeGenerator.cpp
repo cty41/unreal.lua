@@ -1502,7 +1502,7 @@ void FLuaScriptCodeGenerator::GenerateDelegateClass()
 
 		GeneratedGlue += FString::Printf(TEXT("\tvoid CallBack(%s){\r\n"), *paramlist);
 		GeneratedGlue += TEXT("\t\tfor (auto v : LuaCallBacks){\r\n");
-		GeneratedGlue += FString::Printf(TEXT("\t\t\tUTableUtil::callid(v%s);\r\n"), *paramNames);
+		GeneratedGlue += FString::Printf(TEXT("\t\t\tUTableUtil::call(v%s);\r\n"), *paramNames);
 		GeneratedGlue += TEXT("\t\t}\r\n");
 		GeneratedGlue += TEXT("\t}\r\n\r\n");
 
