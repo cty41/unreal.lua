@@ -1,7 +1,7 @@
 function Shutdown()
 end
 function Init()
-    package.path = package.path .. ";".._luadir.."\\?.lua"
+    package.path = package.path .. ";".._luadir.."/?.lua"
     require "structutil"
     require "logutil"
     require "luaclass"

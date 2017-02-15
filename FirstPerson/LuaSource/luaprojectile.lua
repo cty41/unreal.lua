@@ -2,7 +2,7 @@ local luaprojectile = Inherit(AFirstPersonProjectile)
 
 function luaprojectile:CtorCpp()
 	self = ActorMgr:Get():GetIns(self, "luaprojectile")
-	local CollisionComp = USphereComponent.CreateDefaultSubobject(self, "SphereCompXXX11")
+	local CollisionComp = USphereComponent.CreateDefaultSubobject(self, "SphereCompX")
 	self.CollisionComp = CollisionComp
 	CollisionComp.SphereRadius = 5.0
 	CollisionComp.BodyInstance.CollisionProfileName = "Projectile"
@@ -22,7 +22,6 @@ function luaprojectile:CtorCpp()
  	ProjectileMovement.bShouldBounce = true
  	
  	self.InitialLifeSpan = 3
- 	collectgarbage("collect")
 end
 
 function luaprojectile:BeginPlay( )

@@ -256,14 +256,6 @@ public:
 		executeFuncid(funcid, 0, push(args...));
 	}
 
-	template<class... T>
-	static void callid(int funcid, T... args)
-	{
-		if (L == nullptr)
-			init();
-		executeFuncid(funcid, 0, push(args...));
-	}
-
 	static TMap<FString, TMap<FString, UProperty*>> propertyMap;
 	static TMap<FString, TMap<FString, UFunction*>> functionMap;
 

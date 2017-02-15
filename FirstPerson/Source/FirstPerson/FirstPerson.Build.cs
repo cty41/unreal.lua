@@ -14,6 +14,13 @@ public class FirstPerson : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay"});
         PrivateDependencyModuleNames.AddRange(new string[] {"Slate", "SlateCore", "UMG" });
         PublicIncludePaths.Add(Path.Combine(LuaLibPath, "Include"));
-        PublicAdditionalLibraries.Add(Path.Combine(LuaLibPath, "Lib", "Win64", "Release", "lua.lib"));
+        if (Target.Platform == UnrealTargetPlatform.Win64)
+        {
+            PublicAdditionalLibraries.Add(Path.Combine(LuaLibPath, "Lib", "Win64", "Release", "lua.lib"));
+        }
+        else if (Target.Platform == UnrealTargetPlatform.Mac)
+        {
+            PublicAdditionalLibraries.Add(Path.Combine(LuaLibPath, "Lib", "Mac", "Release", "lua.a"));
+        }
     }
 }
