@@ -1457,8 +1457,8 @@ void FLuaScriptCodeGenerator::GenerateDelegateClass()
 {
 	const FString ClassGlueFilename = IncludeBase / TEXT("DelegateLuaProxy.h");
 	FString GeneratedGlue = TEXT("#pragma once\r\n");
-	GeneratedGlue += FString::Printf(TEXT("#include \"%s.h\"\r\n"), *GameModuleName);
-	GeneratedGlue += TEXT("#include \"allheader.inl\"\r\n");
+	// GeneratedGlue += FString::Printf(TEXT("#include \"%s.h\"\r\n"), *GameModuleName);
+	GeneratedGlue += TEXT("#include \"TableUtil.h\"\r\n");
 	GeneratedGlue += TEXT("#include \"DelegateLuaProxy.generated.h\"\r\n");
 	for (auto &info:delegates)
 	{
@@ -1560,11 +1560,16 @@ void FLuaScriptCodeGenerator::GlueAllGeneratedFiles()
 	for (auto& HeaderFilename : AllSourceClassHeaders)
 	{
 		// Re-base to make sure we're including the right files on a remote machine
-		FString NewFilename(RebaseToBuildPath(HeaderFilename));
-		HeaderGlue += FString::Printf(TEXT("#include \"%s\"\r\n"), *NewFilename);
+		if (!HeaderFilename.Contains("DelegateLuaProxy.h"))
+		{
+			FString NewFilename(RebaseToBuildPath(HeaderFilename));
+			HeaderGlue += FString::Printf(TEXT("#include \"%s\"\r\n"), *NewFilename);
+		}
 	}
+	HeaderGlue += FString::Printf(TEXT("#include \"%s.h\"\r\n"), *GameModuleName);
 
-	LibGlue += TEXT("#include \"allheader.inl\"\r\n");
+
+	// LibGlue += TEXT("#include \"allheader.inl\"\r\n");
 	// Include all script glue headers
 	for (auto& HeaderFilename : AllScriptHeaders)
 	{

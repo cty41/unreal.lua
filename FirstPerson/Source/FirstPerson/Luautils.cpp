@@ -1,10 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
-#include "FirstPerson.h"
-#include "Luautils.h"
+#include "FirstPerson.h" 
 #include "TableUtil.h"
-
-
+#include "Luautils.h"
 
 UWorld* ULuautils::GetWorld(AActor* obj)
 {

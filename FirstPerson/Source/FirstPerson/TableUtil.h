@@ -1,5 +1,6 @@
 #pragma once
 #include "lua_tinker.h"
+#include "allheader.inl"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "Luautils.h"
 #include "traitweakclass.h"
@@ -8,7 +9,7 @@
 
 struct EnumItem;
 DECLARE_LOG_CATEGORY_EXTERN(LuaLog, Log, All);
-#define LuaDebug 1
+#define LuaDebug 1 
 using namespace std;
 using luafunc = int( struct lua_State* );
 
@@ -114,8 +115,7 @@ public:
 	static void pop(lua_State *L, int index) { lua_pop(L, 1); }
 };
 
-
-UCLASS(MinimalAPI)
+UCLASS()
 class UTableUtil : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
@@ -186,7 +186,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "TableUtil")
 	static void CtorCpp(UObject* p, FString classpath);
 
-	// static FLuaGcObj gcobjs;
 	static void rmgcref(UObject* p);
 	static void addgcref(UObject* p);
 

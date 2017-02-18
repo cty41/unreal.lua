@@ -1,6 +1,5 @@
 #pragma once
-#include "FirstPerson.h"
-#include "allheader.inl"
+#include "TableUtil.h"
 #include "DelegateLuaProxy.generated.h"
 UCLASS(meta=(Lua=1))
 class UDelegate_AActor_OnTakeAnyDamage : public UObject{

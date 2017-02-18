@@ -1,8 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
-#define _includefile "FirstPerson.h"
-#include  "FirstPerson.h" 
+#include "FirstPerson.h" 
 #include "TableUtil.h"
+#include "DelegateLuaProxy.h"
 #include "UObject/UObjectThreadContext.h"
 #include "GeneratedScriptLibraries.inl"
 
@@ -96,8 +95,6 @@ void UTableUtil::init()
 	luaL_openlibs(l);
 	L = l;
 	FString gameDir = FPaths::GameDir();
-	FString projectname = _includefile;
-	projectname.RemoveAt(projectname.Len() - 1, 2);
 	FString luaDir = gameDir /TEXT("LuaSource");
 	FString mainFilePath = luaDir / TEXT("main.lua");
 	if (luaL_dofile(l, TCHAR_TO_ANSI(*mainFilePath)))
