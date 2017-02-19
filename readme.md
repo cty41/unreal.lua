@@ -51,7 +51,7 @@
 
 3.进入FirstPerson/Lua打开Lua.sln，build一个release版的x64的lua库
 
-4.右键ShooterGame.uproject选择Generate visual studio project file
+4.右键FirstPerson.uproject选择Generate visual studio project file
 
 5.打开FirstPerson.sln，选择Development Editor配置，运行
 
