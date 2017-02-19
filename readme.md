@@ -11,7 +11,7 @@
 
 2.Copy the FirstPerson folder of the github repository to the project you create.
 
-3.Build the lua lib under X64 config.
+3.Build the lua lib under X64 config(I have build win64 and mac64 lib for you).
 
 4.Right click FirstPerson.uproject and choose Generate visual studio project file.
 
@@ -49,7 +49,7 @@
 
 2.把github的FirstPerson文件夹覆盖到你创建的FirstPerson项目文件夹
 
-3.进入FirstPerson/Lua打开Lua.sln，build一个release版的x64的lua库
+3.进入FirstPerson/Lua打开Lua.sln，build一个release版的x64的lua库（我已经生成了一个win64和mac64的库了，如果你是这两个平台，无需再生成）
 
 4.右键FirstPerson.uproject选择Generate visual studio project file
 
