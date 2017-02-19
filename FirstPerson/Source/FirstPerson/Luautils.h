@@ -45,4 +45,7 @@ public:
 
 	UFUNCTION()
 	static void GetAllWidgets(UUserWidget* UserWidget, TArray<FName>& Names, TArray<UWidget*>& Widgets);	
+
+	UFUNCTION()
+	static void log(FString content);
 };

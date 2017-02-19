@@ -48,3 +48,8 @@ void ULuautils::GetAllWidgets(UUserWidget* UserWidget, TArray<FName>& Names, TAr
 		Names.Add(v->GetFName());
 	}
 }
+
+void ULuautils::log(FString content)
+{
+	UTableUtil::log(content);
+}
