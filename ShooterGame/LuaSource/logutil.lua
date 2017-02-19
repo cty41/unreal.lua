@@ -26,13 +26,13 @@ function A_( ... )
     end
     str = "["..tostring(os.date()).."] "..str
     str = str.."\n"
-    UTableUtil.log(str)
+    ULuautils.log(str)
 end
 
 function errhandle(err)
     local err = err..'\n'..debug.traceback()..'\n'
     a_(err)
-    UTableUtil.log(err)
+    ULuautils.log(err)
 end
 
 function Xpcall(f)

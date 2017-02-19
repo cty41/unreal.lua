@@ -52,3 +52,7 @@ FColor ULuautils::FColor_New(uint8 InR, uint8 InG, uint8 InB, uint8 InA)
 	return FColor(InR,InG,InB,InA);
 }
 
+void ULuautils::log(FString content)
+{
+	UTableUtil::log(content);
+}

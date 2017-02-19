@@ -49,4 +49,6 @@ public:
 	UFUNCTION()
 	static FColor FColor_New(uint8 InR = 0, uint8 InG = 0, uint8 InB = 0, uint8 InA = 255);
 
+	UFUNCTION()
+	static void log(FString content);
 };
