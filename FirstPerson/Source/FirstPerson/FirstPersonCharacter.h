@@ -1,14 +1,18 @@
 // Copyright 1998-2016 Epic Games, Inc. All Rights Reserved.
 #pragma once
 #include "GameFramework/Character.h"
+#include "TestInterface.h"
 #include "FirstPersonCharacter.generated.h"
 
 class UInputComponent;
 
 UCLASS(config=Game, meta=(Lua=1))
-class AFirstPersonCharacter : public ACharacter
+class AFirstPersonCharacter : public ACharacter, public ITestInterface
 {
 	GENERATED_BODY()
+
+	virtual bool TestInterface_Implementation(int i) override;
+
 
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
@@ -133,4 +137,3 @@ public:
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
 };
-

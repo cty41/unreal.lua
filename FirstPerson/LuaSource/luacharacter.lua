@@ -38,6 +38,7 @@ function Character_lua:CtorCpp()
 end
 
 function Character_lua:BeginPlayLua()
+	-- test umg
 	if Character_lua.exampleUMG then
 		local exampleUMG = UWidgetBlueprintLibrary.Create(self, Character_lua.exampleUMG, nil)
 		exampleUMG:AddToViewport()
@@ -68,6 +69,12 @@ function Character_lua:OnClickedReset()
 end
 
 function Character_lua:OnFire()
+	-- test interface
+	local Interface = ITestInterface.Cast(self)
+	if Interface then
+		A_(Interface:TestInterface(self, 18888))
+	end
+
 	if self.txt_Count then
 		self.firecount = self.firecount + 1
 		self.txt_Count:SetText(tostring(self.firecount))

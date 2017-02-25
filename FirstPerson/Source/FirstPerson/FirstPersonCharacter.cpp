@@ -296,3 +296,9 @@ bool AFirstPersonCharacter::EnableTouchscreenMovement(class UInputComponent* Pla
 	}
 	return bResult;
 }
+
+bool AFirstPersonCharacter::TestInterface_Implementation(int i) 
+{
+	UTableUtil::log(FString::Printf(TEXT("TestInterface success %d"), i));
+	return true;
+}

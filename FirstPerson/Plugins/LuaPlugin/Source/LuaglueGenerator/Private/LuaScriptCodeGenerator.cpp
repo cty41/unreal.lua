@@ -320,7 +320,7 @@ bool FLuaScriptCodeGenerator::CanExportClass(UClass* Class)
 
 bool FLuaScriptCodeGenerator::CanExportFunction(const FString& ClassNameCPP, UClass* Class, UFunction* Function)
 {
-	if (Function->GetName().Contains("DEPRECATED"))
+	if (Function->GetName().Contains("DEPRECATED") || Function->HasMetaData("DeprecatedFunction"))
 		return false;
 	if (Function->GetName() == "Blueprint_GetSizeX" ||
 		Function->GetName() == "Blueprint_GetSizeY" ||
@@ -345,6 +345,8 @@ bool FLuaScriptCodeGenerator::CanExportFunction(const FString& ClassNameCPP, UCl
 	{
 		return false;
 	}
+	if (Class->ClassFlags & CLASS_Interface && Function->GetName() == "ExecuteUbergraph")
+		return false;
 
 	bool bExport = FScriptCodeGeneratorBase::CanExportFunction(ClassNameCPP, Class, Function);
 	if (bExport)
@@ -359,7 +361,7 @@ bool FLuaScriptCodeGenerator::CanExportFunction(const FString& ClassNameCPP, UCl
 	return bExport;
 }
 
-FString CallCode(UFunction* Function, bool bIsStaticFunc, bool hasresult, int num, FString paramlist, FString ClassNameCPP, bool isfinal = false)
+FString CallCode(UFunction* Function, bool bIsStaticFunc, bool hasresult, int num, FString paramlist, FString ClassNameCPP, bool isfinal = false, bool bIsInterface = false)
 {
 	if (!paramlist.IsEmpty())
 		paramlist.RemoveAt(paramlist.Len() - 1);
@@ -374,10 +376,20 @@ FString CallCode(UFunction* Function, bool bIsStaticFunc, bool hasresult, int nu
 		else
 			code += FString::Printf(TEXT("\t\t%s::%s(%s);\r\n"), *ClassNameCPP, *Function->GetName(), *paramlist);
 	else
-		if (hasresult)
-			code += FString::Printf(TEXT("\t\tresult = Obj->%s(%s);\r\n"), *Function->GetName(), *paramlist);
+		if (bIsInterface)
+		{
+			if (hasresult)
+				code += FString::Printf(TEXT("\t\tresult = Obj->Execute_%s(p, %s);\r\n"), *Function->GetName(), *paramlist);
+			else
+				code += FString::Printf(TEXT("\t\tObj->Execute_%s(p, %s);\r\n"), *Function->GetName(), *paramlist);	
+		}
 		else
-			code += FString::Printf(TEXT("\t\tObj->%s(%s);\r\n"), *Function->GetName(), *paramlist);
+		{
+			if (hasresult)
+				code += FString::Printf(TEXT("\t\tresult = Obj->%s(%s);\r\n"), *Function->GetName(), *paramlist);
+			else
+				code += FString::Printf(TEXT("\t\tObj->%s(%s);\r\n"), *Function->GetName(), *paramlist);
+		}
 	if (!isfinal)
 		code += "\t\tgoto end;\r\n\t}\r\n";
 	return code;
@@ -428,7 +440,7 @@ FString FLuaScriptCodeGenerator::GenerateFunctionDispatch_private(UFunction* Fun
 	return Params;
 }
 
-FString FLuaScriptCodeGenerator::GenerateFunctionDispatch(UFunction* Function, const FString &ClassNameCPP, bool bIsStaticFunc)
+FString FLuaScriptCodeGenerator::GenerateFunctionDispatch(UFunction* Function, const FString &ClassNameCPP, bool bIsStaticFunc, bool bIsInterface)
 {
 	FString Params;
 	FString paramList;
@@ -441,9 +453,7 @@ FString FLuaScriptCodeGenerator::GenerateFunctionDispatch(UFunction* Function, c
 	const bool bHasParamsOrReturnValue = (Function->Children != NULL);
 	if (bHasParamsOrReturnValue)
 	{
-		int32 ParamIndex = 0;
-		if (bIsStaticFunc)
-			ParamIndex = -1;
+		
 // 		auto x = Function->GetName() == "PlaySoundAtLocation";
 		for (TFieldIterator<UProperty> ParamIt(Function); ParamIt; ++ParamIt)
 		{
@@ -463,6 +473,16 @@ FString FLuaScriptCodeGenerator::GenerateFunctionDispatch(UFunction* Function, c
 				}
 			}
 		}
+
+		int32 ParamIndex = 0;
+		if (bIsStaticFunc)
+			ParamIndex = -1;
+
+		if(bIsInterface)
+		{
+			count_all_param++; 
+			ParamIndex = 1;
+		}
 		if (index_first_default != 0 )
 			count_default_param = count_all_param - index_first_default + 1;
 
@@ -476,6 +496,7 @@ FString FLuaScriptCodeGenerator::GenerateFunctionDispatch(UFunction* Function, c
 		{
 			Params += FString::Printf(TEXT("\tif (totalPamCount < %d)\r\n"), count_all_param - count_default_param + 1);
 		}
+
 		Params += FString::Printf(TEXT("\t{\r\n\t\tlua_pushstring(L, \"too less param in %s\");\r\n"), *Function->GetName());
 		Params += FString::Printf(TEXT("\t\tlua_error(L);\r\n\t\treturn 0;\r\n\t}\r\n"));
 		Params += TEXT("\t#endif\r\n");
@@ -500,7 +521,7 @@ FString FLuaScriptCodeGenerator::GenerateFunctionDispatch(UFunction* Function, c
 		int count_init_param = 0;
 		if (count_default_param > 0 && count_default_param + count_init_param >= count_all_param)
 		{
-			Params += CallCode(Function, bIsStaticFunc, !returnType.IsEmpty(), count_init_param, paramList, ClassNameCPP, count_init_param == count_all_param);
+			Params += CallCode(Function, bIsStaticFunc, !returnType.IsEmpty(), count_init_param, paramList, ClassNameCPP, count_init_param == count_all_param, bIsInterface);
 		}
 		for (TFieldIterator<UProperty> ParamIt(Function); ParamIt; ++ParamIt, ++ParamIndex)
 		{
@@ -516,7 +537,7 @@ FString FLuaScriptCodeGenerator::GenerateFunctionDispatch(UFunction* Function, c
 					{
 						Params += InitializeParam(Param, ParamIndex, false, Param->GetName());
 						if (count_default_param + count_init_param >= count_all_param)
-							Params += CallCode(Function, bIsStaticFunc, !returnType.IsEmpty(), count_init_param, paramList, ClassNameCPP, count_init_param == count_all_param);
+							Params += CallCode(Function, bIsStaticFunc, !returnType.IsEmpty(), count_init_param, paramList, ClassNameCPP, count_init_param == count_all_param, bIsInterface);
 					}
 					else
 					{
@@ -546,7 +567,7 @@ FString FLuaScriptCodeGenerator::GenerateFunctionDispatch(UFunction* Function, c
 							Params += FString::Printf(TEXT("\t%s = %s;\r\n"), *Param->GetName(), *initParam);
 						// SpawnSoundAttached ambiouscall blame UE4 not me
 						if (count_default_param + count_init_param >= count_all_param  && !(FuncName == "SpawnSoundAttached" && count_init_param == 4))
-							Params += CallCode(Function, bIsStaticFunc, !returnType.IsEmpty(), count_init_param, paramList, ClassNameCPP, count_init_param == count_all_param);
+							Params += CallCode(Function, bIsStaticFunc, !returnType.IsEmpty(), count_init_param, paramList, ClassNameCPP, count_init_param == count_all_param, bIsInterface);
 					}
 					else
 					{
@@ -567,6 +588,11 @@ FString FLuaScriptCodeGenerator::GenerateFunctionDispatch(UFunction* Function, c
 		else
 			Params += "\t";
 		FString callobj = "Obj->";
+		if (bIsInterface)
+		{
+			callobj = callobj + "Execute_";
+			paramList = "p, " + paramList;
+		}
 		if (bIsStaticFunc)
 			callobj = FString::Printf(TEXT("%s::"), *ClassNameCPP);
 		if (paramList.IsEmpty())
@@ -586,7 +612,7 @@ FString FLuaScriptCodeGenerator::GenerateFunctionDispatch(UFunction* Function, c
 	return Params;
 }
 
-FString FLuaScriptCodeGenerator::FuncCode(FString  ClassNameCPP, FString classname, UFunction* Function, UClass* FuncSuper)
+FString FLuaScriptCodeGenerator::FuncCode(FString  ClassNameCPP, FString classname, UFunction* Function, UClass* FuncSuper, UClass* Class)
 {
 	UProperty* ReturnValue = NULL;
 	FString FunctionBody = GenerateWrapperFunctionDeclaration(ClassNameCPP, classname, Function);
@@ -598,8 +624,12 @@ FString FLuaScriptCodeGenerator::FuncCode(FString  ClassNameCPP, FString classna
 			bool bIsStaticFunc = !!(Function->FunctionFlags & FUNC_Static);
 			if (!bIsStaticFunc)
 				FunctionBody += FString::Printf(TEXT("\t%s\r\n"), *GenerateObjectDeclarationFromContext(ClassNameCPP));
-			FunctionBody += GenerateFunctionDispatch(Function, ClassNameCPP, bIsStaticFunc);
-
+			bool bIsInterface = !!(Class->ClassFlags & CLASS_Interface);
+			if ( bIsInterface )
+			{
+				FunctionBody += TEXT("\tUObject *p = (UObject*)UTableUtil::tousertype(\"UObject\", 2);\r\n");
+			}
+			FunctionBody += GenerateFunctionDispatch(Function, ClassNameCPP, bIsStaticFunc, bIsInterface);
 			int returnCount = 0;
 			for (TFieldIterator<UProperty> ParamIt(Function); !ReturnValue && ParamIt; ++ParamIt)
 			{
@@ -666,7 +696,7 @@ FString FLuaScriptCodeGenerator::ExportFunction(const FString& ClassNameCPP, UCl
 		}
 	}
 	
-	FString GeneratedGlue = FuncCode(ClassNameCPP, Class->GetName(), Function, FuncSuper);
+	FString GeneratedGlue = FuncCode(ClassNameCPP, Class->GetName(), Function, FuncSuper, Class);
 
 	auto& Exports = ClassExportedFunctions.FindOrAdd(Class);
 	Exports.Add(Function->GetFName());
@@ -1177,15 +1207,25 @@ FString FLuaScriptCodeGenerator::ExportAdditionalClassGlue(const FString& ClassN
 		GeneratedGlue += FString::Printf(TEXT("\tUTableUtil::pushclass(\"%s\", Obj);\r\n"), *ClassNameCPP);
 		GeneratedGlue += TEXT("\treturn 1;\r\n");
 		GeneratedGlue += TEXT("}\r\n\r\n");
-
-		
 	}
-	GeneratedGlue += GenerateWrapperFunctionDeclaration(ClassNameCPP, Class->GetName(), TEXT("FClassFinder"));
-	GeneratedGlue += TEXT("\r\n{\r\n");
-	GeneratedGlue += FString::Printf(TEXT("\tConstructorHelpers::FClassFinder<%s> Obj(ANSI_TO_TCHAR(luaL_checkstring(L, 1)));\r\n"), *ClassNameCPP);
-	GeneratedGlue += FString::Printf(TEXT("\tUTableUtil::pushclass(\"UClass\", Obj.Class);\r\n"));
-	GeneratedGlue += TEXT("\treturn 1;\r\n");
-	GeneratedGlue += TEXT("}\r\n\r\n");
+
+	if (!(Class->ClassFlags & CLASS_Interface))
+	{
+		GeneratedGlue += GenerateWrapperFunctionDeclaration(ClassNameCPP, Class->GetName(), TEXT("FClassFinder"));
+		GeneratedGlue += TEXT("\r\n{\r\n");
+		GeneratedGlue += FString::Printf(TEXT("\tConstructorHelpers::FClassFinder<%s> Obj(ANSI_TO_TCHAR(luaL_checkstring(L, 1)));\r\n"), *ClassNameCPP);
+		GeneratedGlue += FString::Printf(TEXT("\tUTableUtil::pushclass(\"UClass\", Obj.Class);\r\n"));
+		GeneratedGlue += TEXT("\treturn 1;\r\n");
+		GeneratedGlue += TEXT("}\r\n\r\n");
+
+		// Class: Equivalent of StaticClass()
+		GeneratedGlue += GenerateWrapperFunctionDeclaration(ClassNameCPP, Class->GetName(), TEXT("Class"));
+		GeneratedGlue += TEXT("\r\n{\r\n");
+		GeneratedGlue += FString::Printf(TEXT("\tUClass* Class = %s::StaticClass();\r\n"), *ClassNameCPP);
+		GeneratedGlue += TEXT("\tUTableUtil::pushclass(\"UClass\", (void*)Class);\r\n");
+		GeneratedGlue += TEXT("\treturn 1;\r\n");
+		GeneratedGlue += TEXT("}\r\n\r\n");
+	}
 
 	GeneratedGlue += GenerateWrapperFunctionDeclaration(ClassNameCPP, Class->GetName(), TEXT("Cast"));
 	GeneratedGlue += TEXT("\r\n{\r\n");
@@ -1194,14 +1234,6 @@ FString FLuaScriptCodeGenerator::ExportAdditionalClassGlue(const FString& ClassN
 	GeneratedGlue += FString::Printf(TEXT("\tUTableUtil::pushclass(\"%s\", (void*)to);\r\n"), *ClassNameCPP);
 	GeneratedGlue += TEXT("\treturn 1;\r\n");
 	GeneratedGlue += TEXT("}\r\n\r\n");
-	// Class: Equivalent of StaticClass()
-	GeneratedGlue += GenerateWrapperFunctionDeclaration(ClassNameCPP, Class->GetName(), TEXT("Class"));
-	GeneratedGlue += TEXT("\r\n{\r\n");
-	GeneratedGlue += FString::Printf(TEXT("\tUClass* Class = %s::StaticClass();\r\n"), *ClassNameCPP);
-	GeneratedGlue += TEXT("\tUTableUtil::pushclass(\"UClass\", (void*)Class);\r\n");
-	GeneratedGlue += TEXT("\treturn 1;\r\n");
-	GeneratedGlue += TEXT("}\r\n\r\n");
-
 	//Library
 	GeneratedGlue += FString::Printf(TEXT("static const luaL_Reg %s_Lib[] =\r\n{\r\n"), *ClassName);
 	if (!(Class->GetClassFlags() & CLASS_Abstract))
@@ -1211,10 +1243,12 @@ FString FLuaScriptCodeGenerator::ExportAdditionalClassGlue(const FString& ClassN
 		GeneratedGlue += FString::Printf(TEXT("\t{ \"CreateDefaultSubobject\", %s_CreateDefaultSubobject },\r\n"), *ClassNameCPP);
 		GeneratedGlue += FString::Printf(TEXT("\t{ \"FObjectFinder\", %s_FObjectFinder },\r\n"), *ClassNameCPP);
 	}
-	GeneratedGlue += FString::Printf(TEXT("\t{ \"FClassFinder\", %s_FClassFinder },\r\n"), *ClassNameCPP);
-
+	if (!(Class->ClassFlags & CLASS_Interface))
+	{
+		GeneratedGlue += FString::Printf(TEXT("\t{ \"FClassFinder\", %s_FClassFinder },\r\n"), *ClassNameCPP);
+		GeneratedGlue += FString::Printf(TEXT("\t{ \"Class\", %s_Class },\r\n"), *ClassNameCPP);
+	}
 	GeneratedGlue += FString::Printf(TEXT("\t{ \"Cast\", %s_Cast },\r\n"), *ClassNameCPP);
-	GeneratedGlue += FString::Printf(TEXT("\t{ \"Class\", %s_Class },\r\n"), *ClassNameCPP);
 	auto FunctionExports = ClassExportedFunctions.Find(Class);
 	if (FunctionExports)
 	{
@@ -1360,7 +1394,7 @@ void FLuaScriptCodeGenerator::ExportClass(UClass* Class, const FString& SourceHe
 	{
 		return;
 	}
-
+	// auto x = Class->ClassFlags & CLASS_Interface;
 	UE_LOG(LogScriptGenerator, Log, TEXT("Exporting class %s"), *Class->GetName());
 
 	ExportedClasses.Add(Class->GetFName());
@@ -1372,6 +1406,7 @@ void FLuaScriptCodeGenerator::ExportClass(UClass* Class, const FString& SourceHe
 	AllScriptHeaders.Add(ClassGlueFilename);
 
 	const FString ClassNameCPP = GetClassNameCPP(Class);
+	auto x = ClassNameCPP == "IFontProviderInterface";
 	FString GeneratedGlue(TEXT("#pragma once\r\n\r\n"));
 	// 	auto x = Class->GetFName() == "AnimInstance";
 		// Export all functions
