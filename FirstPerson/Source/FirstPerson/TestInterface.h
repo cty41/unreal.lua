@@ -13,4 +13,10 @@ class ITestInterface
 public:
 	UFUNCTION(BlueprintNativeEvent)
 	bool TestInterface(int i);
+
+	UFUNCTION(BlueprintNativeEvent)
+	bool TestInterface1();
+
+	UFUNCTION(BlueprintNativeEvent)
+	bool TestInterface2(int i =10);
 };

@@ -363,6 +363,8 @@ bool FLuaScriptCodeGenerator::CanExportFunction(const FString& ClassNameCPP, UCl
 
 FString CallCode(UFunction* Function, bool bIsStaticFunc, bool hasresult, int num, FString paramlist, FString ClassNameCPP, bool isfinal = false, bool bIsInterface = false)
 {
+	if (bIsInterface)
+		paramlist = "p,"+ paramlist;
 	if (!paramlist.IsEmpty())
 		paramlist.RemoveAt(paramlist.Len() - 1);
 	if (!bIsStaticFunc)
@@ -379,9 +381,9 @@ FString CallCode(UFunction* Function, bool bIsStaticFunc, bool hasresult, int nu
 		if (bIsInterface)
 		{
 			if (hasresult)
-				code += FString::Printf(TEXT("\t\tresult = Obj->Execute_%s(p, %s);\r\n"), *Function->GetName(), *paramlist);
+				code += FString::Printf(TEXT("\t\tresult = Obj->Execute_%s(%s);\r\n"), *Function->GetName(), *paramlist);
 			else
-				code += FString::Printf(TEXT("\t\tObj->Execute_%s(p, %s);\r\n"), *Function->GetName(), *paramlist);	
+				code += FString::Printf(TEXT("\t\tObj->Execute_%s(%s);\r\n"), *Function->GetName(), *paramlist);	
 		}
 		else
 		{
@@ -591,7 +593,7 @@ FString FLuaScriptCodeGenerator::GenerateFunctionDispatch(UFunction* Function, c
 		if (bIsInterface)
 		{
 			callobj = callobj + "Execute_";
-			paramList = "p, " + paramList;
+			paramList = "p," + paramList;
 		}
 		if (bIsStaticFunc)
 			callobj = FString::Printf(TEXT("%s::"), *ClassNameCPP);
@@ -1200,17 +1202,18 @@ FString FLuaScriptCodeGenerator::ExportAdditionalClassGlue(const FString& ClassN
 		GeneratedGlue += FString::Printf(TEXT("\tUTableUtil::pushclass(\"%s\", (void*)Obj);\r\n"), *ClassNameCPP);
 		GeneratedGlue += TEXT("\treturn 1;\r\n");
 		GeneratedGlue += TEXT("}\r\n\r\n");
+	}
 
+	
+	if (!(Class->ClassFlags & CLASS_Interface))
+	{
 		GeneratedGlue += GenerateWrapperFunctionDeclaration(ClassNameCPP, Class->GetName(), TEXT("FObjectFinder"));
 		GeneratedGlue += TEXT("\r\n{\r\n");
 		GeneratedGlue += FString::Printf(TEXT("\tvoid* Obj = (void*)UTableUtil::FObjectFinder(%s::StaticClass(), luaL_checkstring(L, 1));\r\n"), *ClassNameCPP);
 		GeneratedGlue += FString::Printf(TEXT("\tUTableUtil::pushclass(\"%s\", Obj);\r\n"), *ClassNameCPP);
 		GeneratedGlue += TEXT("\treturn 1;\r\n");
 		GeneratedGlue += TEXT("}\r\n\r\n");
-	}
 
-	if (!(Class->ClassFlags & CLASS_Interface))
-	{
 		GeneratedGlue += GenerateWrapperFunctionDeclaration(ClassNameCPP, Class->GetName(), TEXT("FClassFinder"));
 		GeneratedGlue += TEXT("\r\n{\r\n");
 		GeneratedGlue += FString::Printf(TEXT("\tConstructorHelpers::FClassFinder<%s> Obj(ANSI_TO_TCHAR(luaL_checkstring(L, 1)));\r\n"), *ClassNameCPP);
@@ -1241,10 +1244,11 @@ FString FLuaScriptCodeGenerator::ExportAdditionalClassGlue(const FString& ClassN
 		GeneratedGlue += FString::Printf(TEXT("\t{ \"New\", %s_New },\r\n"), *ClassNameCPP);
 		GeneratedGlue += FString::Printf(TEXT("\t{ \"Destroy\", %s_Destroy },\r\n"), *ClassNameCPP);
 		GeneratedGlue += FString::Printf(TEXT("\t{ \"CreateDefaultSubobject\", %s_CreateDefaultSubobject },\r\n"), *ClassNameCPP);
-		GeneratedGlue += FString::Printf(TEXT("\t{ \"FObjectFinder\", %s_FObjectFinder },\r\n"), *ClassNameCPP);
 	}
+
 	if (!(Class->ClassFlags & CLASS_Interface))
 	{
+		GeneratedGlue += FString::Printf(TEXT("\t{ \"FObjectFinder\", %s_FObjectFinder },\r\n"), *ClassNameCPP);
 		GeneratedGlue += FString::Printf(TEXT("\t{ \"FClassFinder\", %s_FClassFinder },\r\n"), *ClassNameCPP);
 		GeneratedGlue += FString::Printf(TEXT("\t{ \"Class\", %s_Class },\r\n"), *ClassNameCPP);
 	}

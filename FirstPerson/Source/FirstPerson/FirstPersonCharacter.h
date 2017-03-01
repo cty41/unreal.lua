@@ -12,6 +12,8 @@ class AFirstPersonCharacter : public ACharacter, public ITestInterface
 	GENERATED_BODY()
 
 	virtual bool TestInterface_Implementation(int i) override;
+	virtual bool TestInterface1_Implementation() override;
+	virtual bool TestInterface2_Implementation(int i=10) override;
 
 
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
@@ -77,6 +79,9 @@ public:
 	/** Whether to use motion controller location for aiming. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	uint32 bUsingMotionControllers : 1;
+
+	UFUNCTION(reliable, server, WithValidation)
+	void ServerStartFire();
 
 protected:
 

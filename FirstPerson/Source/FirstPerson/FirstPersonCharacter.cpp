@@ -302,3 +302,23 @@ bool AFirstPersonCharacter::TestInterface_Implementation(int i)
 	UTableUtil::log(FString::Printf(TEXT("TestInterface success %d"), i));
 	return true;
 }
+bool AFirstPersonCharacter::TestInterface1_Implementation()
+{
+	UTableUtil::log(FString::Printf(TEXT("TestInterface1 success")));
+	return true;
+}
+bool AFirstPersonCharacter::TestInterface2_Implementation(int i)
+{
+	UTableUtil::log(FString::Printf(TEXT("TestInterface2 success %d"), i));
+	return true;
+}
+
+bool AFirstPersonCharacter::ServerStartFire_Validate()
+{
+	return true;
+}
+
+void AFirstPersonCharacter::ServerStartFire_Implementation()
+{
+	OnFire();
+}
