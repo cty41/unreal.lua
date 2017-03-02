@@ -364,7 +364,10 @@ bool FLuaScriptCodeGenerator::CanExportFunction(const FString& ClassNameCPP, UCl
 FString CallCode(UFunction* Function, bool bIsStaticFunc, bool hasresult, int num, FString paramlist, FString ClassNameCPP, bool isfinal = false, bool bIsInterface = false)
 {
 	if (bIsInterface)
+	{
 		paramlist = "p,"+ paramlist;
+		num = num + 1;
+	}
 	if (!paramlist.IsEmpty())
 		paramlist.RemoveAt(paramlist.Len() - 1);
 	if (!bIsStaticFunc)
