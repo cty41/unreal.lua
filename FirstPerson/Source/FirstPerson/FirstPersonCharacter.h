@@ -13,7 +13,8 @@ class AFirstPersonCharacter : public ACharacter, public ITestInterface
 
 	virtual bool TestInterface_Implementation(int i) override;
 	virtual bool TestInterface1_Implementation() override;
-	virtual bool TestInterface2_Implementation(int i=10) override;
+	virtual bool TestInterface2_Implementation(int i = 10) override;
+	virtual void TestInterface3_Implementation(int i, int j) override;
 
 
 	/** Pawn mesh: 1st person view (arms; seen only by self) */

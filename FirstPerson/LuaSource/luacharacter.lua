@@ -14,7 +14,7 @@ function Character_lua:CtorCpp()
 
 	local Mesh1P = USkeletalMeshComponent.CreateDefaultSubobject(self, "CharacterMesh1P")
 	self.Mesh1P = Mesh1P
-	Mesh1P:SetOnlyOwnerSee(true)
+	Mesh1P:SetOnlyOwnerSee(false)
 	Mesh1P.AttachParent = FirstPersonCameraComponent
 	Mesh1P.bCastDynamicShadow = false
 	Mesh1P.CastShadow = false
@@ -23,7 +23,7 @@ function Character_lua:CtorCpp()
 
 	local FP_Gun = USkeletalMeshComponent.CreateDefaultSubobject(self, "FP_Gun")
 	self.FP_Gun = FP_Gun
-	FP_Gun:SetOnlyOwnerSee(true)
+	FP_Gun:SetOnlyOwnerSee(false)
 	FP_Gun.bCastDynamicShadow = false
 	FP_Gun.CastShadow = false
 	FP_Gun.AttachParent = self.RootComponent
@@ -32,7 +32,7 @@ function Character_lua:CtorCpp()
 	self.FP_MuzzleLocation = FP_MuzzleLocation
 	FP_MuzzleLocation.AttachParent = FP_Gun
 	FP_MuzzleLocation:K2_SetRelativeLocation(FVector.New(0.2, 48.4, -10.6), false, FHitResult.New(), false)
-
+	self:SetReplicates(true)
 	self.GunOffset = FVector.New(100.0, 0.0, 10.0)
 	Character_lua.exampleUMG = Character_lua.exampleUMG or UUserWidget.FClassFinder("/Game/FirstPerson/UMG_example")
 end
@@ -69,12 +69,14 @@ function Character_lua:OnClickedReset()
 end
 
 function Character_lua:OnFire()
+	-- if self.Role < ENetRole.ROLE_Authority then
+	-- 	self:ServerStartFire()
+	-- end
 	-- test interface
 	local Interface = ITestInterface.Cast(self)
 	if Interface then
 		A_(Interface:TestInterface(self, 18888))
 	end
-
 	if self.txt_Count then
 		self.firecount = self.firecount + 1
 		self.txt_Count:SetText(tostring(self.firecount))

@@ -19,4 +19,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	bool TestInterface2(int i =10);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "test")
+	void TestInterface3(int i, int j);
 };

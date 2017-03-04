@@ -1,7 +1,6 @@
 local luaprojectile = Inherit(AFirstPersonProjectile)
 
 function luaprojectile:CtorCpp()
-	self = ActorMgr:Get():GetIns(self, "luaprojectile")
 	local CollisionComp = USphereComponent.CreateDefaultSubobject(self, "SphereCompX")
 	self.CollisionComp = CollisionComp
 	CollisionComp.SphereRadius = 5.0
@@ -20,13 +19,15 @@ function luaprojectile:CtorCpp()
  	ProjectileMovement.MaxSpeed = 3000
  	ProjectileMovement.bRotationFollowsVelocity = true
  	ProjectileMovement.bShouldBounce = true
- 	
+	self:SetReplicates(true)
  	self.InitialLifeSpan = 3
 end
 
 function luaprojectile:BeginPlay( )
 	self.OnComponentHit = self.CollisionComp.OnComponentHit
-	self.OnComponentHit:Add(MakeCallBack(self.OnHit, self))		
+	self.OnComponentHit:Add(MakeCallBack(self.OnHit, self))
+	-- self.m_OnDestroyed = self.OnDestroyed 		
+	-- self.m_OnDestroyed:Add(MakeCallBack(ActorMgr.DestroyActor, ActorMgr:Get()))
 end
 
 function luaprojectile:OnHit(HitComp, OtherActor, OtherComp, NormalImpulse, Hit)

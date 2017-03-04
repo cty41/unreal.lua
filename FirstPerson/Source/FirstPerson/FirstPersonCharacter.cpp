@@ -313,6 +313,10 @@ bool AFirstPersonCharacter::TestInterface2_Implementation(int i)
 	return true;
 }
 
+void AFirstPersonCharacter::TestInterface3_Implementation(int i, int j)
+{
+	UTableUtil::log(FString::Printf(TEXT("TestInterface3 success %d"), i));
+}
 bool AFirstPersonCharacter::ServerStartFire_Validate()
 {
 	return true;
