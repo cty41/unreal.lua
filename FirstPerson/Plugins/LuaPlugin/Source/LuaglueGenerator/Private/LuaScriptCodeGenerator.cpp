@@ -1183,8 +1183,9 @@ FString FLuaScriptCodeGenerator::ExportAdditionalClassGlue(const FString& ClassN
 		GeneratedGlue += TEXT("\tFName Name = FName(luaL_checkstring(L, 2));\r\n");
 		GeneratedGlue += FString::Printf(TEXT("\tUObject* Obj = NewObject<%s>(Outer, Name);\r\n"), *ClassNameCPP);
 		GeneratedGlue += TEXT("\tif (Obj)\r\n\t{\r\n");
+		GeneratedGlue += TEXT("\t\t\tUTableUtil::addgcref(Obj);\r\n");
 		GeneratedGlue += TEXT("\t}\r\n");
-		GeneratedGlue += FString::Printf(TEXT("\tUTableUtil::pushclass(\"%s\", (void*)Obj);\r\n"), *ClassNameCPP);
+		GeneratedGlue += FString::Printf(TEXT("\tUTableUtil::pushclass(\"%s\", (void*)Obj, true);\r\n"), *ClassNameCPP);
 		GeneratedGlue += TEXT("\treturn 1;\r\n");
 		GeneratedGlue += TEXT("}\r\n\r\n");
 
@@ -1192,6 +1193,7 @@ FString FLuaScriptCodeGenerator::ExportAdditionalClassGlue(const FString& ClassN
 		GeneratedGlue += TEXT("\r\n{\r\n");
 		GeneratedGlue += FString::Printf(TEXT("\t%s\r\n"), *GenerateObjectDeclarationFromContext(ClassNameCPP));
 		GeneratedGlue += TEXT("\tif (Obj)\r\n\t{\r\n");
+		GeneratedGlue += TEXT("\t\t\tUTableUtil::rmgcref(Obj);\r\n");
 		GeneratedGlue += TEXT("\t}\r\n\treturn 0;\r\n");
 		GeneratedGlue += TEXT("}\r\n\r\n");
 
@@ -1213,7 +1215,7 @@ FString FLuaScriptCodeGenerator::ExportAdditionalClassGlue(const FString& ClassN
 		GeneratedGlue += GenerateWrapperFunctionDeclaration(ClassNameCPP, Class->GetName(), TEXT("FObjectFinder"));
 		GeneratedGlue += TEXT("\r\n{\r\n");
 		GeneratedGlue += FString::Printf(TEXT("\tvoid* Obj = (void*)UTableUtil::FObjectFinder(%s::StaticClass(), luaL_checkstring(L, 1));\r\n"), *ClassNameCPP);
-		GeneratedGlue += FString::Printf(TEXT("\tUTableUtil::pushclass(\"%s\", Obj);\r\n"), *ClassNameCPP);
+		GeneratedGlue += FString::Printf(TEXT("\tUTableUtil::pushclass(\"%s\", Obj, true);\r\n"), *ClassNameCPP);
 		GeneratedGlue += TEXT("\treturn 1;\r\n");
 		GeneratedGlue += TEXT("}\r\n\r\n");
 
