@@ -93,6 +93,21 @@ FString FLuaScriptCodeGenerator::InitializeParam(UProperty* Param, int32 ParamIn
 			Initializer += FString::Printf(TEXT("\t\tlua_pop(L, 1);\r\n\t}\r\n"));
 			return Initializer;
 		}
+		else if (Param->IsA(UMapProperty::StaticClass()))
+		{
+			//TODO,the real setup part
+			auto PropertyMap = Cast<UMapProperty>(Param);
+
+			Initializer += FString::Printf(TEXT("\twhile (lua_next(L, %d) != 0) {\r\n"), ParamIndex);
+			Initializer += FString::Printf(TEXT("\t\tint32 i = lua_tointeger(L, -2)-1;\r\n"));
+			FString to = InitializeParam(PropertyMap->Inner, -3);
+			if (PropertyMap->Inner->IsA(UStructProperty::StaticClass()))
+				Initializer += FString::Printf(TEXT("\t\t%s[i] = *%s;\r\n"), *arrayName, *to);
+			else
+				Initializer += FString::Printf(TEXT("\t\t%s[i] = %s;\r\n"), *arrayName, *to);
+			Initializer += FString::Printf(TEXT("\t\tlua_pop(L, 1);\r\n\t}\r\n"));
+			return Initializer;
+		}
 		else if (Param->IsA(UWeakObjectProperty::StaticClass()))
 		{
 			GetWeakObjType(Param, nomeaning)
@@ -249,6 +264,35 @@ FString FLuaScriptCodeGenerator::Push(const FString& ClassNameCPP, UFunction* Fu
 			pushCode = Push(ClassNameCPP, Function, PropertyArr->Inner, pushvalueName);
 		}
 		CreateTableCode += FString::Printf(TEXT("\t\t%s\r\n"), *pushCode);
+		CreateTableCode += "\t\tlua_rawset(L, -3);\r\n\t}\r\n";
+		Initializer = CreateTableCode;
+	}
+	else if (ReturnValue->IsA(UMapProperty::StaticClass()))
+	{
+		auto PropertyMap = Cast<UMapProperty>(ReturnValue);
+		FString keyType = GetPropertyTypeCPP(PropertyArr->KeyProp, CPPF_ArgumentOrReturnValue);
+		FString valType = GetPropertyTypeCPP(PropertyArr->ValueProp, CPPF_ArgumentOrReturnValue);
+		FString CreateTableCode;
+		CreateTableCode += "\tlua_newtable(L);\r\n";
+		CreateTableCode += FString::Printf(TEXT("\tfor (auto kvp : %s)\r\n\t{\r\n"), *name);
+		FString pushKeyName = FString::Printf(TEXT("%s.key"), *name);
+		FString pushKeyCode = Push(ClassNameCPP, (UFunction*)1, PropertyArr->KeyProp, pushKeyName);
+		CreateTableCode += FString::Printf(TEXT("\t\t%s\r\n"), *pushKeyCode);
+		FString pushValueName = FString::Printf(TEXT("%s.Value"), *name);
+		FString pushValCode = Push(ClassNameCPP, (UFunction*)1, PropertyArr->ValueProp, pushValueName);
+		//if val is uobject ref ?? TODO
+		if (Function == nullptr && !(ReturnValue->PropertyFlags & CPF_NativeAccessSpecifierPublic))
+		{
+			FString typecast = GetPropertyCastType(PropertyMap->ValueProp);
+			if (typecast.IsEmpty())
+				typecast = valType;
+			FString statictype = GetPropertyType(PropertyMap->ValueProp);
+			CreateTableCode += FString::Printf(TEXT("\t\t%s* ValueProperty = Cast<%s>(p->ValueProp);\r\n"), *statictype, *statictype);
+			CreateTableCode += FString::Printf(TEXT("\t\t%s temp = (%s)ValueProperty->%s(%s.GetRawPtr(i));\r\n"), *typecast, *typecast, *GetPropertyGetFunc(PropertyMap->ValueProp), *name);
+			pushvalueName = FString::Printf(TEXT("temp"));
+			pushCode = Push(ClassNameCPP, Function, PropertyArr->Inner, pushvalueName);
+		}
+		CreateTableCode += FString::Printf(TEXT("\t\t%s\r\n"), *pushValCode);
 		CreateTableCode += "\t\tlua_rawset(L, -3);\r\n\t}\r\n";
 		Initializer = CreateTableCode;
 	}
@@ -551,6 +595,27 @@ FString FLuaScriptCodeGenerator::GenerateFunctionDispatch(UFunction* Function, c
 					}
 				}
 			}
+			//TODO
+			else if (Param->IsA(UMapProperty::StaticClass()))
+			{
+				FString nameCpp = GetPropertyTypeCPP(Param, CPPF_ArgumentOrReturnValue);
+				if (Param->GetName() != "ReturnValue")
+				{
+					paramList += Param->GetName() + ",";
+					count_init_param++;
+					if (count_default_param > 0)
+					{
+						Params += InitializeParam(Param, ParamIndex, false, Param->GetName());
+						if (count_default_param + count_init_param >= count_all_param)
+							Params += CallCode(Function, bIsStaticFunc, !returnType.IsEmpty(), count_init_param, paramList, ClassNameCPP, count_init_param == count_all_param, bIsInterface);
+					}
+					else
+					{
+						Params += FString::Printf(TEXT("\t%s %s;\r\n"), *nameCpp, *Param->GetName());
+						Params += InitializeParam(Param, ParamIndex, false, Param->GetName());
+					}
+				}
+			}
 			else
 			{
 				if (Param->GetName() != "ReturnValue")
@@ -724,6 +789,10 @@ bool FLuaScriptCodeGenerator::IsPropertyTypeSupported(UProperty* Property) const
 	{
 		bSupported = true;
 	}
+	else if (Property->IsA(UMapProperty::StaticClass()))
+	{
+		bSupported = true;
+	}
 	else if (Property->IsA(ULazyObjectProperty::StaticClass()) ||
 		Property->IsA(UAssetObjectProperty::StaticClass()) ||
 // 		Property->IsA(UWeakObjectProperty::StaticClass()) ||
@@ -767,8 +836,11 @@ bool FLuaScriptCodeGenerator::CanExportProperty(const FString& ClassNameCPP, UCl
 		if (auto p = Cast<UArrayProperty>(Property))
 			if (GetPropertyType(p->Inner) == "" || !IsPropertyTypeSupported(p->Inner))
 				return false;
+		//TODO
 		if (auto p = Cast<UMapProperty>(Property))
-			return false;
+			if (GetPropertyType(p->KeyProp) == "" || !IsPropertyTypeSupported(p->KeyProp) ||
+				GetPropertyType(p->ValueProp) == "" || !IsPropertyTypeSupported(p->ValueProp))
+				return false;
 		if (auto p = Cast<UMulticastDelegateProperty>(Property))
 		{
 			FString name = p->GetName();
@@ -831,6 +903,10 @@ FString FLuaScriptCodeGenerator::GetPropertyType(UProperty* Property) const
 	else if (Property->IsA(UArrayProperty::StaticClass()))
 	{
 		return FString("UArrayProperty");
+	}
+	else if (Property->IsA(UMapProperty::StaticClass()))
+	{
+		return FString("UMapProperty");
 	}
 	else
 	{
@@ -964,7 +1040,12 @@ FString FLuaScriptCodeGenerator::GetterCode(FString ClassNameCPP, FString classn
 					FString typecast = GetPropertyCastType(Property);
 					if (typecast.IsEmpty())
 						typecast = typecpp;
-					if (!typecpp.Contains("TArray") && !typecpp.Contains("TWeakObjectPtr"))
+					//TODO
+					if (typecpp.Contains("TMap"))
+					{
+						FunctionBody += FString::Printf(TEXT("\tFScriptMapHelper_InContainer result(p, Obj);\r\n"));
+					}
+					else if (!typecpp.Contains("TArray") && !typecpp.Contains("TWeakObjectPtr"))
 					{
 						if (Property->IsA(UStructProperty::StaticClass()))
 							FunctionBody += FString::Printf(TEXT("\t%s result = (%s)p->%s(Obj);\r\n"), *typecast, *typecast, *GetPropertyGetFunc(Property));
@@ -1036,7 +1117,13 @@ FString FLuaScriptCodeGenerator::SetterCode(FString ClassNameCPP, FString classn
 					FunctionBody += TEXT("\tObj->AnimBlueprintGeneratedClass = (UAnimBlueprintGeneratedClass*)(UTableUtil::tousertype(\"UClass\", 2));\r\n");
 				else if (!Property->IsA(UArrayProperty::StaticClass()))
 				{
-					if (Property->IsA(UStructProperty::StaticClass()))
+					if (Property->IsA(UMapProperty::StaticClass()))
+					{
+						auto PropertyMap = Cast<UMapProperty>(Property);
+						FunctionBody += FString::Printf(TEXT("\t%s& val = Obj->%s;\r\n"), *GetPropertyTypeCPP(Property, CPPF_ArgumentOrReturnValue), *Property->GetName());
+						FunctionBody += InitializeParam(Property, 0, false, "val");
+					}
+					else if (Property->IsA(UStructProperty::StaticClass()))
 						FunctionBody += FString::Printf(TEXT("\tObj->%s = *%s;\r\n"), *Property->GetName(), *InitializeParam(Property, 0));
 					else
 						FunctionBody += FString::Printf(TEXT("\tObj->%s = %s;\r\n"), *Property->GetName(), *InitializeParam(Property, 0));

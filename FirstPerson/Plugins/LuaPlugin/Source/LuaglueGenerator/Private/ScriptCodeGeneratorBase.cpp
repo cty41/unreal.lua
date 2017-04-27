@@ -85,6 +85,17 @@ FString FScriptCodeGeneratorBase::GetPropertyTypeCPP(UProperty* Property, uint32
 			inerTypeCpp = "TEnumAsByte<EObjectTypeQuery> ";
 		PropertyType = FString::Printf(TEXT("TArray<%s>"), *inerTypeCpp);
 	}
+	else if (Property->IsA(UMapProperty::StaticClass()))
+	{
+		auto PropertyMap = Cast<UMapProperty>(Property);
+		FString keyTypeCpp = GetPropertyTypeCPP(PropertyMap->KeyProp, CPPF_ArgumentOrReturnValue);
+		//why only this one, TODO
+// 		if (keyTypeCpp == "EObjectTypeQuery")
+// 			keyTypeCpp = "TEnumAsByte<EObjectTypeQuery> ";
+		FString valTypeCpp = GetPropertyTypeCPP(PropertyMap->ValueProp, CPPF_ArgumentOrReturnValue);
+
+		PropertyType = FString::Printf(TEXT("TMap<%s, %s>"), *keyTypeCpp, *valTypeCpp);
+	}
 	// Strip any forward declaration keywords
 	if (PropertyType.StartsWith(EnumDecl) || PropertyType.StartsWith(StructDecl) || PropertyType.StartsWith(ClassDecl))
 	{
